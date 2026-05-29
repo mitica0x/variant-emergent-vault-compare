@@ -4,7 +4,7 @@ import { Menu, X, ArrowUpRight } from "lucide-react";
 
 const LINKS = [
   { to: "/compare", label: "Compare" },
-  { to: "/find-my-exchange", label: "Find Exchange" },
+  { to: "/find-my-exchange", label: "Match Exchange" },
   { to: "/cards", label: "Cards" },
   { to: "/news", label: "News" },
   { to: "/advertise", label: "Advertise" },
@@ -22,11 +22,8 @@ export default function Navbar() {
     >
       <div className="container-x flex items-center justify-between h-16">
         <Link to="/" className="flex items-center gap-2 group" onClick={() => setOpen(false)}>
-          <div className="w-7 h-7 flex items-center justify-center" style={{ border: "0.5px solid rgba(255,255,255,0.12)", borderRadius: 3 }}>
-            <span className="font-mono text-[11px] tracking-widest text-cyan">C</span>
-          </div>
           <span className="text-[15px] font-semibold tracking-tight">
-            Coin<span className="text-cyan">S</span>iglieri
+            <span style={{ color: "#fff" }}>Coin</span><span style={{ color: "#18b4d4" }}>Siglieri</span>
           </span>
         </Link>
 

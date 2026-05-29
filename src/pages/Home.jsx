@@ -72,10 +72,11 @@ function Hero() {
       <ThreeHero
         className="absolute"
         style={{
-          top: "-10%",
-          right: "-5%",
-          width: "55%",
-          height: "120%",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: "560px",
+          height: "560px",
           zIndex: 0,
           opacity: 0.85,
         }}
@@ -88,13 +89,8 @@ function Hero() {
           initial={FADE_IN_UP_BIG.initial}
           animate={FADE_IN_UP_BIG.animate}
           transition={softTransition(0, 0.7)}
-          className="inline-flex items-center gap-2 px-3 py-[6px]"
-          style={{ border: "0.5px solid rgba(24,180,212,0.3)", borderRadius: 3 }}
         >
-          <span className="w-[6px] h-[6px] rounded-full bg-emerald animate-pulse-dot" />
-          <span className="font-mono text-[10px] uppercase tracking-widest text-cyan">
-            Live · EU market intelligence · 60+ exchanges tracked
-          </span>
+          <Eyebrow color="text-cyan">AI Infrastructure · Market Intelligence</Eyebrow>
         </motion.div>
 
         <motion.h1
@@ -103,8 +99,7 @@ function Hero() {
           transition={softTransition(0.08, 0.8)}
           className="mt-8 text-[56px] sm:text-[72px] lg:text-[88px] font-bold tracking-tight leading-[0.95] text-balance"
         >
-          All Signal.<br />
-          <span className="text-cyan">0</span> Guess.
+          Building for what comes next.
         </motion.h1>
 
         <motion.p
@@ -113,9 +108,17 @@ function Hero() {
           transition={softTransition(0.16, 0.8)}
           className="mt-6 max-w-2xl text-[16px] sm:text-[18px] text-muted leading-relaxed text-balance"
         >
-          Independent intelligence for crypto exchanges entering or operating in the EU market.
-          Scored by algorithm. Not by who pays us.
+          Everything in financial markets was built for humans.
         </motion.p>
+
+        <motion.div
+          initial={FADE_IN_UP_BIG.initial}
+          animate={FADE_IN_UP_BIG.animate}
+          transition={softTransition(0.2, 0.8)}
+          className="mt-6 font-mono text-[10px] uppercase tracking-widest text-muted"
+        >
+          Crypto · Web3 · AI · In the market since 2017
+        </motion.div>
 
         <motion.div
           initial={FADE_IN_UP_BIG.initial}
@@ -124,10 +127,10 @@ function Hero() {
           className="mt-10 flex flex-col sm:flex-row gap-3"
         >
           <Link to="/compare" className="btn-primary">
-            Open the leaderboard <ArrowRight size={16} />
+            Open the dashboard <ArrowRight size={16} />
           </Link>
           <Link to="/compare#methodology" className="btn-outline">
-            How we score <ArrowUpRight size={14} />
+            See the scores <ArrowUpRight size={14} />
           </Link>
         </motion.div>
 
