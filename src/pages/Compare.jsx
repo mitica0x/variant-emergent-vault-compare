@@ -202,7 +202,7 @@ function FeaturedCard({ exchange }) {
   return (
     <div
       ref={ref}
-      className="mt-10 p-7 grid grid-cols-1 lg:grid-cols-[1fr_1.1fr_1.3fr] gap-8"
+      className="mt-10 md:mt-[200px] p-7 grid grid-cols-1 lg:grid-cols-[1fr_1.1fr_1.3fr] gap-8"
       style={{
         background: "#0f1422",
         borderLeft: "3px solid #a3e635",
@@ -248,7 +248,7 @@ const FEATURED_PILLARS = [
   { label: "Custody", key: "security" },
   { label: "Liquidity", key: "liquidity" },
   { label: "Compliance", key: "compliance" },
-  { label: "Transparency", key: "por", override: 88 },
+  { label: "Transparent", key: "por", override: 88 },
   { label: "Product Depth", key: "productDepth" },
   { label: "Track Record", key: "trackRecord" },
   { label: "Execution", key: "execution", override: 90 },
