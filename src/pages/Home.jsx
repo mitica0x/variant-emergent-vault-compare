@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import {
   ArrowRight, ArrowUpRight, Shield, CheckCircle2, FileText, Users,
 } from "lucide-react";
@@ -28,9 +28,9 @@ const PLATFORM_SURFACES = [
 const OPERATOR_ITEMS = [
   { value: "2016", label: "In crypto since cycle one" },
   { value: "15+", label: "Years in derivatives markets" },
-  { value: "Bybit Pioneer", label: "Romania · Certified operator partner" },
-  { value: "EU-native", label: "Built for MiCAR from day one" },
-  { value: "4 Stages", label: "CryptoExpoEurope · Next Block Warsaw · ETH Bucharest · Banking 4.0" },
+  { value: "2× Editions", label: "Largest crypto startup competition in Romania" },
+  { value: "Lunu POS", label: "Largest crypto payment at a live festival" },
+  { value: "Speaker", label: "Next Block Warsaw · ETH Bucharest · CryptoExpoEurope" },
 ];
 
 const SERVICES = [
@@ -121,7 +121,7 @@ function Hero() {
       <GlobeMenu />
 
       {/* Text block — absolute left overlay */}
-      <div className="absolute bottom-0 left-0 right-0 p-6 z-20 text-left md:top-1/2 md:bottom-auto md:right-auto md:left-0 md:p-0 md:pl-20 md:max-w-[600px] md:[transform:translateY(-50%)]">
+      <div className="absolute bottom-0 left-0 right-0 p-6 z-20 text-left md:top-[calc(50%-20px)] md:bottom-auto md:right-auto md:left-0 md:p-0 md:pl-20 md:max-w-[600px] md:[transform:translateY(-50%)]">
         <motion.div
           initial={FADE_IN_UP_BIG.initial}
           animate={FADE_IN_UP_BIG.animate}
@@ -202,11 +202,11 @@ function HeroMetrics() {
 }
 
 const GLOBE_LINKS = [
-  { label: "Compare", to: "/compare", pos: { top: "20%", left: "50%", transform: "translateX(-50%)" } },
-  { label: "Exchange Match", to: "/find-my-exchange", pos: { top: "33%", right: "6%" } },
-  { label: "Cards", to: "/cards", pos: { top: "50%", right: "0%", transform: "translateY(-50%)" } },
-  { label: "News", to: "/news", pos: { top: "67%", right: "6%" } },
-  { label: "Advertise", to: "/advertise", pos: { top: "80%", left: "50%", transform: "translateX(-50%)" } },
+  { label: "Compare", to: "/compare", pos: { top: "20%", left: "50%", transform: "translateX(-50%)" }, zx: 0.5, zy: 0.2 },
+  { label: "Exchange Match", to: "/find-my-exchange", pos: { top: "33%", right: "6%" }, zx: 0.82, zy: 0.33 },
+  { label: "Cards", to: "/cards", pos: { top: "50%", right: "0%", transform: "translateY(-50%)" }, zx: 0.9, zy: 0.5 },
+  { label: "News", to: "/news", pos: { top: "67%", right: "6%" }, zx: 0.82, zy: 0.67 },
+  { label: "Advertise", to: "/advertise", pos: { top: "80%", left: "50%", transform: "translateX(-50%)" }, zx: 0.5, zy: 0.8 },
 ];
 
 function GlobePill({ to, label }) {
@@ -239,21 +239,42 @@ function GlobePill({ to, label }) {
 }
 
 function GlobeMenu() {
-  const [hovered, setHovered] = useState(false);
+  const ref = useRef(null);
+  const [active, setActive] = useState(null);
+  const handleMove = (e) => {
+    const el = ref.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+    let best = 0;
+    let bestD = Infinity;
+    GLOBE_LINKS.forEach((it, i) => {
+      const dx = x - it.zx;
+      const dy = y - it.zy;
+      const d = dx * dx + dy * dy;
+      if (d < bestD) {
+        bestD = d;
+        best = i;
+      }
+    });
+    setActive(best);
+  };
   return (
     <div
+      ref={ref}
       className="hidden md:block absolute top-0 right-0 z-[15]"
       style={{ width: "55%", height: "100%" }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseMove={handleMove}
+      onMouseLeave={() => setActive(null)}
     >
       {GLOBE_LINKS.map((it, i) => (
         <div key={it.label} className="absolute" style={it.pos}>
           <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={hovered ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
-            transition={{ delay: hovered ? i * 0.05 : 0, duration: 0.3 }}
-            style={{ pointerEvents: hovered ? "auto" : "none" }}
+            initial={{ opacity: 0, scale: 0.85 }}
+            animate={active === i ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.85 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            style={{ pointerEvents: active === i ? "auto" : "none" }}
           >
             <GlobePill to={it.to} label={it.label} />
           </motion.div>
@@ -298,7 +319,9 @@ function SurfaceCard({ surface }) {
       </span>
       <h3 className="font-mono text-[13px] uppercase tracking-widest text-txt pr-16">{name}</h3>
       <p className="mt-3 text-[14px] leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>{desc}</p>
-      <div className="mt-6 font-mono text-[11px] uppercase tracking-widest" style={{ color: accent }}>{stat}</div>
+      {!lime && (
+        <div className="mt-6 font-mono text-[11px] uppercase tracking-widest" style={{ color: accent }}>{stat}</div>
+      )}
     </>
   );
   const cardStyle = {
@@ -320,7 +343,7 @@ function SurfaceCard({ surface }) {
     : <Link to={to} {...handlers}>{inner}</Link>;
   return (
     <motion.div
-      whileHover={{ scale: 1.015, y: -3 }}
+      whileHover={{ scale: 1.008, y: -2 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
     >
       {card}
@@ -373,14 +396,16 @@ function LeaderboardPreviewSection({ top5 }) {
       </div>
       <div className="hairline" style={{ borderRadius: 3 }}>
         {top5.map((e, i) => (
-          <PreviewRow key={e.id} exchange={e} isLast={i === top5.length - 1} />
+          <PreviewRow key={e.id} exchange={e} isLast={i === top5.length - 1} index={i} />
         ))}
       </div>
     </section>
   );
 }
 
-function PreviewRow({ exchange, isLast }) {
+function PreviewRow({ exchange, isLast, index = 0 }) {
+  const barRef = useRef(null);
+  const barInView = useInView(barRef, { once: false, amount: 0.5 });
   return (
     <div
       className={`flex items-center gap-4 px-5 py-4 ${
@@ -398,10 +423,13 @@ function PreviewRow({ exchange, isLast }) {
         <div className="text-[12px] text-muted mt-[2px]">{exchange.bestFor}</div>
       </div>
       <div className="hidden md:flex items-center gap-3 min-w-[180px]">
-        <div className="flex-1 h-[3px] bg-white/[0.05] rounded">
-          <div
+        <div ref={barRef} className="flex-1 h-[3px] bg-white/[0.05] rounded">
+          <motion.div
             className="h-full rounded"
-            style={{ width: `${exchange.score}%`, background: "linear-gradient(90deg, #18b4d4 0%, #0dbe82 50%, #a3e635 100%)" }}
+            style={{ width: `${exchange.score}%`, background: "linear-gradient(90deg, #18b4d4 0%, #0dbe82 50%, #a3e635 100%)", transformOrigin: "left center" }}
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: barInView ? 1 : 0 }}
+            transition={{ type: "spring", stiffness: 120, damping: 18, delay: index * 0.08 }}
           />
         </div>
         <span className="font-mono text-[14px] text-txt w-7 text-right">{exchange.score}</span>
@@ -494,7 +522,7 @@ function ProductsSection() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <ProductCard
           glow="0 0 40px rgba(24,180,212,0.15)"
-          glowHover="0 0 40px rgba(24,180,212,0.35)"
+          glowHover="0 0 40px 20px rgba(24,180,212,0.45)"
           border="0.5px solid rgba(24,180,212,0.3)"
           wordmark={<>C<span style={{ color: "#18b4d4" }}>0</span>insiglieri</>}
           badge="LIVE · $699/MO"
@@ -507,7 +535,7 @@ function ProductsSection() {
         />
         <ProductCard
           glow="0 0 40px rgba(245,158,11,0.15)"
-          glowHover="0 0 40px rgba(245,158,11,0.35)"
+          glowHover="0 0 40px 20px rgba(245,158,11,0.45)"
           border="0.5px solid rgba(245,158,11,0.3)"
           wordmark={<>Ax<span style={{ color: "#f59e0b" }}>0</span>n</>}
           badge="IN DEV · Q4 2026"
@@ -527,7 +555,7 @@ function ProductCard({ glow, glowHover, border, wordmark, badge, badgeColor, hea
   const [hover, setHover] = useState(false);
   return (
     <motion.div
-      whileHover={{ scale: 1.02, y: -4 }}
+      whileHover={{ scale: 1.010, y: -2 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
       onHoverStart={() => setHover(true)}
       onHoverEnd={() => setHover(false)}
