@@ -4,6 +4,7 @@ import { motion, useInView } from "framer-motion";
 import {
   ArrowRight, ArrowUpRight, Check, X as XIcon, Shield, Activity, FileCheck2, Scale, History,
 } from "lucide-react";
+import { RadarChart, Radar, PolarGrid, PolarAngleAxis, ResponsiveContainer } from "recharts";
 import { Eyebrow, Badge, MiniBar, ScoreCircle, ProsCons, ExchangeLogo } from "../components/UI";
 import { EXCHANGES, SCORE_PILLARS, getTierBg, scoreColor } from "../data/mock";
 import { useScrollSpy } from "../hooks/use-in-view";
@@ -274,9 +275,12 @@ function FeaturedBreakdown({ exchange, shown }) {
 function FeaturedMetrics({ exchange }) {
   return (
     <div className="flex flex-col gap-3">
-      <Metric label="24h Volume" value={exchange.vol24h} delta={exchange.vol24hDelta} />
-      <Metric label="BTC Spread" value={`${exchange.spreadBTC.toFixed(3)}%`} />
-      <Metric label="Uptime (90d)" value={`${exchange.uptime90d}%`} />
+      <div className="grid grid-cols-3 gap-3">
+        <CompactVital label="24h Vol" value={exchange.vol24h} delta={exchange.vol24hDelta} />
+        <CompactVital label="BTC Spread" value={`${exchange.spreadBTC.toFixed(3)}%`} />
+        <CompactVital label="Uptime" value={`${exchange.uptime90d}%`} />
+      </div>
+      <RadarBreakdown exchange={exchange} />
       <a
         href={exchange.affiliateUrl}
         target="_blank"
@@ -292,20 +296,57 @@ function FeaturedMetrics({ exchange }) {
   );
 }
 
-function Metric({ label, value, delta }) {
+function CompactVital({ label, value, delta }) {
   const hasDelta = typeof delta === "number";
   const positive = hasDelta && delta > 0;
   return (
     <div className="hairline-b pb-2">
-      <div className="flex items-baseline justify-between">
-        <span className="font-mono text-[10px] uppercase tracking-widest text-muted">{label}</span>
-        {hasDelta && (
-          <span className={`font-mono text-[11px] ${positive ? "text-emerald" : "text-rust"}`}>
-            {positive ? "+" : ""}{delta.toFixed(1)}%
-          </span>
-        )}
+      <div className="font-mono text-[9px] uppercase tracking-widest text-muted">{label}</div>
+      <div className="font-mono text-[13px] mt-1">{value}</div>
+      {hasDelta && (
+        <div className={`font-mono text-[10px] ${positive ? "text-emerald" : "text-rust"}`}>
+          {positive ? "+" : ""}{delta.toFixed(1)}%
+        </div>
+      )}
+    </div>
+  );
+}
+
+function RadarBreakdown({ exchange }) {
+  const bd = exchange.scoreBreakdown || {};
+  const data = [
+    { axis: "Custody", value: bd.security ?? 80 },
+    { axis: "Liquidity", value: bd.liquidity ?? 80 },
+    { axis: "Compliance", value: bd.compliance ?? 80 },
+    { axis: "Transparency", value: bd.por ?? 80 },
+    { axis: "Product", value: bd.productDepth ?? 80 },
+    { axis: "Track Rec.", value: bd.trackRecord ?? 80 },
+    { axis: "Execution", value: bd.execution ?? 82 },
+  ];
+
+  return (
+    <div style={{ position: "relative", width: "100%", height: 220 }}>
+      <div style={{ position: "absolute", top: 0, right: 0, display: "flex", alignItems: "center", gap: 6, fontFamily: "monospace", fontSize: 9, letterSpacing: "0.14em", color: "#0dbe82", textTransform: "uppercase" }}>
+        <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#0dbe82", display: "inline-block" }} />
+        SCORE BREAKDOWN
       </div>
-      <div className="font-mono text-[18px] mt-1">{value}</div>
+      <ResponsiveContainer width="100%" height="100%">
+        <RadarChart data={data} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+          <PolarGrid stroke="rgba(255,255,255,0.07)" />
+          <PolarAngleAxis
+            dataKey="axis"
+            tick={{ fill: "rgba(255,255,255,0.45)", fontSize: 10, fontFamily: "monospace" }}
+          />
+          <Radar
+            name="score"
+            dataKey="value"
+            stroke="#0dbe82"
+            fill="#0dbe82"
+            fillOpacity={0.15}
+            strokeWidth={1.5}
+          />
+        </RadarChart>
+      </ResponsiveContainer>
     </div>
   );
 }
