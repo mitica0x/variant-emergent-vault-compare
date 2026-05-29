@@ -126,10 +126,15 @@ function Hero() {
           transition={softTransition(0.24, 0.8)}
           className="mt-10 flex flex-col sm:flex-row gap-3"
         >
-          <Link to="/compare" className="btn-primary">
+          <a
+            href="https://app.coinsiglieri.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-primary"
+          >
             Open the dashboard <ArrowRight size={16} />
-          </Link>
-          <Link to="/compare#methodology" className="btn-outline">
+          </a>
+          <Link to="/compare" className="btn-outline">
             See the scores <ArrowUpRight size={14} />
           </Link>
         </motion.div>
