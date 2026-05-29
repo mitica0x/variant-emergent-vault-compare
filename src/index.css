@@ -211,3 +211,24 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 /* No box-shadow ever */
 * { box-shadow: none !important; }
+
+@keyframes scanline {
+  0% { top: -2px; }
+  100% { top: 100%; }
+}
+
+.cs-scanline {
+  position: relative;
+  overflow: hidden;
+}
+
+.cs-scanline::before {
+  content: "";
+  background: linear-gradient(90deg, transparent, #0dbe82, transparent);
+  opacity: 0.7;
+  height: 2px;
+  animation: 3.5s linear 0s infinite running scanline;
+  position: absolute;
+  left: 0;
+  right: 0;
+}

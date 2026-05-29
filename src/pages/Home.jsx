@@ -8,12 +8,13 @@ import {
 import { Eyebrow, Badge, ParticleField, ExchangeLogo } from "../components/UI";
 import { EXCHANGES, CITED_BY, getTierColor } from "../data/mock";
 import { FADE_IN, FADE_IN_UP_BIG, softTransition } from "../lib/motion";
+import ThreeHero from "../components/ThreeHero";
 
 const HERO_METRICS = [
   { label: "Exchanges tracked", value: "60+" },
   { label: "MiCAR licensed", value: "7" },
   { label: "Update cadence", value: "30d" },
-  { label: "Scoring pillars", value: "5" },
+  { label: "Scoring pillars", value: "7" },
 ];
 
 const SURFACES = [
@@ -68,6 +69,17 @@ function Hero() {
   return (
     <section className="relative bg-radial-glow" style={{ minHeight: "calc(100vh - 64px)" }}>
       <ParticleField count={50} />
+      <ThreeHero
+        className="absolute"
+        style={{
+          top: "-10%",
+          right: "-5%",
+          width: "55%",
+          height: "120%",
+          zIndex: 0,
+          opacity: 0.85,
+        }}
+      />
       <div
         className="container-x relative z-10 flex flex-col items-center justify-center text-center pt-20 pb-24"
         style={{ minHeight: "calc(100vh - 64px)" }}

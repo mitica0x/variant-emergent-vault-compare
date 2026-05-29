@@ -521,7 +521,7 @@ function MethodologySection() {
 
 function PillarsTable() {
   return (
-    <div className="mt-8 hairline" style={{ borderRadius: 3 }}>
+    <div className="mt-8 hairline cs-scanline" style={{ borderRadius: 3 }}>
       <table className="w-full text-[14px]">
         <thead className="font-mono text-[10px] uppercase tracking-widest text-muted hairline-b">
           <tr>
