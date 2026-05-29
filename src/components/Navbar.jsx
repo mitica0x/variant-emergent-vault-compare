@@ -11,6 +11,58 @@ const LINKS = [
   { to: "/about", label: "About" },
 ];
 
+function NavItem({ to, label }) {
+  const [hover, setHover] = useState(false);
+  return (
+    <NavLink
+      to={to}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      className={({ isActive }) =>
+        `eyebrow px-3 py-2 transition-colors ${
+          isActive
+            ? "relative after:absolute after:left-3 after:right-3 after:bottom-1 after:h-[2px] after:bg-emerald"
+            : ""
+        }`
+      }
+      style={
+        hover
+          ? {
+              background: "linear-gradient(90deg, #18b4d4, #a3e635)",
+              WebkitBackgroundClip: "text",
+              backgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              color: "transparent",
+            }
+          : { color: "rgba(255,255,255,0.85)" }
+      }
+    >
+      {label}
+    </NavLink>
+  );
+}
+
+function OpenAppButton({ className = "" }) {
+  const [hover, setHover] = useState(false);
+  return (
+    <a
+      href="https://app.coinsiglieri.com"
+      target="_blank"
+      rel="noopener noreferrer"
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      className={`items-center gap-1.5 rounded-[3px] font-semibold ${className}`}
+      style={{
+        background: hover ? "#a3e635" : "#0dbe82",
+        color: "#000",
+        transition: "background-color 150ms ease",
+      }}
+    >
+      Open App <ArrowUpRight size={14} />
+    </a>
+  );
+}
+
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
@@ -29,30 +81,12 @@ export default function Navbar() {
 
         <nav className="hidden lg:flex items-center gap-1">
           {LINKS.map((l) => (
-            <NavLink
-              key={l.to}
-              to={l.to}
-              className={({ isActive }) =>
-                `eyebrow px-3 py-2 text-muted hover:text-txt transition-colors ${
-                  isActive ? "text-txt relative after:absolute after:left-3 after:right-3 after:bottom-1 after:h-[2px] after:bg-emerald" : ""
-                }`
-              }
-            >
-              {l.label}
-            </NavLink>
+            <NavItem key={l.to} to={l.to} label={l.label} />
           ))}
         </nav>
 
         <div className="flex items-center gap-2">
-          <a
-            href="https://app.coinsiglieri.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-primary hidden md:inline-flex !py-2 !px-3 !text-[13px]"
-          >
-            Open App
-            <ArrowUpRight size={14} />
-          </a>
+          <OpenAppButton className="hidden md:inline-flex py-2 px-3 text-[13px]" />
           <button
             className="lg:hidden p-2 text-muted hover:text-txt"
             onClick={() => setOpen((v) => !v)}
@@ -76,14 +110,7 @@ export default function Navbar() {
                 {l.label}
               </Link>
             ))}
-            <a
-              href="https://app.coinsiglieri.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-primary mt-3 w-full justify-center"
-            >
-              Open App <ArrowUpRight size={14} />
-            </a>
+            <OpenAppButton className="mt-3 w-full justify-center inline-flex py-2.5 px-3 text-[14px]" />
           </div>
         </div>
       )}

@@ -23,7 +23,7 @@ export default function ThreeHero({ className = "", style }) {
     const cyanLight = new THREE.PointLight(0x18b4d4, isMobile ? 3 : 4, 8);
     cyanLight.position.set(2, 1, 2);
     scene.add(cyanLight);
-    const purpleLight = new THREE.PointLight(0x4f46e5, 2, 8);
+    const purpleLight = new THREE.PointLight(0x4f46e5, 3, 8);
     purpleLight.position.set(-2, -1, 1);
     scene.add(purpleLight);
     const rimLight = new THREE.DirectionalLight(0x18b4d4, 0.6);
@@ -88,6 +88,8 @@ export default function ThreeHero({ className = "", style }) {
       cyanLight.position.y = Math.cos(t*0.3)*1.5;
       purpleLight.position.x = Math.cos(t*0.35)*-2.5;
       purpleLight.position.y = Math.sin(t*0.25)*1.5;
+      const hue = 0.214 + (Math.sin(t * 0.3) * 0.5 + 0.5) * 0.314;
+      purpleLight.color.setHSL(hue, 0.9, 0.5);
       renderer.render(scene, camera);
     };
     animate();

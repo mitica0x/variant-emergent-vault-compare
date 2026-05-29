@@ -2,11 +2,10 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
-  ArrowRight, ArrowUpRight, Shield, BarChart3, Coins, Scale, Lock, Activity,
-  CheckCircle2, Compass, FileText, Users,
+  ArrowRight, ArrowUpRight, Shield, CheckCircle2, FileText, Users,
 } from "lucide-react";
 import { Eyebrow, Badge, ParticleField, ExchangeLogo } from "../components/UI";
-import { EXCHANGES, CITED_BY, getTierColor } from "../data/mock";
+import { EXCHANGES } from "../data/mock";
 import { FADE_IN, FADE_IN_UP_BIG, softTransition } from "../lib/motion";
 import ThreeHero from "../components/ThreeHero";
 
@@ -17,19 +16,21 @@ const HERO_METRICS = [
   { label: "Scoring pillars", value: "7" },
 ];
 
-const SURFACES = [
-  { icon: BarChart3, title: "Exchanges", desc: "60+ venues scored across 7 pillars on a 30-day cycle." },
-  { icon: Coins, title: "Crypto Cards", desc: "Cashback, currencies, regions and the all-in cost of every card." },
-  { icon: Activity, title: "Staking", desc: "Real yields net of slashing, lockups and validator concentration risk." },
-  { icon: Scale, title: "Regulation", desc: "MiCAR, FCA, MAS \u2014 the practical access map for traders." },
-  { icon: Lock, title: "Custody", desc: "Hot/cold splits, insurance, attestation cadence, incident history." },
-  { icon: Compass, title: "Execution", desc: "Spreads, slippage and uptime under stress \u2014 not marketing copy." },
+const PLATFORM_SURFACES = [
+  { name: "Compare", desc: "The leaderboard nobody paid to be on. 22 venues scored across 7 pillars.", stat: "22 EXCHANGES", to: "/compare", accent: "#18b4d4" },
+  { name: "Exchange Match", desc: "Find your exchange in 60 seconds based on your trading profile.", stat: "12 FILTERS", to: "/find-my-exchange", accent: "#18b4d4" },
+  { name: "Cards", desc: "The only scored comparison of crypto card products in the EU.", stat: "8 CARDS SCORED", to: "/cards", accent: "#18b4d4" },
+  { name: "News", desc: "Intelligence-filtered news. Only what moves scores.", stat: "LIVE FEED", to: "/news", accent: "#18b4d4" },
+  { name: "Advertise", desc: "Editorial placements on a scored, transparent platform.", stat: "DISCLOSED ALWAYS", to: "/advertise", accent: "#0dbe82" },
+  { name: "C0insiglieri App", desc: "The full intelligence dashboard. Score deltas, alerts, N0VA signals.", stat: "$699 / MO", href: "https://app.coinsiglieri.com", accent: "#a3e635", lime: true },
 ];
 
-const TRACK_STATS = [
+const OPERATOR_ITEMS = [
   { value: "2016", label: "In crypto since cycle one" },
   { value: "15+", label: "Years in derivatives markets" },
+  { value: "Bybit Pioneer", label: "Romania · Certified operator partner" },
   { value: "EU-native", label: "Built for MiCAR from day one" },
+  { value: "4 Stages", label: "CryptoExpoEurope · Next Block Warsaw · ETH Bucharest · Banking 4.0" },
 ];
 
 const SERVICES = [
@@ -40,15 +41,56 @@ const SERVICES = [
 
 const C0_BULLETS = [
   "Live score deltas across 60+ venues",
-  "License & PoR change alerts",
-  "Custom watchlists & exports",
+  "MiCAR & PoR change alerts",
+  "N0VA pre-incident signal layer",
 ];
 
 const AX0N_BULLETS = [
-  "Push alerts on score deltas",
-  "PoR & license change feeds",
-  "Webhook + Telegram integration",
+  "MCP-native order execution rails",
+  "Multi-venue routing with risk controls",
+  "Audit trail on every agent decision",
 ];
+
+function BtnSolid({ href, to, children }) {
+  const [hover, setHover] = useState(false);
+  const sx = {
+    background: hover ? "#a3e635" : "#0dbe82",
+    color: "#000",
+    fontWeight: 600,
+    padding: "10px 18px",
+    borderRadius: 3,
+    fontSize: 14,
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 8,
+    border: "0.5px solid transparent",
+    transition: "background-color 150ms ease",
+  };
+  const h = { onMouseEnter: () => setHover(true), onMouseLeave: () => setHover(false), style: sx };
+  if (to) return <Link to={to} {...h}>{children}</Link>;
+  return <a href={href} target="_blank" rel="noopener noreferrer" {...h}>{children}</a>;
+}
+
+function BtnGhost({ href, to, children, color = "#18b4d4", hoverColor = "#a3e635" }) {
+  const [hover, setHover] = useState(false);
+  const sx = {
+    background: "transparent",
+    color: hover ? hoverColor : color,
+    fontWeight: 500,
+    padding: "10px 18px",
+    borderRadius: 3,
+    fontSize: 14,
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 8,
+    border: `0.5px solid ${hover ? hoverColor : color}`,
+    transition: "color 150ms ease, border-color 150ms ease",
+  };
+  const h = { onMouseEnter: () => setHover(true), onMouseLeave: () => setHover(false), style: sx };
+  if (to) return <Link to={to} {...h}>{children}</Link>;
+  if (href) return <a href={href} target="_blank" rel="noopener noreferrer" {...h}>{children}</a>;
+  return <button {...h}>{children}</button>;
+}
 
 export default function Home() {
   const top5 = EXCHANGES.slice(0, 5);
@@ -58,8 +100,8 @@ export default function Home() {
       <SixSurfacesSection />
       <TrackRecordSection />
       <LeaderboardPreviewSection top5={top5} />
+      <C0insiglieriTeaser />
       <ProductsSection />
-      <CitedBySection />
       <ServicesSection />
     </>
   );
@@ -99,7 +141,8 @@ function Hero() {
           initial={FADE_IN_UP_BIG.initial}
           animate={FADE_IN_UP_BIG.animate}
           transition={softTransition(0.16, 0.8)}
-          className="mt-6 max-w-xl text-[16px] sm:text-[18px] text-muted leading-relaxed"
+          className="mt-6 max-w-xl text-[16px] sm:text-[18px] leading-relaxed"
+          style={{ color: "rgba(255,255,255,0.72)" }}
         >
           Everything in financial markets was built for humans.
         </motion.p>
@@ -108,7 +151,8 @@ function Hero() {
           initial={FADE_IN_UP_BIG.initial}
           animate={FADE_IN_UP_BIG.animate}
           transition={softTransition(0.2, 0.8)}
-          className="mt-6 font-mono text-[10px] uppercase tracking-widest text-muted"
+          className="mt-6 font-mono text-[10px] uppercase tracking-widest"
+          style={{ color: "rgba(255,255,255,0.5)" }}
         >
           Crypto · Web3 · AI · In the market since 2017
         </motion.div>
@@ -119,17 +163,12 @@ function Hero() {
           transition={softTransition(0.24, 0.8)}
           className="mt-10 flex flex-col sm:flex-row items-start gap-3"
         >
-          <a
-            href="https://app.coinsiglieri.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-primary"
-          >
+          <BtnSolid href="https://app.coinsiglieri.com">
             Open the dashboard <ArrowRight size={16} />
-          </a>
-          <Link to="/compare" className="btn-outline">
+          </BtnSolid>
+          <BtnGhost to="/compare">
             See the scores <ArrowUpRight size={14} />
-          </Link>
+          </BtnGhost>
         </motion.div>
       </div>
 
@@ -231,24 +270,51 @@ function SixSurfacesSection() {
           Six surfaces. One source of truth.
         </h2>
       </div>
-      <div
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px"
-        style={{ background: "rgba(255,255,255,0.07)" }}
-      >
-        {SURFACES.map(({ icon: Icon, title, desc }) => (
-          <div
-            key={title}
-            className="bg-bg p-7 card-lift"
-            style={{ border: "0.5px solid transparent" }}
-          >
-            <Icon size={20} className="text-cyan" />
-            <h3 className="mt-4 font-mono text-[12px] uppercase tracking-widest text-txt">{title}</h3>
-            <p className="mt-2 text-[13px] text-muted leading-relaxed">{desc}</p>
-          </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {PLATFORM_SURFACES.map((s) => (
+          <SurfaceCard key={s.name} surface={s} />
         ))}
       </div>
     </section>
   );
+}
+
+function SurfaceCard({ surface }) {
+  const { name, desc, stat, to, href, accent, lime } = surface;
+  const [hover, setHover] = useState(false);
+  const inner = (
+    <>
+      <span
+        className="absolute top-4 right-4 font-mono text-[9px] uppercase tracking-widest px-2 py-[3px]"
+        style={
+          lime
+            ? { color: "#a3e635", background: "rgba(163,230,53,0.12)", borderRadius: 3 }
+            : { color: "#0dbe82", background: "rgba(13,190,130,0.12)", borderRadius: 3 }
+        }
+      >
+        {lime ? "$699/MO" : "LIVE"}
+      </span>
+      <h3 className="font-mono text-[13px] uppercase tracking-widest text-txt pr-16">{name}</h3>
+      <p className="mt-3 text-[14px] leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>{desc}</p>
+      <div className="mt-6 font-mono text-[11px] uppercase tracking-widest" style={{ color: accent }}>{stat}</div>
+    </>
+  );
+  const cardStyle = {
+    background: "#0f1422",
+    border: `0.5px solid ${hover ? accent : "rgba(255,255,255,0.08)"}`,
+    borderRadius: 3,
+    padding: 24,
+    position: "relative",
+    display: "block",
+    transition: "border-color 150ms ease",
+  };
+  const handlers = {
+    onMouseEnter: () => setHover(true),
+    onMouseLeave: () => setHover(false),
+    style: cardStyle,
+  };
+  if (href) return <a href={href} target="_blank" rel="noopener noreferrer" {...handlers}>{inner}</a>;
+  return <Link to={to} {...handlers}>{inner}</Link>;
 }
 
 function TrackRecordSection() {
@@ -258,17 +324,20 @@ function TrackRecordSection() {
         <div className="flex flex-col gap-3 mb-10">
           <Eyebrow color="text-cyan">Track Record</Eyebrow>
           <h2 className="text-[32px] sm:text-[40px] font-bold tracking-tight max-w-3xl">
-            Built by operators. Not by reporters.
+            Operator Identity.
           </h2>
+          <p className="text-[15px] max-w-2xl leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>
+            Not journalists. Not analysts. Operators with skin in the game since 2016.
+          </p>
         </div>
         <div
-          className="grid grid-cols-1 sm:grid-cols-3 gap-px"
+          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-px"
           style={{ background: "rgba(255,255,255,0.07)" }}
         >
-          {TRACK_STATS.map((s) => (
-            <div key={s.label} className="bg-bg p-8">
-              <div className="font-mono text-[40px] text-txt leading-none">{s.value}</div>
-              <div className="mt-3 text-[14px] text-muted">{s.label}</div>
+          {OPERATOR_ITEMS.map((s) => (
+            <div key={s.value} className="bg-bg p-6">
+              <div className="font-mono text-[24px] text-txt leading-tight">{s.value}</div>
+              <div className="mt-3 font-mono text-[11px] uppercase tracking-widest leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>{s.label}</div>
             </div>
           ))}
         </div>
@@ -284,7 +353,7 @@ function LeaderboardPreviewSection({ top5 }) {
         <div>
           <Eyebrow color="text-emerald">Leaderboard preview</Eyebrow>
           <h2 className="text-[32px] sm:text-[40px] font-bold tracking-tight mt-3">
-            The top 5 right now.
+            Top 5 exchanges right now.
           </h2>
         </div>
         <Link to="/compare" className="btn-cyan !py-2 !px-3 !text-[12px] hidden sm:inline-flex">
@@ -301,7 +370,6 @@ function LeaderboardPreviewSection({ top5 }) {
 }
 
 function PreviewRow({ exchange, isLast }) {
-  const tierColor = getTierColor(exchange.score);
   return (
     <div
       className={`flex items-center gap-4 px-5 py-4 ${
@@ -322,7 +390,7 @@ function PreviewRow({ exchange, isLast }) {
         <div className="flex-1 h-[3px] bg-white/[0.05] rounded">
           <div
             className="h-full rounded"
-            style={{ width: `${exchange.score}%`, background: tierColor }}
+            style={{ width: `${exchange.score}%`, background: "linear-gradient(90deg, #18b4d4 0%, #0dbe82 50%, #a3e635 100%)" }}
           />
         </div>
         <span className="font-mono text-[14px] text-txt w-7 text-right">{exchange.score}</span>
@@ -339,6 +407,70 @@ function PreviewRow({ exchange, isLast }) {
   );
 }
 
+const TEASER_SIGNALS = [
+  { text: "● BYBIT · SCORE DELTA +2 · Proof of Reserves updated · 04:31 UTC", color: "#0dbe82" },
+  { text: "● BINANCE · COMPLIANCE FLAG · MiCAR filing delay detected · 03:15 UTC", color: "#ff4d6d" },
+  { text: "● KRAKEN · TRACK RECORD · 15yr uptime milestone confirmed · 02:44 UTC", color: "#18b4d4" },
+];
+
+function C0insiglieriTeaser() {
+  return (
+    <section className="container-x py-24">
+      <div className="mb-8">
+        <Eyebrow color="text-cyan">C0insiglieri Intelligence</Eyebrow>
+        <h2 className="text-[32px] sm:text-[40px] font-bold tracking-tight mt-3">
+          The terminal operators actually use.
+        </h2>
+        <p className="mt-4 text-[15px] max-w-2xl leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>
+          Score deltas. PoR alerts. Regulatory shifts. Before they hit the news.
+        </p>
+      </div>
+      <div
+        style={{
+          position: "relative",
+          background: "#0f1422",
+          border: "0.5px solid rgba(255,255,255,0.08)",
+          borderRadius: 3,
+          overflow: "hidden",
+        }}
+      >
+        <div className="p-6 space-y-3">
+          {TEASER_SIGNALS.map((s) => (
+            <div key={s.text} className="font-mono text-[12px] sm:text-[13px]" style={{ color: s.color }}>
+              {s.text}
+            </div>
+          ))}
+          <div className="font-mono text-[12px] sm:text-[13px]" style={{ color: "rgba(255,255,255,0.22)" }}>
+            ● ████████ · ████████ · ██████████████ · ██:██ UTC
+          </div>
+          <div className="font-mono text-[12px] sm:text-[13px]" style={{ color: "rgba(255,255,255,0.12)" }}>
+            ● ██████ · ████████ · ████████████ · ██:██ UTC
+          </div>
+        </div>
+        <div
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: 130,
+            background: "linear-gradient(to bottom, rgba(15,20,34,0) 0%, rgba(15,20,34,0.96) 85%)",
+            backdropFilter: "blur(1px)",
+            WebkitBackdropFilter: "blur(1px)",
+            pointerEvents: "none",
+          }}
+        />
+      </div>
+      <div className="mt-7 flex flex-col sm:flex-row items-start gap-3">
+        <BtnSolid href="https://app.coinsiglieri.com">
+          Open Intelligence <ArrowRight size={16} />
+        </BtnSolid>
+        <BtnGhost to="/advertise">See pricing</BtnGhost>
+      </div>
+    </section>
+  );
+}
+
 function ProductsSection() {
   return (
     <section className="container-x py-24">
@@ -348,92 +480,57 @@ function ProductsSection() {
           Two products. Both live.
         </h2>
       </div>
-      <div
-        className="grid grid-cols-1 lg:grid-cols-2 gap-px"
-        style={{ background: "rgba(255,255,255,0.07)" }}
-      >
-        <C0insiglieriCard />
-        <Ax0nCard />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <ProductCard
+          glow="0 0 40px rgba(24,180,212,0.15)"
+          border="0.5px solid rgba(24,180,212,0.3)"
+          wordmark={<>C<span style={{ color: "#18b4d4" }}>0</span>insiglieri</>}
+          badge="LIVE · $699/MO"
+          badgeColor="#18b4d4"
+          heading="Intelligence for EU exchange operators."
+          body="Score deltas across 60+ venues. PoR monitoring. MiCAR compliance tracking. N0VA signal layer. One dashboard, every signal that matters."
+          features={C0_BULLETS}
+          featureColor="#0dbe82"
+          cta={<BtnSolid href="https://app.coinsiglieri.com">Open dashboard <ArrowRight size={16} /></BtnSolid>}
+        />
+        <ProductCard
+          glow="0 0 40px rgba(245,158,11,0.15)"
+          border="0.5px solid rgba(245,158,11,0.3)"
+          wordmark={<>Ax<span style={{ color: "#f59e0b" }}>0</span>n</>}
+          badge="IN DEV · Q4 2026"
+          badgeColor="#f59e0b"
+          heading="Financial infrastructure for the AI agent economy."
+          body="The protocol layer connecting AI agents to financial markets. One interface, every execution rail. Built for the species that trades at machine speed."
+          features={AX0N_BULLETS}
+          featureColor="#f59e0b"
+          cta={<BtnGhost color="#f59e0b" hoverColor="#fbbf24">Join the waitlist <ArrowRight size={16} /></BtnGhost>}
+        />
       </div>
     </section>
   );
 }
 
-function C0insiglieriCard() {
+function ProductCard({ glow, border, wordmark, badge, badgeColor, heading, body, features, featureColor, cta }) {
   return (
-    <div className="bg-bg p-8">
-      <div className="flex items-center gap-2">
-        <Badge tone="cyan">Live</Badge>
-        <Badge tone="muted">$699 / mo</Badge>
-      </div>
-      <h3 className="mt-5 text-[28px] font-semibold tracking-tight">
-        C<span className="text-cyan">0</span>insiglieri
-      </h3>
-      <p className="mt-3 text-[14px] text-muted leading-relaxed max-w-md">
-        The live intelligence dashboard for EU exchange operators — score deltas, competitor
-        moves, PoR updates, and license shifts.
-      </p>
-      <ul className="mt-6 space-y-2">
-        {C0_BULLETS.map((b) => (
-          <li key={b} className="flex items-start gap-2 text-[13px] text-txt/90">
-            <CheckCircle2 size={14} className="text-cyan shrink-0 mt-[2px]" /> {b}
-          </li>
-        ))}
-      </ul>
-      <a
-        href="https://app.coinsiglieri.com"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="btn-cyan mt-7"
+    <div style={{ background: "#0f1422", border, borderRadius: 3, padding: 32, boxShadow: glow }}>
+      <span
+        className="font-mono text-[10px] uppercase tracking-widest px-2 py-[3px]"
+        style={{ color: badgeColor, background: `${badgeColor}1f`, borderRadius: 3 }}
       >
-        Open dashboard <ArrowUpRight size={14} />
-      </a>
-    </div>
-  );
-}
-
-function Ax0nCard() {
-  return (
-    <div className="bg-bg p-8">
-      <div className="flex items-center gap-2">
-        <Badge tone="amber">In Dev</Badge>
-        <Badge tone="muted">Node free / Link $99 / Flux $499</Badge>
-      </div>
-      <h3 className="mt-5 text-[28px] font-semibold tracking-tight">
-        Ax<span className="text-amber">0</span>n
-      </h3>
-      <p className="mt-3 text-[14px] text-muted leading-relaxed max-w-md">
-        The signal engine for EU crypto operators — alerting on the deltas that actually move a
-        leaderboard position.
-      </p>
+        {badge}
+      </span>
+      <h3 className="mt-5 text-[28px] font-semibold tracking-tight">{wordmark}</h3>
+      <p className="mt-2 text-[18px] font-semibold tracking-tight text-txt">{heading}</p>
+      <p className="mt-3 text-[14px] leading-relaxed max-w-md" style={{ color: "rgba(255,255,255,0.6)" }}>{body}</p>
       <ul className="mt-6 space-y-2">
-        {AX0N_BULLETS.map((b) => (
-          <li key={b} className="flex items-start gap-2 text-[13px] text-txt/90">
-            <CheckCircle2 size={14} className="text-amber shrink-0 mt-[2px]" /> {b}
+        {features.map((f) => (
+          <li key={f} className="flex items-start gap-2 text-[13px] text-txt/90">
+            <CheckCircle2 size={14} style={{ color: featureColor }} className="shrink-0 mt-[2px]" /> {f}
           </li>
         ))}
       </ul>
-      <button className="btn-outline mt-7">
-        Join the waitlist <ArrowRight size={14} />
-      </button>
+      <div className="mt-7">{cta}</div>
     </div>
-  );
-}
-
-function CitedBySection() {
-  return (
-    <section className="hairline-t hairline-b">
-      <div className="container-x py-14">
-        <Eyebrow color="text-muted">As cited by</Eyebrow>
-        <div className="mt-6 flex flex-wrap gap-x-10 gap-y-4 items-center">
-          {CITED_BY.map((c) => (
-            <span key={c} className="font-mono text-[15px] text-muted hover:text-txt transition-colors">
-              {c}
-            </span>
-          ))}
-        </div>
-      </div>
-    </section>
   );
 }
 
@@ -458,7 +555,7 @@ function ServicesSection() {
           >
             <Icon size={20} className="text-emerald" />
             <h3 className="mt-4 font-mono text-[12px] uppercase tracking-widest text-txt">{title}</h3>
-            <p className="mt-2 text-[13px] text-muted leading-relaxed">{desc}</p>
+            <p className="mt-2 text-[14px] leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>{desc}</p>
             <Link
               to="/advertise#contact"
               className="mt-5 inline-flex items-center gap-1 font-mono text-[11px] uppercase tracking-widest text-cyan hover:text-emerald transition-colors"
