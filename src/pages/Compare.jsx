@@ -22,7 +22,7 @@ const TABS = [
 const SIDEBAR = [
   { id: "overview", label: "Overview" },
   { id: "top-exchanges", label: "Top" },
-  { id: "comparison", label: "Table" },
+  { id: "comparison", label: "Comparison" },
   { id: "reviews", label: "Reviews" },
   { id: "methodology", label: "Method" },
 ];
@@ -71,7 +71,7 @@ export default function Compare() {
     <div className="container-x pt-12 pb-24">
       <ComparisonHero />
       <TrustBand />
-      <div className="mt-16 pt-[120px] grid grid-cols-1 xl:grid-cols-[120px_1fr] gap-12">
+      <div className="mt-12 grid grid-cols-1 xl:grid-cols-[120px_1fr] gap-12">
         <Sidebar active={active} />
         <div>
           <TopExchangesSection
@@ -108,7 +108,7 @@ function ComparisonHero() {
 function TrustBand() {
   return (
     <motion.section
-      className="mt-12 grid grid-cols-2 lg:grid-cols-4 gap-px"
+      className="mt-20 grid grid-cols-2 lg:grid-cols-4 gap-px"
       style={{ background: "rgba(255,255,255,0.07)", borderRadius: 3 }}
       variants={{ visible: { transition: { staggerChildren: 0.08 } } }}
       initial="hidden"
@@ -211,7 +211,7 @@ function FeaturedCard({ exchange }) {
   return (
     <div
       ref={ref}
-      className="mt-10 p-7 grid grid-cols-1 lg:grid-cols-[1fr_1.2fr_1fr] gap-8"
+      className="mt-10 p-7 flex flex-col gap-6"
       style={{
         background: "#0f1422",
         borderLeft: "3px solid #a3e635",
@@ -221,8 +221,17 @@ function FeaturedCard({ exchange }) {
       }}
     >
       <FeaturedIdentity exchange={exchange} />
-      <FeaturedBreakdown exchange={exchange} shown={shown} />
-      <FeaturedMetrics exchange={exchange} shown={shown} />
+      <p className="text-[15px] leading-relaxed" style={{ color: "rgba(255,255,255,0.72)" }}>
+        {exchange.proSummary}
+      </p>
+      <div className="flex justify-center">
+        <ScoreCircle value={exchange.score} size={72} shown={shown} />
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-[38fr_62fr] gap-8 items-center">
+        <FeaturedBars exchange={exchange} shown={shown} />
+        <RadarBreakdown exchange={exchange} shown={shown} />
+      </div>
+      <FeaturedFooter exchange={exchange} />
     </div>
   );
 }
@@ -231,11 +240,11 @@ function FeaturedIdentity({ exchange }) {
   return (
     <div>
       <div className="flex items-baseline gap-3">
-        <span className="font-mono text-[14px] text-muted">#{exchange.rank}</span>
+        <span className="font-mono text-[14px]" style={{ color: "rgba(255,255,255,0.6)" }}>#{exchange.rank}</span>
         <ExchangeLogo domain={exchange.domain} name={exchange.name} size={48} />
         <div>
           <div className="text-[20px] font-semibold leading-none">{exchange.name}</div>
-          <div className="text-[12px] text-muted mt-1">{exchange.bestFor}</div>
+          <div className="text-[12px] mt-1" style={{ color: "rgba(255,255,255,0.6)" }}>{exchange.bestFor}</div>
         </div>
       </div>
       <div className="mt-5 flex flex-wrap gap-2">
@@ -243,53 +252,46 @@ function FeaturedIdentity({ exchange }) {
         {exchange.micarLicensed && <Badge tone="emerald">✓ MiCAR</Badge>}
         {exchange.hasCryptoCard && <Badge tone="cyan">Card</Badge>}
       </div>
-      <p className="mt-5 text-[13px] text-muted leading-relaxed line-clamp-3">
-        {exchange.proSummary}
-      </p>
     </div>
   );
 }
 
-function FeaturedBreakdown({ exchange, shown }) {
+function FeaturedBars({ exchange, shown }) {
   const entries = Object.entries(exchange.scoreBreakdown);
   return (
-    <div className="flex items-center gap-6">
-      <ScoreCircle value={exchange.score} size={72} shown={shown} />
-      <div className="flex-1 space-y-2">
-        {entries.map(([key, value], idx) => (
-          <div key={key} className="flex items-center gap-3">
-            <span className="font-mono text-[10px] uppercase tracking-widest text-muted w-24">
-              {BREAKDOWN_LABELS[key] ?? key}
-            </span>
-            <div className="flex-1">
-              <MiniBar value={value} color={BAR_GRADIENT} delay={idx * 0.06} shown={shown} />
-            </div>
-            <span className="font-mono text-[11px] text-muted w-6 text-right">{value}</span>
+    <div className="space-y-2">
+      {entries.map(([key, value], idx) => (
+        <div key={key} className="flex items-center gap-3">
+          <span className="font-mono text-[10px] uppercase tracking-widest w-24" style={{ color: "rgba(255,255,255,0.6)" }}>
+            {BREAKDOWN_LABELS[key] ?? key}
+          </span>
+          <div className="flex-1">
+            <MiniBar value={value} color={BAR_GRADIENT} delay={idx * 0.06} shown={shown} />
           </div>
-        ))}
-      </div>
+          <span className="font-mono text-[11px] w-6 text-right" style={{ color: "rgba(255,255,255,0.6)" }}>{value}</span>
+        </div>
+      ))}
     </div>
   );
 }
 
-function FeaturedMetrics({ exchange, shown }) {
+function FeaturedFooter({ exchange }) {
   return (
-    <div className="flex flex-col gap-3">
-      <div className="grid grid-cols-3 gap-3">
+    <div className="flex flex-col gap-3 hairline-t pt-5">
+      <div className="grid grid-cols-3 gap-3 max-w-md">
         <CompactVital label="24h Vol" value={exchange.vol24h} delta={exchange.vol24hDelta} />
         <CompactVital label="BTC Spread" value={`${exchange.spreadBTC.toFixed(3)}%`} />
         <CompactVital label="Uptime" value={`${exchange.uptime90d}%`} />
       </div>
-      <RadarBreakdown exchange={exchange} shown={shown} />
       <a
         href={exchange.affiliateUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="btn-cyan mt-2"
+        className="btn-cyan mt-2 self-start"
       >
         Visit {exchange.name} <ArrowUpRight size={14} />
       </a>
-      <p className="text-[10px] text-muted font-mono">
+      <p className="text-[10px] font-mono" style={{ color: "rgba(255,255,255,0.6)" }}>
         Sponsored by {exchange.name} · CTR 24h: 3.4%
       </p>
     </div>
@@ -342,7 +344,7 @@ function RadarBreakdown({ exchange, shown }) {
 
   return (
     <div
-      style={{ position: "relative", width: "100%", height: 220 }}
+      style={{ position: "relative", width: "100%", height: 340 }}
       onMouseMove={handleMove}
       onMouseLeave={handleLeave}
     >
@@ -569,7 +571,7 @@ function BoolCheck({ on }) {
 }
 
 function ReviewsSection({ list }) {
-  const top = list.slice(0, 6);
+  const top = list.slice(0, 7);
   return (
     <section id="reviews" className="mt-20 scroll-mt-20">
       <Eyebrow color="text-emerald">Exchange Reviews</Eyebrow>

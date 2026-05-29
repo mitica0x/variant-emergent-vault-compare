@@ -35,7 +35,7 @@ module.exports = {
         lime: "#70a848",
         amber: "#D4A853",
         txt: "#e4e4e7",
-        muted: "#71717a",
+        muted: "#a1a1aa",
         dim: "#3f3f46",
         background: "#080b16",
         foreground: "#e4e4e7",

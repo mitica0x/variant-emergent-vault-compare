@@ -155,7 +155,7 @@ export function ExchangeLogo({ domain, name, size = 24 }) {
       src={`https://logo.clearbit.com/${domain}`}
       onError={() => setErr(true)}
       alt={name}
-      style={{ width: size, height: size, borderRadius: 3, background: "#fff" }}
+      style={{ width: size, height: size, borderRadius: 6, background: "#fff", objectFit: "contain" }}
     />
   );
 }
