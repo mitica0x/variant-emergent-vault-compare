@@ -95,6 +95,8 @@ export default function ThreeHero({ className = "", style }) {
       purpleLight.color.setHSL(hue, 0.9, 0.5);
       emeraldLight.position.x = Math.cos(t*0.35 + Math.PI*0.7)*-2.5;
       emeraldLight.position.y = Math.sin(t*0.25 + Math.PI*0.7)*1.5;
+      emeraldLight.color.setHSL(0.214 + (Math.sin(t * 0.3 + Math.PI * 2 / 3) * 0.5 + 0.5) * 0.314, 0.9, 0.5);
+      cyanLight.color.setHSL(0.214 + (Math.sin(t * 0.3 + Math.PI * 4 / 3) * 0.5 + 0.5) * 0.314, 0.9, 0.5);
       renderer.render(scene, camera);
     };
     animate();

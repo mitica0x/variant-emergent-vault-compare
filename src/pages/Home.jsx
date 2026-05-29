@@ -144,7 +144,7 @@ function Hero() {
       <GlobeMenu onHoverChange={setIsGlobeHovered} />
 
       {/* Text block — absolute left overlay */}
-      <div className="absolute bottom-0 left-0 right-0 p-6 z-20 text-left md:top-[18%] md:bottom-[14%] md:right-auto md:left-0 md:p-0 md:pl-20 md:max-w-[600px] md:flex md:flex-col md:justify-between">
+      <div className="absolute bottom-0 left-0 right-0 p-6 z-20 text-left md:top-[18%] md:right-auto md:left-0 md:p-0 md:pl-20 md:max-w-[600px] md:flex md:flex-col md:gap-8">
         {/* TOP group — anchored near the globe's top edge */}
         <div>
           <motion.div
@@ -201,11 +201,11 @@ function Hero() {
             </BtnGhost>
           </motion.div>
         </div>
-      </div>
 
-      {/* Stat band — pinned bottom-left (desktop) */}
-      <div className="hidden md:block absolute bottom-12 left-20 z-20 w-[600px]">
-        <HeroMetrics />
+        {/* Stats band — third child inside the text block (below the CTAs) */}
+        <div className="hidden md:block w-full">
+          <HeroMetrics />
+        </div>
       </div>
     </section>
   );
@@ -217,7 +217,7 @@ function HeroMetrics() {
       initial={FADE_IN.initial}
       animate={FADE_IN.animate}
       transition={softTransition(0.6, 0.7)}
-      className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-px w-full max-w-3xl"
+      className="grid grid-cols-2 md:grid-cols-4 gap-px w-full max-w-3xl"
       style={{ background: "rgba(255,255,255,0.07)", borderRadius: 3 }}
     >
       {HERO_METRICS.map((m) => (
