@@ -123,7 +123,7 @@ function ArticleBody({ top5 }) {
       <p>
         That is why MiCAR licensure is no longer one feature among many. It is now a gating
         condition for EU market access. Our 7-pillar scoring model weights it accordingly:
-        Compliance & Licensing is 20% of the total.
+        Compliance is 16% of the total.
       </p>
 
       <h2 id="top-5" className="text-[28px] font-bold tracking-tight scroll-mt-24 pt-4">
@@ -137,9 +137,9 @@ function ArticleBody({ top5 }) {
         How we scored
       </h2>
       <p>
-        Every exchange in this leaderboard is rescored every 30 days against five weighted
-        pillars: Security & Custody (30%), Proof of Reserves (25%), Compliance & Licensing (20%),
-        Liquidity & Execution (15%), and Track Record (10%). The weights are public, the inputs
+        Every exchange in this leaderboard is rescored every 30 days against seven weighted
+        pillars: Custody & Security (20%), Liquidity (20%), Compliance (16%), Transparency (15%),
+        Product Depth (12%), Track Record (10%), and Execution (7%). The weights are public, the inputs
         are documented, and featured placement has no effect on the resulting score.
       </p>
       <p>
