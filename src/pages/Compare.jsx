@@ -41,15 +41,6 @@ const TRUST_ITEMS = [
   { icon: FileCheck2, title: "Editorial independence", desc: "Scoring boundary disclosed. Always." },
 ];
 
-const BREAKDOWN_LABELS = {
-  security: "Security",
-  compliance: "Compliance",
-  liquidity: "Liquidity",
-  por: "PoR",
-  trackRecord: "Track Record",
-  productDepth: "Product",
-};
-
 // ---- Main page ----
 
 export default function Compare() {
@@ -211,7 +202,7 @@ function FeaturedCard({ exchange }) {
   return (
     <div
       ref={ref}
-      className="mt-10 p-7 flex flex-col gap-6"
+      className="mt-10 p-7 grid grid-cols-1 lg:grid-cols-[1fr_1.1fr_1.3fr] gap-8"
       style={{
         background: "#0f1422",
         borderLeft: "3px solid #a3e635",
@@ -220,23 +211,14 @@ function FeaturedCard({ exchange }) {
         borderRadius: 3,
       }}
     >
-      <FeaturedIdentity exchange={exchange} />
-      <p className="text-[15px] leading-relaxed" style={{ color: "rgba(255,255,255,0.72)" }}>
-        {exchange.proSummary}
-      </p>
-      <div className="flex justify-center">
-        <ScoreCircle value={exchange.score} size={72} shown={shown} />
-      </div>
-      <div className="grid grid-cols-1 lg:grid-cols-[38fr_62fr] gap-8 items-center">
-        <FeaturedBars exchange={exchange} shown={shown} />
-        <RadarBreakdown exchange={exchange} shown={shown} />
-      </div>
-      <FeaturedFooter exchange={exchange} />
+      <FeaturedIdentity exchange={exchange} shown={shown} />
+      <FeaturedBars exchange={exchange} shown={shown} />
+      <FeaturedMetrics exchange={exchange} shown={shown} />
     </div>
   );
 }
 
-function FeaturedIdentity({ exchange }) {
+function FeaturedIdentity({ exchange, shown }) {
   return (
     <div>
       <div className="flex items-baseline gap-3">
@@ -252,37 +234,57 @@ function FeaturedIdentity({ exchange }) {
         {exchange.micarLicensed && <Badge tone="emerald">✓ MiCAR</Badge>}
         {exchange.hasCryptoCard && <Badge tone="cyan">Card</Badge>}
       </div>
+      <p className="mt-5 text-[13px] leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>
+        {exchange.proSummary}
+      </p>
+      <div className="mt-6 flex justify-center">
+        <ScoreCircle value={exchange.score} size={72} shown={shown} />
+      </div>
     </div>
   );
 }
+
+const FEATURED_PILLARS = [
+  { label: "Custody", key: "security" },
+  { label: "Liquidity", key: "liquidity" },
+  { label: "Compliance", key: "compliance" },
+  { label: "Transparency", key: "por", override: 88 },
+  { label: "Product Depth", key: "productDepth" },
+  { label: "Track Record", key: "trackRecord" },
+  { label: "Execution", key: "execution", override: 90 },
+];
 
 function FeaturedBars({ exchange, shown }) {
-  const entries = Object.entries(exchange.scoreBreakdown);
+  const bd = exchange.scoreBreakdown || {};
   return (
-    <div className="space-y-2">
-      {entries.map(([key, value], idx) => (
-        <div key={key} className="flex items-center gap-3">
-          <span className="font-mono text-[10px] uppercase tracking-widest w-24" style={{ color: "rgba(255,255,255,0.6)" }}>
-            {BREAKDOWN_LABELS[key] ?? key}
-          </span>
-          <div className="flex-1">
-            <MiniBar value={value} color={BAR_GRADIENT} delay={idx * 0.06} shown={shown} />
+    <div className="space-y-2 -ml-3">
+      {FEATURED_PILLARS.map((p, idx) => {
+        const value = p.override ?? bd[p.key] ?? 80;
+        return (
+          <div key={p.label} className="flex items-center gap-3">
+            <span className="font-mono text-[10px] uppercase tracking-widest w-28" style={{ color: "rgba(255,255,255,0.6)" }}>
+              {p.label}
+            </span>
+            <div className="flex-1">
+              <MiniBar value={value} color={BAR_GRADIENT} delay={idx * 0.06} shown={shown} />
+            </div>
+            <span className="font-mono text-[11px] w-6 text-right" style={{ color: "rgba(255,255,255,0.6)" }}>{value}</span>
           </div>
-          <span className="font-mono text-[11px] w-6 text-right" style={{ color: "rgba(255,255,255,0.6)" }}>{value}</span>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
 
-function FeaturedFooter({ exchange }) {
+function FeaturedMetrics({ exchange, shown }) {
   return (
-    <div className="flex flex-col gap-3 hairline-t pt-5">
-      <div className="grid grid-cols-3 gap-3 max-w-md">
+    <div className="flex flex-col gap-3">
+      <div className="grid grid-cols-3 gap-3">
         <CompactVital label="24h Vol" value={exchange.vol24h} delta={exchange.vol24hDelta} />
         <CompactVital label="BTC Spread" value={`${exchange.spreadBTC.toFixed(3)}%`} />
         <CompactVital label="Uptime" value={`${exchange.uptime90d}%`} />
       </div>
+      <RadarBreakdown exchange={exchange} shown={shown} />
       <a
         href={exchange.affiliateUrl}
         target="_blank"
@@ -320,10 +322,10 @@ function RadarBreakdown({ exchange, shown }) {
     { axis: "Custody", value: bd.security ?? 80 },
     { axis: "Liquidity", value: bd.liquidity ?? 80 },
     { axis: "Compliance", value: bd.compliance ?? 80 },
-    { axis: "Transparency", value: bd.por ?? 80 },
+    { axis: "Transparency", value: 88 },
     { axis: "Product", value: bd.productDepth ?? 80 },
     { axis: "Track Rec.", value: bd.trackRecord ?? 80 },
-    { axis: "Execution", value: bd.execution ?? 82 },
+    { axis: "Execution", value: bd.execution ?? 90 },
   ];
 
   const rx = useMotionValue(0);
@@ -344,7 +346,7 @@ function RadarBreakdown({ exchange, shown }) {
 
   return (
     <div
-      style={{ position: "relative", width: "100%", height: 340 }}
+      style={{ position: "relative", width: "100%", height: 280 }}
       onMouseMove={handleMove}
       onMouseLeave={handleLeave}
     >
