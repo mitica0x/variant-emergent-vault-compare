@@ -67,81 +67,72 @@ export default function Home() {
 
 function Hero() {
   return (
-    <section className="relative bg-radial-glow" style={{ minHeight: "calc(100vh - 64px)" }}>
+    <section className="relative bg-radial-glow min-h-screen overflow-hidden">
       <ParticleField count={50} />
-      <div className="container-x relative z-10 flex flex-col lg:flex-row items-stretch gap-10 lg:gap-12 pt-20 pb-24 min-h-screen">
-        {/* Left column — text */}
-        <div className="w-full lg:flex-1 lg:max-w-[600px] lg:self-center flex flex-col items-start text-left">
-          <motion.div
-            initial={FADE_IN_UP_BIG.initial}
-            animate={FADE_IN_UP_BIG.animate}
-            transition={softTransition(0, 0.7)}
+
+      {/* Globe — large sphere anchored right, left edge bleeding into center */}
+      <ThreeHero className="absolute top-0 left-0 w-full h-[60%] z-[1] md:top-1/2 md:left-[72%] md:w-[70%] md:h-[130%] md:[transform:translate(-50%,-50%)]" />
+
+      {/* Text block — absolute left overlay */}
+      <div className="absolute bottom-0 left-0 right-0 p-6 z-20 text-left md:top-1/2 md:bottom-auto md:right-auto md:left-0 md:p-0 md:pl-20 md:max-w-[600px] md:[transform:translateY(-50%)]">
+        <motion.div
+          initial={FADE_IN_UP_BIG.initial}
+          animate={FADE_IN_UP_BIG.animate}
+          transition={softTransition(0, 0.7)}
+        >
+          <Eyebrow color="text-cyan">AI Infrastructure · Market Intelligence</Eyebrow>
+        </motion.div>
+
+        <motion.h1
+          initial={FADE_IN_UP_BIG.initial}
+          animate={FADE_IN_UP_BIG.animate}
+          transition={softTransition(0.08, 0.8)}
+          className="mt-6 text-[48px] sm:text-[60px] lg:text-[88px] font-bold tracking-tight leading-[1.0]"
+        >
+          Building for<br />what comes next.
+        </motion.h1>
+
+        <motion.p
+          initial={FADE_IN_UP_BIG.initial}
+          animate={FADE_IN_UP_BIG.animate}
+          transition={softTransition(0.16, 0.8)}
+          className="mt-6 max-w-xl text-[16px] sm:text-[18px] text-muted leading-relaxed"
+        >
+          Everything in financial markets was built for humans.
+        </motion.p>
+
+        <motion.div
+          initial={FADE_IN_UP_BIG.initial}
+          animate={FADE_IN_UP_BIG.animate}
+          transition={softTransition(0.2, 0.8)}
+          className="mt-6 font-mono text-[10px] uppercase tracking-widest text-muted"
+        >
+          Crypto · Web3 · AI · In the market since 2017
+        </motion.div>
+
+        <motion.div
+          initial={FADE_IN_UP_BIG.initial}
+          animate={FADE_IN_UP_BIG.animate}
+          transition={softTransition(0.24, 0.8)}
+          className="mt-10 flex flex-col sm:flex-row items-start gap-3"
+        >
+          <a
+            href="https://app.coinsiglieri.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-primary"
           >
-            <Eyebrow color="text-cyan">AI Infrastructure · Market Intelligence</Eyebrow>
-          </motion.div>
+            Open the dashboard <ArrowRight size={16} />
+          </a>
+          <Link to="/compare" className="btn-outline">
+            See the scores <ArrowUpRight size={14} />
+          </Link>
+        </motion.div>
+      </div>
 
-          <motion.h1
-            initial={FADE_IN_UP_BIG.initial}
-            animate={FADE_IN_UP_BIG.animate}
-            transition={softTransition(0.08, 0.8)}
-            className="mt-6 text-[48px] sm:text-[60px] lg:text-[96px] font-bold tracking-tight leading-[1.0]"
-          >
-            Building for what comes next.
-          </motion.h1>
-
-          <motion.p
-            initial={FADE_IN_UP_BIG.initial}
-            animate={FADE_IN_UP_BIG.animate}
-            transition={softTransition(0.16, 0.8)}
-            className="mt-6 max-w-xl text-[16px] sm:text-[18px] text-muted leading-relaxed"
-          >
-            Everything in financial markets was built for humans.
-          </motion.p>
-
-          <motion.div
-            initial={FADE_IN_UP_BIG.initial}
-            animate={FADE_IN_UP_BIG.animate}
-            transition={softTransition(0.2, 0.8)}
-            className="mt-6 font-mono text-[10px] uppercase tracking-widest text-muted"
-          >
-            Crypto · Web3 · AI · In the market since 2017
-          </motion.div>
-
-          <motion.div
-            initial={FADE_IN_UP_BIG.initial}
-            animate={FADE_IN_UP_BIG.animate}
-            transition={softTransition(0.24, 0.8)}
-            className="mt-10 flex flex-col sm:flex-row items-start gap-3"
-          >
-            <a
-              href="https://app.coinsiglieri.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-primary"
-            >
-              Open the dashboard <ArrowRight size={16} />
-            </a>
-            <Link to="/compare" className="btn-outline">
-              See the scores <ArrowUpRight size={14} />
-            </Link>
-          </motion.div>
-
-          <HeroMetrics />
-        </div>
-
-        {/* Right column — globe (fully visible, interactive) */}
-        <div className="relative overflow-hidden w-full lg:w-1/2 h-[60vw] min-h-[300px] lg:h-[calc(100vh-160px)] lg:min-h-[600px]">
-          <ThreeHero
-            style={{
-              position: "relative",
-              width: "100%",
-              height: "100%",
-              zIndex: 0,
-              opacity: 0.95,
-              pointerEvents: "auto",
-            }}
-          />
-        </div>
+      {/* Stat band — pinned bottom-left (desktop) */}
+      <div className="hidden md:block absolute bottom-12 left-20 z-20 w-[600px]">
+        <HeroMetrics />
       </div>
     </section>
   );
