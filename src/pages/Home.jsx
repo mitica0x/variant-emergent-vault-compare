@@ -69,12 +69,9 @@ function Hero() {
   return (
     <section className="relative bg-radial-glow" style={{ minHeight: "calc(100vh - 64px)" }}>
       <ParticleField count={50} />
-      <div
-        className="container-x relative z-10 flex flex-col lg:flex-row items-start lg:items-center gap-10 lg:gap-12 pt-20 pb-24"
-        style={{ minHeight: "calc(100vh - 64px)" }}
-      >
+      <div className="container-x relative z-10 flex flex-col lg:flex-row items-stretch gap-10 lg:gap-12 pt-20 pb-24 min-h-screen">
         {/* Left column — text */}
-        <div className="w-full lg:flex-1 lg:max-w-[600px] flex flex-col items-start text-left">
+        <div className="w-full lg:flex-1 lg:max-w-[600px] lg:self-center flex flex-col items-start text-left">
           <motion.div
             initial={FADE_IN_UP_BIG.initial}
             animate={FADE_IN_UP_BIG.animate}
@@ -87,7 +84,7 @@ function Hero() {
             initial={FADE_IN_UP_BIG.initial}
             animate={FADE_IN_UP_BIG.animate}
             transition={softTransition(0.08, 0.8)}
-            className="mt-6 text-[48px] sm:text-[60px] lg:text-[80px] font-bold tracking-tight leading-[1.0]"
+            className="mt-6 text-[48px] sm:text-[60px] lg:text-[96px] font-bold tracking-tight leading-[1.0]"
           >
             Building for what comes next.
           </motion.h1>
@@ -133,7 +130,7 @@ function Hero() {
         </div>
 
         {/* Right column — globe (fully visible, interactive) */}
-        <div className="w-full lg:flex-1 h-[360px] sm:h-[440px] lg:h-[560px]">
+        <div className="relative overflow-hidden w-full lg:w-1/2 h-[60vw] min-h-[300px] lg:h-[calc(100vh-160px)] lg:min-h-[600px]">
           <ThreeHero
             style={{
               position: "relative",
