@@ -28,6 +28,8 @@ const SIDEBAR = [
 const BAR_GRADIENT = "linear-gradient(90deg, #18b4d4 0%, #0dbe82 100%)";
 
 const SPRING = "cubic-bezier(0.34, 1.56, 0.64, 1)";
+
+const WEB3_NAMES = ["Binance", "Bybit", "OKX", "Coinbase"];
 const SIDEBAR_IDS = SIDEBAR.map((s) => s.id);
 
 const TRUST_ITEMS = [
@@ -194,14 +196,17 @@ function TopExchangesSection({ tab, setTab, featured, rest }) {
       </motion.h2>
       <TabBar tab={tab} setTab={setTab} />
       {showFeatured && <FeaturedCard exchange={featured} />}
-      <RankedList items={rest} />
+      <RankedList items={rest} tab={tab} />
     </div>
   );
 }
 
 function FeaturedCard({ exchange }) {
+  const ref = useRef(null);
+  const shown = useInView(ref, { once: true, amount: 0.15 });
   return (
     <div
+      ref={ref}
       className="mt-10 p-7 grid grid-cols-1 lg:grid-cols-[1fr_1.2fr_1fr] gap-8"
       style={{
         background: "#0f1422",
@@ -212,7 +217,7 @@ function FeaturedCard({ exchange }) {
       }}
     >
       <FeaturedIdentity exchange={exchange} />
-      <FeaturedBreakdown exchange={exchange} />
+      <FeaturedBreakdown exchange={exchange} shown={shown} />
       <FeaturedMetrics exchange={exchange} />
     </div>
   );
@@ -241,11 +246,11 @@ function FeaturedIdentity({ exchange }) {
   );
 }
 
-function FeaturedBreakdown({ exchange }) {
+function FeaturedBreakdown({ exchange, shown }) {
   const entries = Object.entries(exchange.scoreBreakdown);
   return (
     <div className="flex items-center gap-6">
-      <ScoreCircle value={exchange.score} size={72} />
+      <ScoreCircle value={exchange.score} size={72} shown={shown} />
       <div className="flex-1 space-y-2">
         {entries.map(([key, value], idx) => (
           <div key={key} className="flex items-center gap-3">
@@ -253,7 +258,7 @@ function FeaturedBreakdown({ exchange }) {
               {BREAKDOWN_LABELS[key] ?? key}
             </span>
             <div className="flex-1">
-              <MiniBar value={value} color={BAR_GRADIENT} delay={idx * 0.06} />
+              <MiniBar value={value} color={BAR_GRADIENT} delay={idx * 0.06} shown={shown} />
             </div>
             <span className="font-mono text-[11px] text-muted w-6 text-right">{value}</span>
           </div>
@@ -302,11 +307,44 @@ function Metric({ label, value, delta }) {
   );
 }
 
-function RankedList({ items }) {
+function DexDivider() {
+  return (
+    <div
+      className="font-mono"
+      style={{
+        borderTop: "0.5px solid rgba(255,255,255,0.08)",
+        padding: "12px 14px",
+        fontSize: 10,
+        letterSpacing: "2px",
+        color: "rgba(255,255,255,0.3)",
+      }}
+    >
+      DECENTRALIZED · ON-CHAIN
+    </div>
+  );
+}
+
+function RankedList({ items, tab }) {
+  if (tab !== "all") {
+    return (
+      <div className="mt-8 hairline" style={{ borderRadius: 3 }}>
+        {items.map((e, i) => (
+          <RankedRow key={e.id} exchange={e} isLast={i === items.length - 1} />
+        ))}
+      </div>
+    );
+  }
+  const cex = items.filter((e) => !e.type.includes("dex"));
+  const dex = items.filter((e) => e.type.includes("dex"));
+  const showDivider = cex.length > 0 && dex.length > 0;
   return (
     <div className="mt-8 hairline" style={{ borderRadius: 3 }}>
-      {items.map((e, i) => (
-        <RankedRow key={e.id} exchange={e} isLast={i === items.length - 1} />
+      {cex.map((e, i) => (
+        <RankedRow key={e.id} exchange={e} isLast={dex.length === 0 && i === cex.length - 1} />
+      ))}
+      {showDivider && <DexDivider />}
+      {dex.map((e, i) => (
+        <RankedRow key={e.id} exchange={e} isLast={i === dex.length - 1} />
       ))}
     </div>
   );
@@ -333,6 +371,22 @@ function RankedRow({ exchange, isLast }) {
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <span className="text-[14px] font-semibold">{exchange.name}</span>
+          {WEB3_NAMES.includes(exchange.name) && (
+            <span
+              style={{
+                background: "rgba(163,230,53,0.10)",
+                color: "#a3e635",
+                border: "0.5px solid rgba(163,230,53,0.4)",
+                borderRadius: 3,
+                fontSize: 9,
+                fontFamily: "monospace",
+                fontWeight: 700,
+                padding: "2px 6px",
+              }}
+            >
+              WEB3
+            </span>
+          )}
           {exchange.micarLicensed && <Badge tone="emerald">MiCAR</Badge>}
           {exchange.type.includes("dex") && <Badge tone="cyan">DEX</Badge>}
         </div>

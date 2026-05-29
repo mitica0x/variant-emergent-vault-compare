@@ -30,15 +30,16 @@ export function Badge({ children, tone = "emerald" }) {
   );
 }
 
-export function MiniBar({ value, color = "#0dbe82", delay = 0 }) {
+export function MiniBar({ value, color = "#0dbe82", delay = 0, shown }) {
   const ref = useRef(null);
-  const shown = useInView(ref, { once: true, amount: 0.2 });
+  const selfShown = useInView(ref, { once: true, amount: 0.2 });
+  const isShown = shown !== undefined ? shown : selfShown;
   return (
     <div ref={ref} className="mini-bar" style={{ width: "100%" }}>
       <span
         style={{
           background: color,
-          width: shown ? `${value}%` : 0,
+          width: isShown ? `${value}%` : 0,
           transition: `width 800ms ${SPRING} ${delay}s`,
         }}
       />
@@ -46,14 +47,16 @@ export function MiniBar({ value, color = "#0dbe82", delay = 0 }) {
   );
 }
 
-export function ScoreCircle({ value, size = 72 }) {
+export function ScoreCircle({ value, size = 72, shown }) {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, amount: 0.2 });
+  const selfInView = useInView(ref, { once: true, amount: 0.2 });
+  const inView = shown !== undefined ? shown : selfInView;
   const color = scoreRingColor(value);
   const stroke = 5;
   const r = size / 2 - stroke / 2;
   const c = 2 * Math.PI * r;
   const offset = inView ? c * (1 - value / 100) : c;
+  const gradId = `ringGrad-${value}`;
   return (
     <div
       ref={ref}
@@ -61,6 +64,13 @@ export function ScoreCircle({ value, size = 72 }) {
       style={{ width: size, height: size }}
     >
       <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
+        <defs>
+          <linearGradient id={gradId} x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#18b4d4" />
+            <stop offset="50%" stopColor="#0dbe82" />
+            <stop offset="100%" stopColor="#a3e635" />
+          </linearGradient>
+        </defs>
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -74,7 +84,7 @@ export function ScoreCircle({ value, size = 72 }) {
           cy={size / 2}
           r={r}
           fill="none"
-          stroke={color}
+          stroke={`url(#${gradId})`}
           strokeWidth={stroke}
           strokeLinecap="round"
           strokeDasharray={c}

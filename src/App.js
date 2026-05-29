@@ -16,13 +16,21 @@ import About from "./pages/About";
 function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => {
-    window.scrollTo(0, 0);
+    setTimeout(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    }, 0);
   }, [pathname]);
   return null;
 }
 
 function App() {
   const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    if (window.history.scrollRestoration) {
+      window.history.scrollRestoration = "manual";
+    }
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  }, []);
   return (
     <div className="App min-h-screen bg-bg text-txt">
       <LoadingScreen isVisible={loading} onComplete={() => setLoading(false)} />
