@@ -12,6 +12,7 @@ import { useScrollSpy } from "../hooks/use-in-view";
 
 const TABS = [
   { id: "all", label: "All Exchanges" },
+  { id: "cefi", label: "CeFi" },
   { id: "spot", label: "Spot" },
   { id: "derivatives", label: "Derivatives" },
   { id: "dex", label: "DEX" },
@@ -56,7 +57,9 @@ export default function Compare() {
 
   const list = useMemo(
     () =>
-      EXCHANGES.filter((e) => e.type.includes(tab)).sort((a, b) => b.score - a.score),
+      EXCHANGES.filter((e) =>
+        tab === "all" ? true : tab === "cefi" ? !e.type.includes("dex") : e.type.includes(tab)
+      ).sort((a, b) => b.score - a.score),
     [tab]
   );
 
@@ -352,7 +355,7 @@ function RankedList({ items, tab }) {
 
 function RankedRow({ exchange, isLast }) {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, amount: 0.2 });
+  const inView = useInView(ref, { once: true, amount: 0.05 });
   const rowDelay = (exchange.rank % 8) * 0.04;
   return (
     <div
