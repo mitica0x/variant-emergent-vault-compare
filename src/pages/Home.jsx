@@ -51,11 +51,13 @@ const AX0N_BULLETS = [
   "Audit trail on every agent decision",
 ];
 
+const CTA_GRADIENT = "linear-gradient(90deg, #0dbe82 0%, #18b4d4 60%, #0dbe82 100%)";
+
 function BtnSolid({ href, to, children, className = "" }) {
   const [hover, setHover] = useState(false);
   const sx = {
-    background: hover ? "#a3e635" : "#0dbe82",
-    color: "#000",
+    backgroundImage: CTA_GRADIENT,
+    color: "#fff",
     fontWeight: 600,
     padding: "10px 18px",
     borderRadius: 3,
@@ -65,15 +67,47 @@ function BtnSolid({ href, to, children, className = "" }) {
     justifyContent: "center",
     gap: 8,
     border: "0.5px solid transparent",
-    transition: "background-color 150ms ease",
+    filter: hover ? "brightness(1.08)" : "none",
+    transition: "filter 150ms ease",
   };
   const h = { onMouseEnter: () => setHover(true), onMouseLeave: () => setHover(false), style: sx, className };
   if (to) return <Link to={to} {...h}>{children}</Link>;
   return <a href={href} target="_blank" rel="noopener noreferrer" {...h}>{children}</a>;
 }
 
-function BtnGhost({ href, to, children, color = "#18b4d4", hoverColor = "#a3e635", className = "" }) {
+function BtnGhost({ href, to, children, color = "#18b4d4", hoverColor = "#a3e635", className = "", gradient = false }) {
   const [hover, setHover] = useState(false);
+  if (gradient) {
+    const gx = {
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 8,
+      padding: "10px 18px",
+      borderRadius: 3,
+      fontWeight: 500,
+      fontSize: 14,
+      border: "0.5px solid transparent",
+      background: `linear-gradient(#080b16, #080b16) padding-box, ${CTA_GRADIENT} border-box`,
+      filter: hover ? "brightness(1.15)" : "none",
+      transition: "filter 150ms ease",
+    };
+    const gtext = {
+      display: "inline-flex",
+      alignItems: "center",
+      gap: 8,
+      backgroundImage: CTA_GRADIENT,
+      WebkitBackgroundClip: "text",
+      backgroundClip: "text",
+      WebkitTextFillColor: "transparent",
+      color: "#18b4d4",
+    };
+    const gh = { onMouseEnter: () => setHover(true), onMouseLeave: () => setHover(false), style: gx, className };
+    const inner = <span style={gtext}>{children}</span>;
+    if (to) return <Link to={to} {...gh}>{inner}</Link>;
+    if (href) return <a href={href} target="_blank" rel="noopener noreferrer" {...gh}>{inner}</a>;
+    return <button {...gh}>{inner}</button>;
+  }
   const sx = {
     background: "transparent",
     color: hover ? hoverColor : color,
@@ -196,7 +230,7 @@ function Hero() {
             <BtnSolid href="https://app.coinsiglieri.com" className="w-full md:w-auto">
               Open the dashboard <ArrowRight size={16} />
             </BtnSolid>
-            <BtnGhost to="/compare" className="w-full md:w-auto">
+            <BtnGhost to="/compare" className="w-full md:w-auto" gradient>
               See the scores <ArrowUpRight size={14} />
             </BtnGhost>
           </motion.div>
@@ -539,7 +573,7 @@ function C0insiglieriTeaser() {
         <BtnSolid href="https://app.coinsiglieri.com">
           Open Intelligence <ArrowRight size={16} />
         </BtnSolid>
-        <BtnGhost to="/advertise">See pricing</BtnGhost>
+        <BtnGhost to="/advertise" gradient>See pricing</BtnGhost>
       </div>
     </section>
   );
