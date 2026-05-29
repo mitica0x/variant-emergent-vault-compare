@@ -10,14 +10,14 @@ import { FADE_IN, FADE_IN_UP_BIG, softTransition } from "../lib/motion";
 import ThreeHero from "../components/ThreeHero";
 
 const HERO_METRICS = [
-  { label: "Exchanges tracked", value: "60+" },
+  { label: "Venues scored", value: "37" },
   { label: "MiCAR licensed", value: "7" },
   { label: "Update cadence", value: "30d" },
   { label: "Scoring pillars", value: "7" },
 ];
 
 const PLATFORM_SURFACES = [
-  { name: "Compare", desc: "The leaderboard nobody paid to be on. 22 venues scored across 7 pillars.", stat: "22 EXCHANGES", to: "/compare", accent: "#18b4d4" },
+  { name: "Compare", desc: "The leaderboard nobody paid to be on. 37 venues scored across 7 pillars.", stat: "37 EXCHANGES", to: "/compare", accent: "#18b4d4" },
   { name: "Exchange Match", desc: "Find your exchange in 60 seconds based on your trading profile.", stat: "12 FILTERS", to: "/find-my-exchange", accent: "#18b4d4" },
   { name: "Cards", desc: "The only scored comparison of crypto card products in the EU.", stat: "8 CARDS SCORED", to: "/cards", accent: "#18b4d4" },
   { name: "News", desc: "Intelligence-filtered news. Only what moves scores.", stat: "LIVE FEED", to: "/news", accent: "#18b4d4" },
@@ -28,9 +28,9 @@ const PLATFORM_SURFACES = [
 const OPERATOR_ITEMS = [
   { value: "2016", label: "In crypto since cycle one" },
   { value: "15+", label: "Years in derivatives markets" },
-  { value: "2× Editions", label: "Largest crypto startup competition in Romania" },
-  { value: "Lunu POS", label: "Largest crypto payment at a live festival" },
-  { value: "Speaker", label: "Next Block Warsaw · ETH Bucharest · CryptoExpoEurope" },
+  { value: "2× Editions", label: "Web3 startup competition" },
+  { value: "On Stage", label: "Crypto Expo Europe · Next Block · ETH Bucharest" },
+  { value: "Lunu POS", label: "Largest crypto payment · Beach Please Festival" },
 ];
 
 const SERVICES = [
@@ -113,6 +113,26 @@ function Hero() {
   return (
     <section className="relative bg-radial-glow min-h-screen overflow-hidden pb-32">
       <ParticleField count={50} />
+
+      {/* Ambient mesh glow behind the globe (desktop) */}
+      <div
+        className="hidden md:block"
+        style={{
+          position: "absolute",
+          inset: 0,
+          pointerEvents: "none",
+          overflow: "hidden",
+          filter: "blur(2px)",
+          background: `
+            radial-gradient(80% 60% at 15% 20%, rgba(13,190,130,0.22), rgba(0,0,0,0) 60%),
+            radial-gradient(70% 55% at 85% 30%, rgba(24,180,212,0.18), rgba(0,0,0,0) 60%),
+            radial-gradient(90% 70% at 50% 95%, rgba(24,180,212,0.12), rgba(0,0,0,0) 60%),
+            radial-gradient(60% 50% at 70% 70%, rgba(112,168,72,0.14), rgba(0,0,0,0) 60%)
+          `,
+          animation: "cs-mesh 14s ease-in-out infinite",
+          zIndex: 0,
+        }}
+      />
 
       {/* Globe — large sphere anchored right, left edge bleeding into center */}
       <ThreeHero className="hidden md:block absolute top-0 left-0 w-full h-[60%] z-[1] md:top-1/2 md:left-[72%] md:w-[70%] md:h-[130%] md:[transform:translate(-50%,-50%)]" />
@@ -202,14 +222,14 @@ function HeroMetrics() {
 }
 
 const GLOBE_LINKS = [
-  { label: "Compare", to: "/compare", pos: { top: "20%", left: "50%", transform: "translateX(-50%)" }, zx: 0.5, zy: 0.2 },
-  { label: "Exchange Match", to: "/find-my-exchange", pos: { top: "33%", right: "6%" }, zx: 0.82, zy: 0.33 },
-  { label: "Cards", to: "/cards", pos: { top: "50%", right: "0%", transform: "translateY(-50%)" }, zx: 0.9, zy: 0.5 },
-  { label: "News", to: "/news", pos: { top: "67%", right: "6%" }, zx: 0.82, zy: 0.67 },
-  { label: "Advertise", to: "/advertise", pos: { top: "80%", left: "50%", transform: "translateX(-50%)" }, zx: 0.5, zy: 0.8 },
+  { label: "Compare", to: "/compare", accent: "#18b4d4", pos: { top: "8%", left: "45%" }, zx: 0.45, zy: 0.08 },
+  { label: "Exchange Match", to: "/find-my-exchange", accent: "#0dbe82", pos: { top: "38%", right: "2%" }, zx: 0.9, zy: 0.38 },
+  { label: "Cards", to: "/cards", accent: "#70a848", pos: { top: "68%", right: "6%" }, zx: 0.88, zy: 0.68 },
+  { label: "News", to: "/news", accent: "#18b4d4", pos: { top: "72%", left: "8%" }, zx: 0.1, zy: 0.72 },
+  { label: "Advertise", to: "/advertise", accent: "#e8703a", pos: { top: "35%", left: "4%" }, zx: 0.06, zy: 0.35 },
 ];
 
-function GlobePill({ to, label }) {
+function GlobePill({ to, label, accent }) {
   const [hover, setHover] = useState(false);
   return (
     <Link
@@ -217,20 +237,20 @@ function GlobePill({ to, label }) {
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
-        background: "rgba(8,11,22,0.7)",
-        border: `0.5px solid ${hover ? "#0dbe82" : "rgba(24,180,212,0.35)"}`,
+        background: "rgba(8,11,22,0.80)",
+        borderLeft: `2px solid ${accent}`,
         borderRadius: 3,
-        padding: "6px 14px",
+        padding: "6px 12px",
         fontFamily: "monospace",
         fontSize: 11,
-        color: hover ? "#0dbe82" : "#18b4d4",
-        letterSpacing: "1.5px",
+        color: hover ? accent : "#e4e4e7",
+        letterSpacing: "0.08em",
         textTransform: "uppercase",
         backdropFilter: "blur(8px)",
         WebkitBackdropFilter: "blur(8px)",
         whiteSpace: "nowrap",
         display: "inline-block",
-        transition: "color 150ms ease, border-color 150ms ease",
+        transition: "color 150ms ease",
       }}
     >
       {label}
@@ -276,7 +296,7 @@ function GlobeMenu() {
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             style={{ pointerEvents: active === i ? "auto" : "none" }}
           >
-            <GlobePill to={it.to} label={it.label} />
+            <GlobePill to={it.to} label={it.label} accent={it.accent} />
           </motion.div>
         </div>
       ))}
@@ -331,6 +351,7 @@ function SurfaceCard({ surface }) {
     padding: 24,
     position: "relative",
     display: "block",
+    height: "100%",
     transition: "border-color 150ms ease",
   };
   const handlers = {
@@ -343,6 +364,7 @@ function SurfaceCard({ surface }) {
     : <Link to={to} {...handlers}>{inner}</Link>;
   return (
     <motion.div
+      className="h-full"
       whileHover={{ scale: 1.008, y: -2 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
     >
@@ -391,7 +413,7 @@ function LeaderboardPreviewSection({ top5 }) {
           </h2>
         </div>
         <Link to="/compare" className="btn-cyan !py-2 !px-3 !text-[12px] hidden sm:inline-flex">
-          See all 22 <ArrowRight size={14} />
+          See all 37 <ArrowRight size={14} />
         </Link>
       </div>
       <div className="hairline" style={{ borderRadius: 3 }}>
