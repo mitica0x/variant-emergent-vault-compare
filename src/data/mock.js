@@ -388,7 +388,7 @@ export const REASONING_RULES = [
   {
     id: "top-decile",
     test: (e) => e.score >= 85,
-    text: "Top-decile aggregate score on our 5-pillar model",
+    text: "Top-decile aggregate score on our 7-pillar model",
   },
 ];
 

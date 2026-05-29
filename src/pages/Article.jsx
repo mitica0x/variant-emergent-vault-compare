@@ -122,7 +122,7 @@ function ArticleBody({ top5 }) {
       </p>
       <p>
         That is why MiCAR licensure is no longer one feature among many. It is now a gating
-        condition for EU market access. Our 5-pillar scoring model weights it accordingly:
+        condition for EU market access. Our 7-pillar scoring model weights it accordingly:
         Compliance & Licensing is 20% of the total.
       </p>
 
@@ -199,7 +199,7 @@ function InlineCTA() {
     <div className="mt-12 hairline p-7" style={{ borderRadius: 3, background: "#0f1422" }}>
       <Eyebrow color="text-emerald">Open the leaderboard</Eyebrow>
       <h3 className="mt-3 text-[22px] font-bold">See the full ranking live.</h3>
-      <p className="mt-2 text-[14px] text-muted">22 venues, scored on five pillars, every 30 days.</p>
+      <p className="mt-2 text-[14px] text-muted">22 venues, scored on seven pillars, every 30 days.</p>
       <Link to="/compare" className="btn-primary mt-5">
         Go to /compare <ArrowRight size={14} />
       </Link>

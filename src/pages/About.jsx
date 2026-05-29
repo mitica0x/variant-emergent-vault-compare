@@ -138,7 +138,7 @@ function MethodologySection() {
     <section className="container-x py-16">
       <Eyebrow color="text-cyan">Methodology</Eyebrow>
       <h2 className="mt-3 text-[28px] font-bold tracking-tight max-w-3xl">
-        Five pillars. Public weights. Documented inputs.
+        Seven pillars. Public weights. Documented inputs.
       </h2>
       <div className="mt-8 hairline" style={{ borderRadius: 3 }}>
         <table className="w-full text-[14px]">
