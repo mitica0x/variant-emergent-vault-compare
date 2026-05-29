@@ -62,7 +62,7 @@ export default function Compare() {
     <div className="container-x pt-12 pb-24">
       <ComparisonHero />
       <TrustBand />
-      <div className="mt-12 grid grid-cols-1 xl:grid-cols-[120px_1fr] gap-12">
+      <div className="mt-[120px] grid grid-cols-1 xl:grid-cols-[120px_1fr] gap-12">
         <Sidebar active={active} />
         <div>
           <TopExchangesSection
@@ -202,7 +202,7 @@ function FeaturedCard({ exchange }) {
   return (
     <div
       ref={ref}
-      className="mt-10 md:mt-[200px] p-7 grid grid-cols-1 lg:grid-cols-[1fr_1.1fr_1.3fr] gap-8"
+      className="mt-10 md:mt-[120px] p-7 grid grid-cols-1 lg:grid-cols-[1fr_1.1fr_1.3fr] gap-8"
       style={{
         background: "#0f1422",
         borderLeft: "3px solid #a3e635",
@@ -220,7 +220,7 @@ function FeaturedCard({ exchange }) {
 
 function FeaturedIdentity({ exchange, shown }) {
   return (
-    <div>
+    <div className="flex flex-col">
       <div className="flex items-baseline gap-3">
         <span className="font-mono text-[14px]" style={{ color: "rgba(255,255,255,0.6)" }}>#{exchange.rank}</span>
         <ExchangeLogo domain={exchange.domain} name={exchange.name} size={48} />
@@ -240,6 +240,17 @@ function FeaturedIdentity({ exchange, shown }) {
       <div className="mt-6 flex justify-center">
         <ScoreCircle value={exchange.score} size={72} shown={shown} />
       </div>
+      <a
+        href={exchange.affiliateUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="btn-cyan mt-5 self-center"
+      >
+        Visit {exchange.name} <ArrowUpRight size={14} />
+      </a>
+      <p className="mt-2 text-[10px] font-mono text-center" style={{ color: "rgba(255,255,255,0.6)" }}>
+        Sponsored by {exchange.name} · CTR 24h: 3.4%
+      </p>
     </div>
   );
 }
@@ -257,8 +268,9 @@ const FEATURED_PILLARS = [
 function FeaturedBars({ exchange, shown }) {
   const bd = exchange.scoreBreakdown || {};
   return (
-    <div className="space-y-2 -ml-3">
-      {FEATURED_PILLARS.map((p, idx) => {
+    <div className="h-full flex flex-col justify-center -ml-3">
+      <div className="space-y-2">
+        {FEATURED_PILLARS.map((p, idx) => {
         const value = p.override ?? bd[p.key] ?? 80;
         return (
           <div key={p.label} className="flex items-center gap-3">
@@ -271,31 +283,23 @@ function FeaturedBars({ exchange, shown }) {
             <span className="font-mono text-[11px] w-6 text-right" style={{ color: "rgba(255,255,255,0.6)" }}>{value}</span>
           </div>
         );
-      })}
+        })}
+      </div>
     </div>
   );
 }
 
 function FeaturedMetrics({ exchange, shown }) {
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 h-full">
       <div className="grid grid-cols-3 gap-3">
         <CompactVital label="24h Vol" value={exchange.vol24h} delta={exchange.vol24hDelta} />
         <CompactVital label="BTC Spread" value={`${exchange.spreadBTC.toFixed(3)}%`} />
         <CompactVital label="Uptime" value={`${exchange.uptime90d}%`} />
       </div>
-      <RadarBreakdown exchange={exchange} shown={shown} />
-      <a
-        href={exchange.affiliateUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="btn-cyan mt-2 self-start"
-      >
-        Visit {exchange.name} <ArrowUpRight size={14} />
-      </a>
-      <p className="text-[10px] font-mono" style={{ color: "rgba(255,255,255,0.6)" }}>
-        Sponsored by {exchange.name} · CTR 24h: 3.4%
-      </p>
+      <div className="flex-1" style={{ minHeight: 300 }}>
+        <RadarBreakdown exchange={exchange} shown={shown} />
+      </div>
     </div>
   );
 }
@@ -346,7 +350,7 @@ function RadarBreakdown({ exchange, shown }) {
 
   return (
     <div
-      style={{ position: "relative", width: "100%", height: 280 }}
+      style={{ position: "relative", width: "100%", height: "100%", minHeight: 300 }}
       onMouseMove={handleMove}
       onMouseLeave={handleLeave}
     >
