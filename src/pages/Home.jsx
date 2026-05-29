@@ -51,7 +51,7 @@ const AX0N_BULLETS = [
   "Audit trail on every agent decision",
 ];
 
-function BtnSolid({ href, to, children }) {
+function BtnSolid({ href, to, children, className = "" }) {
   const [hover, setHover] = useState(false);
   const sx = {
     background: hover ? "#a3e635" : "#0dbe82",
@@ -62,16 +62,17 @@ function BtnSolid({ href, to, children }) {
     fontSize: 14,
     display: "inline-flex",
     alignItems: "center",
+    justifyContent: "center",
     gap: 8,
     border: "0.5px solid transparent",
     transition: "background-color 150ms ease",
   };
-  const h = { onMouseEnter: () => setHover(true), onMouseLeave: () => setHover(false), style: sx };
+  const h = { onMouseEnter: () => setHover(true), onMouseLeave: () => setHover(false), style: sx, className };
   if (to) return <Link to={to} {...h}>{children}</Link>;
   return <a href={href} target="_blank" rel="noopener noreferrer" {...h}>{children}</a>;
 }
 
-function BtnGhost({ href, to, children, color = "#18b4d4", hoverColor = "#a3e635" }) {
+function BtnGhost({ href, to, children, color = "#18b4d4", hoverColor = "#a3e635", className = "" }) {
   const [hover, setHover] = useState(false);
   const sx = {
     background: "transparent",
@@ -82,11 +83,12 @@ function BtnGhost({ href, to, children, color = "#18b4d4", hoverColor = "#a3e635
     fontSize: 14,
     display: "inline-flex",
     alignItems: "center",
+    justifyContent: "center",
     gap: 8,
     border: `0.5px solid ${hover ? hoverColor : color}`,
     transition: "color 150ms ease, border-color 150ms ease",
   };
-  const h = { onMouseEnter: () => setHover(true), onMouseLeave: () => setHover(false), style: sx };
+  const h = { onMouseEnter: () => setHover(true), onMouseLeave: () => setHover(false), style: sx, className };
   if (to) return <Link to={to} {...h}>{children}</Link>;
   if (href) return <a href={href} target="_blank" rel="noopener noreferrer" {...h}>{children}</a>;
   return <button {...h}>{children}</button>;
@@ -113,7 +115,7 @@ function Hero() {
       <ParticleField count={50} />
 
       {/* Globe — large sphere anchored right, left edge bleeding into center */}
-      <ThreeHero className="absolute top-0 left-0 w-full h-[60%] z-[1] md:top-1/2 md:left-[72%] md:w-[70%] md:h-[130%] md:[transform:translate(-50%,-50%)]" />
+      <ThreeHero className="hidden md:block absolute top-0 left-0 w-full h-[60%] z-[1] md:top-1/2 md:left-[72%] md:w-[70%] md:h-[130%] md:[transform:translate(-50%,-50%)]" />
 
       {/* Globe hover nav menu (desktop) */}
       <GlobeMenu />
@@ -163,10 +165,10 @@ function Hero() {
           transition={softTransition(0.24, 0.8)}
           className="mt-10 flex flex-col sm:flex-row items-start gap-3"
         >
-          <BtnSolid href="https://app.coinsiglieri.com">
+          <BtnSolid href="https://app.coinsiglieri.com" className="w-full md:w-auto">
             Open the dashboard <ArrowRight size={16} />
           </BtnSolid>
-          <BtnGhost to="/compare">
+          <BtnGhost to="/compare" className="w-full md:w-auto">
             See the scores <ArrowUpRight size={14} />
           </BtnGhost>
         </motion.div>

@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ArrowUpRight } from "lucide-react";
 
 const LINKS = [
@@ -9,6 +10,15 @@ const LINKS = [
   { to: "/news", label: "News" },
   { to: "/advertise", label: "Advertise" },
   { to: "/about", label: "About" },
+];
+
+// Mobile (<md) full-screen overlay links — same routes as desktop nav.
+const MOBILE_LINKS = [
+  { to: "/compare", label: "Compare" },
+  { to: "/find-my-exchange", label: "Exchange Match" },
+  { to: "/cards", label: "Cards" },
+  { to: "/news", label: "News" },
+  { to: "/advertise", label: "Advertise" },
 ];
 
 function NavItem({ to, label }) {
@@ -65,9 +75,20 @@ function OpenAppButton({ className = "" }) {
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const { pathname } = useLocation();
 
+  useEffect(() => {
+    if (!mobileOpen) return undefined;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [mobileOpen]);
+
   return (
+    <>
     <header
       className="sticky top-0 z-50 bg-bg/90 backdrop-blur-sm"
       style={{ borderBottom: "0.5px solid rgba(255,255,255,0.07)" }}
@@ -88,11 +109,18 @@ export default function Navbar() {
         <div className="flex items-center gap-2">
           <OpenAppButton className="hidden md:inline-flex py-2 px-3 text-[13px]" />
           <button
-            className="lg:hidden p-2 text-muted hover:text-txt"
+            className="hidden md:inline-flex lg:hidden p-2 text-muted hover:text-txt"
             onClick={() => setOpen((v) => !v)}
             aria-label="Menu"
           >
             {open ? <X size={20} /> : <Menu size={20} />}
+          </button>
+          <button
+            className="md:hidden p-2 text-muted hover:text-txt"
+            onClick={() => setMobileOpen(true)}
+            aria-label="Open menu"
+          >
+            <Menu size={20} />
           </button>
         </div>
       </div>
@@ -115,5 +143,46 @@ export default function Navbar() {
         </div>
       )}
     </header>
+
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            className="md:hidden fixed inset-0 z-[60] flex flex-col"
+            style={{ background: "#080b16" }}
+            initial={{ opacity: 0, y: -24 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -24 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          >
+            <div className="container-x flex items-center justify-between h-16">
+              <span className="text-[15px] font-semibold tracking-tight">
+                <span style={{ color: "#fff" }}>Coin</span>
+                <span style={{ color: "#18b4d4" }}>Siglieri</span>
+              </span>
+              <button
+                className="p-2 text-muted hover:text-txt"
+                onClick={() => setMobileOpen(false)}
+                aria-label="Close menu"
+              >
+                <X size={24} />
+              </button>
+            </div>
+            <nav className="container-x flex flex-col mt-8">
+              {MOBILE_LINKS.map((l) => (
+                <Link
+                  key={l.to}
+                  to={l.to}
+                  onClick={() => setMobileOpen(false)}
+                  className="font-mono uppercase tracking-widest text-[18px] py-4"
+                  style={{ color: "rgba(255,255,255,0.85)", borderBottom: "0.5px solid rgba(255,255,255,0.07)" }}
+                >
+                  {l.label}
+                </Link>
+              ))}
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
