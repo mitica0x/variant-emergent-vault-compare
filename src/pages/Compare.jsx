@@ -28,7 +28,7 @@ const SIDEBAR_IDS = SIDEBAR.map((s) => s.id);
 const TRUST_ITEMS = [
   { icon: Activity, title: "Hands-on testing", desc: "We open accounts, we trade, we withdraw." },
   { icon: History, title: "30-day rescoring", desc: "Every venue rescored on a rolling cycle." },
-  { icon: Scale, title: "5 weighted pillars", desc: "Security \u00b7 PoR \u00b7 Compliance \u00b7 Liquidity \u00b7 Track record." },
+  { icon: Scale, title: "7 weighted pillars", desc: "Custody \u00b7 Liquidity \u00b7 Compliance \u00b7 Transparency \u00b7 Product depth \u00b7 Track record \u00b7 Execution." },
   { icon: FileCheck2, title: "Editorial independence", desc: "Scoring boundary disclosed. Always." },
 ];
 
@@ -506,10 +506,10 @@ function MethodologySection() {
     <section id="methodology" className="mt-20 scroll-mt-20">
       <Eyebrow color="text-cyan">Methodology</Eyebrow>
       <h2 className="mt-3 text-[28px] font-bold tracking-tight">
-        Five pillars. One transparent formula.
+        Seven pillars. One transparent formula.
       </h2>
       <p className="mt-4 text-[14px] text-muted leading-relaxed max-w-3xl">
-        Every exchange is scored on five pillars. Each pillar is normalized to 0–100, weighted,
+        Every exchange is scored on seven pillars. Each pillar is normalized to 0–100, weighted,
         and combined. The weights are public, the inputs are documented, and placement on /compare
         or /cards has no effect on the resulting score.
       </p>

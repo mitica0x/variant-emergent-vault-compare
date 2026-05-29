@@ -18,7 +18,7 @@ const HERO_METRICS = [
 ];
 
 const SURFACES = [
-  { icon: BarChart3, title: "Exchanges", desc: "60+ venues scored across 5 pillars on a 30-day cycle." },
+  { icon: BarChart3, title: "Exchanges", desc: "60+ venues scored across 7 pillars on a 30-day cycle." },
   { icon: Coins, title: "Crypto Cards", desc: "Cashback, currencies, regions and the all-in cost of every card." },
   { icon: Activity, title: "Staking", desc: "Real yields net of slashing, lockups and validator concentration risk." },
   { icon: Scale, title: "Regulation", desc: "MiCAR, FCA, MAS \u2014 the practical access map for traders." },

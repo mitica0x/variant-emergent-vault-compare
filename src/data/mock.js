@@ -31,11 +31,13 @@ export const COUNTRIES = [
 ];
 
 export const SCORE_PILLARS = [
-  { name: "Security & Custody", weight: 30, desc: "Account protections, cold storage, certifications, incident handling" },
-  { name: "Proof of Reserves", weight: 25, desc: "Asset/liability disclosure cadence, attestations, user verification" },
-  { name: "Compliance & Licensing", weight: 20, desc: "Licensing, entity clarity, legal access, disclosure standards" },
-  { name: "Liquidity & Execution", weight: 15, desc: "Spreads, slippage, depth, uptime under stress" },
-  { name: "Track Record", weight: 10, desc: "History, response under pressure, leadership signals" },
+  { name: "Custody & Security", weight: 20, desc: "Cold/hot wallet ratio, multisig architecture, insurance fund coverage, segregation, incident history" },
+  { name: "Liquidity", weight: 20, desc: "Order book depth, slippage on $1M, market share" },
+  { name: "Compliance", weight: 16, desc: "Licenses, MiCAR, KYC framework, sanction screening" },
+  { name: "Transparency", weight: 15, desc: "Proof-of-reserves cadence, public audits, disclosures" },
+  { name: "Product Depth", weight: 12, desc: "Spot, perps, options, fiat rails, asset coverage" },
+  { name: "Track Record", weight: 10, desc: "Years operating, security incidents, outage history" },
+  { name: "Execution", weight: 7, desc: "Spreads, latency, fees realized vs advertised" },
 ];
 
 const exch = (over) => ({
