@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -67,11 +67,14 @@ export default function Home() {
 
 function Hero() {
   return (
-    <section className="relative bg-radial-glow min-h-screen overflow-hidden">
+    <section className="relative bg-radial-glow min-h-screen overflow-hidden pb-32">
       <ParticleField count={50} />
 
       {/* Globe — large sphere anchored right, left edge bleeding into center */}
       <ThreeHero className="absolute top-0 left-0 w-full h-[60%] z-[1] md:top-1/2 md:left-[72%] md:w-[70%] md:h-[130%] md:[transform:translate(-50%,-50%)]" />
+
+      {/* Globe hover nav menu (desktop) */}
+      <GlobeMenu />
 
       {/* Text block — absolute left overlay */}
       <div className="absolute bottom-0 left-0 right-0 p-6 z-20 text-left md:top-1/2 md:bottom-auto md:right-auto md:left-0 md:p-0 md:pl-20 md:max-w-[600px] md:[transform:translateY(-50%)]">
@@ -154,6 +157,68 @@ function HeroMetrics() {
         </div>
       ))}
     </motion.div>
+  );
+}
+
+const GLOBE_LINKS = [
+  { label: "Compare", to: "/compare", pos: { top: "20%", left: "50%", transform: "translateX(-50%)" } },
+  { label: "Exchange Match", to: "/find-my-exchange", pos: { top: "33%", right: "6%" } },
+  { label: "Cards", to: "/cards", pos: { top: "50%", right: "0%", transform: "translateY(-50%)" } },
+  { label: "News", to: "/news", pos: { top: "67%", right: "6%" } },
+  { label: "Advertise", to: "/advertise", pos: { top: "80%", left: "50%", transform: "translateX(-50%)" } },
+];
+
+function GlobePill({ to, label }) {
+  const [hover, setHover] = useState(false);
+  return (
+    <Link
+      to={to}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        background: "rgba(8,11,22,0.7)",
+        border: `0.5px solid ${hover ? "#0dbe82" : "rgba(24,180,212,0.35)"}`,
+        borderRadius: 3,
+        padding: "6px 14px",
+        fontFamily: "monospace",
+        fontSize: 11,
+        color: hover ? "#0dbe82" : "#18b4d4",
+        letterSpacing: "1.5px",
+        textTransform: "uppercase",
+        backdropFilter: "blur(8px)",
+        WebkitBackdropFilter: "blur(8px)",
+        whiteSpace: "nowrap",
+        display: "inline-block",
+        transition: "color 150ms ease, border-color 150ms ease",
+      }}
+    >
+      {label}
+    </Link>
+  );
+}
+
+function GlobeMenu() {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <div
+      className="hidden md:block absolute top-0 right-0 z-[15]"
+      style={{ width: "55%", height: "100%" }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {GLOBE_LINKS.map((it, i) => (
+        <div key={it.label} className="absolute" style={it.pos}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={hovered ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+            transition={{ delay: hovered ? i * 0.05 : 0, duration: 0.3 }}
+            style={{ pointerEvents: hovered ? "auto" : "none" }}
+          >
+            <GlobePill to={it.to} label={it.label} />
+          </motion.div>
+        </div>
+      ))}
+    </div>
   );
 }
 

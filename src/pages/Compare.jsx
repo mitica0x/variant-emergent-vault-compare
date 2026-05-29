@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useMotionValue, useSpring } from "framer-motion";
 import {
   ArrowRight, ArrowUpRight, Check, X as XIcon, Shield, Activity, FileCheck2, Scale, History,
 } from "lucide-react";
@@ -13,7 +13,7 @@ import { useScrollSpy } from "../hooks/use-in-view";
 
 const TABS = [
   { id: "all", label: "All Exchanges" },
-  { id: "cefi", label: "CeFi" },
+  { id: "cefi", label: "CEX" },
   { id: "spot", label: "Spot" },
   { id: "derivatives", label: "Derivatives" },
   { id: "dex", label: "DEX" },
@@ -71,7 +71,7 @@ export default function Compare() {
     <div className="container-x pt-12 pb-24">
       <ComparisonHero />
       <TrustBand />
-      <div className="mt-16 grid grid-cols-1 xl:grid-cols-[120px_1fr] gap-12">
+      <div className="mt-16 pt-[120px] grid grid-cols-1 xl:grid-cols-[120px_1fr] gap-12">
         <Sidebar active={active} />
         <div>
           <TopExchangesSection
@@ -207,7 +207,7 @@ function TopExchangesSection({ tab, setTab, featured, rest }) {
 
 function FeaturedCard({ exchange }) {
   const ref = useRef(null);
-  const shown = useInView(ref, { once: true, amount: 0.15 });
+  const shown = useInView(ref, { once: false, amount: 0.15 });
   return (
     <div
       ref={ref}
@@ -222,7 +222,7 @@ function FeaturedCard({ exchange }) {
     >
       <FeaturedIdentity exchange={exchange} />
       <FeaturedBreakdown exchange={exchange} shown={shown} />
-      <FeaturedMetrics exchange={exchange} />
+      <FeaturedMetrics exchange={exchange} shown={shown} />
     </div>
   );
 }
@@ -272,7 +272,7 @@ function FeaturedBreakdown({ exchange, shown }) {
   );
 }
 
-function FeaturedMetrics({ exchange }) {
+function FeaturedMetrics({ exchange, shown }) {
   return (
     <div className="flex flex-col gap-3">
       <div className="grid grid-cols-3 gap-3">
@@ -280,7 +280,7 @@ function FeaturedMetrics({ exchange }) {
         <CompactVital label="BTC Spread" value={`${exchange.spreadBTC.toFixed(3)}%`} />
         <CompactVital label="Uptime" value={`${exchange.uptime90d}%`} />
       </div>
-      <RadarBreakdown exchange={exchange} />
+      <RadarBreakdown exchange={exchange} shown={shown} />
       <a
         href={exchange.affiliateUrl}
         target="_blank"
@@ -312,7 +312,7 @@ function CompactVital({ label, value, delta }) {
   );
 }
 
-function RadarBreakdown({ exchange }) {
+function RadarBreakdown({ exchange, shown }) {
   const bd = exchange.scoreBreakdown || {};
   const data = [
     { axis: "Custody", value: bd.security ?? 80 },
@@ -324,29 +324,56 @@ function RadarBreakdown({ exchange }) {
     { axis: "Execution", value: bd.execution ?? 82 },
   ];
 
+  const rx = useMotionValue(0);
+  const ry = useMotionValue(0);
+  const rotateX = useSpring(rx, { stiffness: 150, damping: 20 });
+  const rotateY = useSpring(ry, { stiffness: 150, damping: 20 });
+  const handleMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width - 0.5;
+    const py = (e.clientY - rect.top) / rect.height - 0.5;
+    ry.set(px * 16); // ±8deg
+    rx.set(-py * 16); // ±8deg
+  };
+  const handleLeave = () => {
+    rx.set(0);
+    ry.set(0);
+  };
+
   return (
-    <div style={{ position: "relative", width: "100%", height: 220 }}>
-      <div style={{ position: "absolute", top: 0, right: 0, display: "flex", alignItems: "center", gap: 6, fontFamily: "monospace", fontSize: 9, letterSpacing: "0.14em", color: "#0dbe82", textTransform: "uppercase" }}>
+    <div
+      style={{ position: "relative", width: "100%", height: 220 }}
+      onMouseMove={handleMove}
+      onMouseLeave={handleLeave}
+    >
+      <div style={{ position: "absolute", top: 0, right: 0, display: "flex", alignItems: "center", gap: 6, fontFamily: "monospace", fontSize: 9, letterSpacing: "0.14em", color: "#0dbe82", textTransform: "uppercase", zIndex: 2 }}>
         <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#0dbe82", display: "inline-block" }} />
         SCORE BREAKDOWN
       </div>
-      <ResponsiveContainer width="100%" height="100%">
-        <RadarChart data={data} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-          <PolarGrid stroke="rgba(255,255,255,0.07)" />
-          <PolarAngleAxis
-            dataKey="axis"
-            tick={{ fill: "rgba(255,255,255,0.45)", fontSize: 10, fontFamily: "monospace" }}
-          />
-          <Radar
-            name="score"
-            dataKey="value"
-            stroke="#0dbe82"
-            fill="#0dbe82"
-            fillOpacity={0.15}
-            strokeWidth={1.5}
-          />
-        </RadarChart>
-      </ResponsiveContainer>
+      <motion.div
+        style={{ width: "100%", height: "100%", rotateX, rotateY, transformPerspective: 800 }}
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={shown ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+        transition={{ type: "spring", stiffness: 150, damping: 20 }}
+      >
+        <ResponsiveContainer width="100%" height="100%">
+          <RadarChart data={data} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+            <PolarGrid stroke="rgba(255,255,255,0.07)" />
+            <PolarAngleAxis
+              dataKey="axis"
+              tick={{ fill: "rgba(255,255,255,0.45)", fontSize: 10, fontFamily: "monospace" }}
+            />
+            <Radar
+              name="score"
+              dataKey="value"
+              stroke="#0dbe82"
+              fill="#0dbe82"
+              fillOpacity={0.15}
+              strokeWidth={1.5}
+            />
+          </RadarChart>
+        </ResponsiveContainer>
+      </motion.div>
     </div>
   );
 }
