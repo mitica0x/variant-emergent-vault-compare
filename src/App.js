@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import LoadingScreen from "./components/LoadingScreen";
 import Home from "./pages/Home";
 import Compare from "./pages/Compare";
 import FindMyExchange from "./pages/FindMyExchange";
@@ -13,8 +14,10 @@ import Advertise from "./pages/Advertise";
 import About from "./pages/About";
 
 function App() {
+  const [loading, setLoading] = useState(true);
   return (
     <div className="App min-h-screen bg-bg text-txt">
+      <LoadingScreen isVisible={loading} onComplete={() => setLoading(false)} />
       <BrowserRouter>
         <Navbar />
         <Routes>

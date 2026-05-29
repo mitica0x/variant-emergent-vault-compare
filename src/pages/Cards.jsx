@@ -61,8 +61,8 @@ function FeaturedCard({ card: featured }) {
         className="p-7 grid grid-cols-1 lg:grid-cols-[1fr_1.4fr] gap-8"
         style={{
           background: "#0f1422",
-          borderLeft: "3px solid #e8703a",
-          border: "0.5px solid rgba(232,112,58,0.2)",
+          borderLeft: "3px solid #a3e635",
+          border: "0.5px solid rgba(163,230,53,0.2)",
           borderLeftWidth: 3,
           borderRadius: 3,
         }}

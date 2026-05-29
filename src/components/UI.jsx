@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 import { Check, X as XIcon } from "lucide-react";
 import { scoreRingColor } from "../data/mock";
 import { useInView } from "../hooks/use-in-view";
@@ -10,7 +11,7 @@ export function Eyebrow({ children, color = "text-emerald" }) {
 const BADGE_TONES = {
   emerald: { color: "text-emerald", bg: "rgba(13, 190, 130, 0.15)" },
   cyan: { color: "text-cyan", bg: "rgba(24, 180, 212, 0.15)" },
-  rust: { color: "text-rust", bg: "rgba(232, 112, 58, 0.15)" },
+  rust: { color: "text-rust", bg: "rgba(163, 230, 53, 0.15)" },
   lime: { color: "text-lime", bg: "rgba(112, 168, 72, 0.15)" },
   amber: { color: "text-amber", bg: "rgba(212, 168, 83, 0.15)" },
   muted: { color: "text-muted", bg: "rgba(255,255,255,0.04)" },
@@ -29,16 +30,14 @@ export function Badge({ children, tone = "emerald" }) {
 }
 
 export function MiniBar({ value, color = "#0dbe82", delay = 0 }) {
-  const [ref, inView] = useInView({ threshold: 0.3 });
-  const shown = inView ? value : 0;
   return (
-    <div ref={ref} className="mini-bar" style={{ width: "100%" }}>
-      <span
-        style={{
-          transform: `scaleX(${shown / 100})`,
-          transitionDelay: `${delay}ms`,
-          background: color,
-        }}
+    <div className="mini-bar" style={{ width: "100%" }}>
+      <motion.span
+        style={{ background: color }}
+        initial={{ width: 0 }}
+        whileInView={{ width: `${value}%` }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, ease: "easeOut", delay: delay / 1000 }}
       />
     </div>
   );
@@ -88,11 +87,11 @@ export function ProsCons({ pros = [], cons = [] }) {
         </ul>
       </div>
       <div>
-        <h5 className="eyebrow text-rust mb-3">Cons</h5>
+        <h5 className="eyebrow mb-3" style={{ color: "#ff4d6d" }}>Cons</h5>
         <ul className="space-y-2">
           {cons.map((c) => (
             <li key={`con-${c}`} className="flex items-start gap-2 text-[13px] text-txt/90">
-              <XIcon size={14} className="text-rust shrink-0 mt-[2px]" />
+              <XIcon size={14} className="shrink-0 mt-[2px]" style={{ color: "#ff4d6d" }} />
               <span>{c}</span>
             </li>
           ))}

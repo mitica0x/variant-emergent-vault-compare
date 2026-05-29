@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import {
   ArrowRight, ArrowUpRight, Check, X as XIcon, Shield, Activity, FileCheck2, Scale, History,
 } from "lucide-react";
@@ -98,18 +99,25 @@ function ComparisonHero() {
 
 function TrustBand() {
   return (
-    <section
+    <motion.section
       className="mt-12 grid grid-cols-2 lg:grid-cols-4 gap-px"
       style={{ background: "rgba(255,255,255,0.07)", borderRadius: 3 }}
+      variants={{ visible: { transition: { staggerChildren: 0.08 } } }}
+      initial="hidden"
+      animate="visible"
     >
       {TRUST_ITEMS.map(({ icon: Icon, title, desc }) => (
-        <div key={title} className="bg-bg p-5">
+        <motion.div
+          key={title}
+          className="bg-bg p-5"
+          variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4 } } }}
+        >
           <Icon size={16} className="text-cyan" />
           <div className="mt-3 font-mono text-[11px] uppercase tracking-widest text-txt">{title}</div>
           <div className="mt-1 text-[12px] text-muted">{desc}</div>
-        </div>
+        </motion.div>
       ))}
-    </section>
+    </motion.section>
   );
 }
 
@@ -173,7 +181,15 @@ function TopExchangesSection({ tab, setTab, featured, rest }) {
   return (
     <div id="top-exchanges" className="scroll-mt-20">
       <Eyebrow color="text-emerald">Top Exchanges</Eyebrow>
-      <h2 className="mt-3 text-[28px] font-bold tracking-tight">The current top of the board.</h2>
+      <motion.h2
+        className="mt-3 text-[28px] font-bold tracking-tight"
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+      >
+        The current top of the board.
+      </motion.h2>
       <TabBar tab={tab} setTab={setTab} />
       {showFeatured && <FeaturedCard exchange={featured} />}
       <RankedList items={rest} />
@@ -187,8 +203,8 @@ function FeaturedCard({ exchange }) {
       className="mt-10 p-7 grid grid-cols-1 lg:grid-cols-[1fr_1.2fr_1fr] gap-8"
       style={{
         background: "#0f1422",
-        borderLeft: "3px solid #e8703a",
-        border: "0.5px solid rgba(232,112,58,0.2)",
+        borderLeft: "3px solid #a3e635",
+        border: "0.5px solid rgba(163,230,53,0.2)",
         borderLeftWidth: 3,
         borderRadius: 3,
       }}
@@ -286,7 +302,14 @@ function Metric({ label, value, delta }) {
 
 function RankedList({ items }) {
   return (
-    <div className="mt-8 hairline" style={{ borderRadius: 3 }}>
+    <motion.div
+      className="mt-8 hairline"
+      style={{ borderRadius: 3 }}
+      variants={{ visible: { transition: { staggerChildren: 0.06 } } }}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+    >
       {items.map((e, i) => (
         <RankedRow
           key={e.id}
@@ -295,16 +318,17 @@ function RankedList({ items }) {
           isLast={i === items.length - 1}
         />
       ))}
-    </div>
+    </motion.div>
   );
 }
 
 function RankedRow({ exchange, delay, isLast }) {
   return (
-    <div
+    <motion.div
       className={`px-5 py-4 flex items-center gap-4 ${
         isLast ? "" : "hairline-b"
       } hover:bg-white/[0.02] transition-colors`}
+      variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }}
     >
       <span className="font-mono text-[12px] text-muted w-7">#{exchange.rank}</span>
       <ExchangeLogo domain={exchange.domain} name={exchange.name} size={24} />
@@ -330,7 +354,7 @@ function RankedRow({ exchange, delay, isLast }) {
       >
         Visit <ArrowUpRight size={12} />
       </a>
-    </div>
+    </motion.div>
   );
 }
 
@@ -338,7 +362,15 @@ function ComparisonTableSection({ list }) {
   return (
     <section id="comparison" className="mt-20 scroll-mt-20">
       <Eyebrow color="text-cyan">Comparison Table</Eyebrow>
-      <h2 className="mt-3 text-[28px] font-bold tracking-tight">Side-by-side on what matters.</h2>
+      <motion.h2
+        className="mt-3 text-[28px] font-bold tracking-tight"
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+      >
+        Side-by-side on what matters.
+      </motion.h2>
       <div className="mt-6 overflow-x-auto hairline" style={{ borderRadius: 3 }}>
         <table className="w-full min-w-[920px] text-[13px]">
           <thead className="font-mono text-[10px] uppercase tracking-widest text-muted">
@@ -418,21 +450,37 @@ function ReviewsSection({ list }) {
   return (
     <section id="reviews" className="mt-20 scroll-mt-20">
       <Eyebrow color="text-emerald">Exchange Reviews</Eyebrow>
-      <h2 className="mt-3 text-[28px] font-bold tracking-tight">
+      <motion.h2
+        className="mt-3 text-[28px] font-bold tracking-tight"
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+      >
         The top {top.length} — in detail.
-      </h2>
-      <div className="mt-8 space-y-px" style={{ background: "rgba(255,255,255,0.07)" }}>
+      </motion.h2>
+      <motion.div
+        className="mt-8 space-y-px"
+        style={{ background: "rgba(255,255,255,0.07)" }}
+        variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+      >
         {top.map((e) => (
           <ReviewBlock key={e.id} exchange={e} />
         ))}
-      </div>
+      </motion.div>
     </section>
   );
 }
 
 function ReviewBlock({ exchange: e }) {
   return (
-    <div className="bg-bg p-7 grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-8">
+    <motion.div
+      className="bg-bg p-7 grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-8"
+      variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}
+    >
       <div>
         <div className="flex items-center gap-4">
           <ExchangeLogo domain={e.domain} name={e.name} size={56} />
@@ -467,7 +515,7 @@ function ReviewBlock({ exchange: e }) {
         )}
       </div>
       <PhoneMockup exchange={e} />
-    </div>
+    </motion.div>
   );
 }
 
@@ -527,9 +575,15 @@ function MethodologySection() {
   return (
     <section id="methodology" className="mt-20 scroll-mt-20">
       <Eyebrow color="text-cyan">Methodology</Eyebrow>
-      <h2 className="mt-3 text-[28px] font-bold tracking-tight">
+      <motion.h2
+        className="mt-3 text-[28px] font-bold tracking-tight"
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+      >
         Seven pillars. One transparent formula.
-      </h2>
+      </motion.h2>
       <p className="mt-4 text-[14px] text-muted leading-relaxed max-w-3xl">
         Every exchange is scored on seven pillars. Each pillar is normalized to 0–100, weighted,
         and combined. The weights are public, the inputs are documented, and placement on /compare
