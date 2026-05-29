@@ -69,47 +69,12 @@ function Hero() {
   return (
     <section className="relative bg-radial-glow" style={{ minHeight: "calc(100vh - 64px)" }}>
       <ParticleField count={50} />
-      <ThreeHero
-        className="absolute"
-        style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: "75%",
-          height: "135%",
-          zIndex: 0,
-          opacity: 0.85,
-          pointerEvents: "none",
-        }}
-      />
       <div
-        style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: "720px",
-          height: "520px",
-          background:
-            "radial-gradient(ellipse at center, rgba(8,11,22,0.85) 0%, rgba(8,11,22,0.5) 45%, transparent 75%)",
-          pointerEvents: "none",
-          zIndex: 5,
-        }}
-      />
-      <div
-        className="container-x relative z-10 flex flex-col items-center justify-center text-center pt-20 pb-24"
+        className="container-x relative z-10 flex flex-col lg:flex-row items-start lg:items-center gap-10 lg:gap-12 pt-20 pb-24"
         style={{ minHeight: "calc(100vh - 64px)" }}
       >
-        <div
-          style={{
-            maxWidth: "640px",
-            margin: "0 auto",
-            textAlign: "center",
-            position: "relative",
-            zIndex: 10,
-          }}
-        >
+        {/* Left column — text */}
+        <div className="w-full lg:flex-1 lg:max-w-[600px] flex flex-col items-start text-left">
           <motion.div
             initial={FADE_IN_UP_BIG.initial}
             animate={FADE_IN_UP_BIG.animate}
@@ -122,7 +87,7 @@ function Hero() {
             initial={FADE_IN_UP_BIG.initial}
             animate={FADE_IN_UP_BIG.animate}
             transition={softTransition(0.08, 0.8)}
-            className="mt-8 text-[56px] sm:text-[64px] font-bold tracking-tight leading-[1.05] text-balance"
+            className="mt-6 text-[48px] sm:text-[60px] lg:text-[80px] font-bold tracking-tight leading-[1.0]"
           >
             Building for what comes next.
           </motion.h1>
@@ -131,7 +96,7 @@ function Hero() {
             initial={FADE_IN_UP_BIG.initial}
             animate={FADE_IN_UP_BIG.animate}
             transition={softTransition(0.16, 0.8)}
-            className="mt-6 max-w-2xl text-[16px] sm:text-[18px] text-muted leading-relaxed text-balance"
+            className="mt-6 max-w-xl text-[16px] sm:text-[18px] text-muted leading-relaxed"
           >
             Everything in financial markets was built for humans.
           </motion.p>
@@ -149,7 +114,7 @@ function Hero() {
             initial={FADE_IN_UP_BIG.initial}
             animate={FADE_IN_UP_BIG.animate}
             transition={softTransition(0.24, 0.8)}
-            className="mt-10 flex flex-col sm:flex-row gap-3 justify-center"
+            className="mt-10 flex flex-col sm:flex-row items-start gap-3"
           >
             <a
               href="https://app.coinsiglieri.com"
@@ -163,9 +128,23 @@ function Hero() {
               See the scores <ArrowUpRight size={14} />
             </Link>
           </motion.div>
+
+          <HeroMetrics />
         </div>
 
-        <HeroMetrics />
+        {/* Right column — globe (fully visible, interactive) */}
+        <div className="w-full lg:flex-1 h-[360px] sm:h-[440px] lg:h-[560px]">
+          <ThreeHero
+            style={{
+              position: "relative",
+              width: "100%",
+              height: "100%",
+              zIndex: 0,
+              opacity: 0.95,
+              pointerEvents: "auto",
+            }}
+          />
+        </div>
       </div>
     </section>
   );
