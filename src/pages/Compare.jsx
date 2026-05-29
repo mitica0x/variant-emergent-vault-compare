@@ -4,7 +4,7 @@ import {
   ArrowRight, ArrowUpRight, Check, X as XIcon, Shield, Activity, FileCheck2, Scale, History,
 } from "lucide-react";
 import { Eyebrow, Badge, MiniBar, ScoreCircle, ProsCons, ExchangeLogo } from "../components/UI";
-import { EXCHANGES, SCORE_PILLARS, getTierColor, getTierBg, scoreColor } from "../data/mock";
+import { EXCHANGES, SCORE_PILLARS, getTierBg, scoreColor } from "../data/mock";
 import { useScrollSpy } from "../hooks/use-in-view";
 
 // ---- Static config (module-scope, stable across renders) ----
@@ -18,11 +18,13 @@ const TABS = [
 
 const SIDEBAR = [
   { id: "overview", label: "Overview" },
-  { id: "top-exchanges", label: "Top Exchanges" },
-  { id: "comparison", label: "Comparison Table" },
-  { id: "reviews", label: "Exchange Reviews" },
-  { id: "methodology", label: "Methodology" },
+  { id: "top-exchanges", label: "Top" },
+  { id: "comparison", label: "Table" },
+  { id: "reviews", label: "Reviews" },
+  { id: "methodology", label: "Method" },
 ];
+
+const BAR_GRADIENT = "linear-gradient(90deg, #18b4d4 0%, #0dbe82 100%)";
 const SIDEBAR_IDS = SIDEBAR.map((s) => s.id);
 
 const TRUST_ITEMS = [
@@ -60,7 +62,7 @@ export default function Compare() {
     <div className="container-x pt-12 pb-24">
       <ComparisonHero />
       <TrustBand />
-      <div className="mt-16 grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-12">
+      <div className="mt-16 grid grid-cols-1 xl:grid-cols-[120px_1fr] gap-12">
         <Sidebar active={active} />
         <div>
           <TopExchangesSection
@@ -113,8 +115,8 @@ function TrustBand() {
 
 function Sidebar({ active }) {
   return (
-    <aside className="hidden lg:block">
-      <div className="sticky top-24">
+    <aside className="hidden xl:block">
+      <div className="sticky top-24" style={{ maxWidth: 120 }}>
         <Eyebrow color="text-muted">On this page</Eyebrow>
         <nav className="mt-4 flex flex-col">
           {SIDEBAR.map((s) => {
@@ -123,11 +125,12 @@ function Sidebar({ active }) {
               <a
                 key={s.id}
                 href={`#${s.id}`}
-                className={`relative h-8 flex items-center font-mono text-[11px] uppercase tracking-widest pl-3 transition-colors ${
-                  isActive ? "text-txt bg-white/[0.04]" : "text-muted hover:text-txt"
-                }`}
+                className="relative h-8 flex items-center pl-3 font-mono uppercase transition-colors"
                 style={{
-                  borderLeft: isActive ? "2px solid #0dbe82" : "2px solid transparent",
+                  fontSize: "10px",
+                  letterSpacing: "2px",
+                  color: isActive ? "#0dbe82" : "rgba(255,255,255,0.4)",
+                  borderLeft: isActive ? "0.5px solid #0dbe82" : "0.5px solid transparent",
                 }}
               >
                 {s.label}
@@ -232,7 +235,7 @@ function FeaturedBreakdown({ exchange }) {
               {BREAKDOWN_LABELS[key] ?? key}
             </span>
             <div className="flex-1">
-              <MiniBar value={value} delay={idx * 60} />
+              <MiniBar value={value} color={BAR_GRADIENT} delay={idx * 60} />
             </div>
             <span className="font-mono text-[11px] text-muted w-6 text-right">{value}</span>
           </div>
@@ -297,7 +300,6 @@ function RankedList({ items }) {
 }
 
 function RankedRow({ exchange, delay, isLast }) {
-  const tierColor = getTierColor(exchange.score);
   return (
     <div
       className={`px-5 py-4 flex items-center gap-4 ${
@@ -316,7 +318,7 @@ function RankedRow({ exchange, delay, isLast }) {
       </div>
       <div className="hidden md:flex items-center gap-3 w-[200px]">
         <div className="flex-1">
-          <MiniBar value={exchange.score} color={tierColor} delay={delay} />
+          <MiniBar value={exchange.score} color={BAR_GRADIENT} delay={delay} />
         </div>
         <span className="font-mono text-[13px] text-txt w-7 text-right">{exchange.score}</span>
       </div>
@@ -470,31 +472,51 @@ function ReviewBlock({ exchange: e }) {
 }
 
 function PhoneMockup({ exchange }) {
+  const initials = exchange.name.slice(0, 2).toUpperCase();
+  const frame = {
+    width: 180,
+    height: 320,
+    borderRadius: 28,
+    border: "6px solid #1e2d45",
+    background: "#0a0e1a",
+    overflow: "hidden",
+  };
   return (
     <div className="flex items-center justify-center">
-      <div
-        className="relative"
-        style={{
-          width: 180,
-          height: 340,
-          border: "0.5px solid rgba(255,255,255,0.12)",
-          borderRadius: 18,
-          background: "linear-gradient(180deg, #0f1422 0%, #0a0e1c 100%)",
-        }}
-      >
+      <div className="relative" style={{ minWidth: 240, height: 340 }}>
+        {/* Back phone — peeking behind-right */}
         <div
-          className="absolute top-2 left-1/2 -translate-x-1/2"
-          style={{ width: 50, height: 4, background: "rgba(255,255,255,0.06)", borderRadius: 2 }}
-        />
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-          <ExchangeLogo domain={exchange.domain} name={exchange.name} size={48} />
-          <span className="font-mono text-[10px] uppercase tracking-widest text-muted">
-            {exchange.name} App
-          </span>
-          <div className="mt-4 flex gap-2">
-            <span className="font-mono text-[10px] text-emerald">● live</span>
-            <span className="font-mono text-[10px] text-muted">{exchange.uptime90d}% uptime</span>
+          className="absolute top-0 left-0"
+          style={{ ...frame, transform: "translateX(28px) translateY(12px)", zIndex: 1 }}
+        >
+          {/* Placeholder — swap for <img src={appStoreScreenshot} alt="" className="w-full h-full object-cover" /> */}
+          <div className="w-full h-full flex items-center justify-center">
+            <span style={{ color: "#18b4d4", fontSize: 32, fontWeight: 700 }}>{initials}</span>
           </div>
+        </div>
+        {/* Front phone */}
+        <div className="absolute top-0 left-0" style={{ ...frame, zIndex: 2 }}>
+          {/* Placeholder — swap for <img src={appStoreScreenshot} alt="" className="w-full h-full object-cover" /> */}
+          <div className="w-full h-full flex items-center justify-center">
+            <span style={{ color: "#18b4d4", fontSize: 32, fontWeight: 700 }}>{initials}</span>
+          </div>
+        </div>
+        {/* Score · rank badge — floats over the front phone's top-left corner (sibling, so not clipped) */}
+        <div
+          className="absolute"
+          style={{
+            top: -10,
+            left: -10,
+            zIndex: 3,
+            background: "#0dbe82",
+            color: "#000",
+            fontSize: 11,
+            fontWeight: 700,
+            borderRadius: 3,
+            padding: "4px 8px",
+          }}
+        >
+          {exchange.score} · #{exchange.rank} EU
         </div>
       </div>
     </div>
