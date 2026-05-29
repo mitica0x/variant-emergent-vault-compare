@@ -10,7 +10,7 @@ import { FADE_IN, FADE_IN_UP_BIG, softTransition } from "../lib/motion";
 import ThreeHero from "../components/ThreeHero";
 
 const HERO_METRICS = [
-  { label: "Venues scored", value: "37" },
+  { label: "Venues scored", value: "37+" },
   { label: "MiCAR licensed", value: "7" },
   { label: "Update cadence", value: "30d" },
   { label: "Scoring pillars", value: "7" },
@@ -28,7 +28,7 @@ const PLATFORM_SURFACES = [
 const OPERATOR_ITEMS = [
   { value: "2016", label: "In crypto since cycle one" },
   { value: "15+", label: "Years in derivatives markets" },
-  { value: "2× Editions", label: "Web3 startup competition" },
+  { value: "2× Editions", label: "Web3 startup competition · €440,775" },
   { value: "On Stage", label: "Crypto Expo Europe · Next Block · ETH Bucharest" },
   { value: "Lunu POS", label: "Largest crypto payment · Beach Please Festival" },
 ];
@@ -110,38 +110,41 @@ export default function Home() {
 }
 
 function Hero() {
+  const [isGlobeHovered, setIsGlobeHovered] = useState(false);
   return (
     <section className="relative bg-radial-glow min-h-screen overflow-hidden pb-32">
       <ParticleField count={50} />
 
-      {/* Ambient mesh glow behind the globe (desktop) */}
-      <div
+      {/* Ambient corner glow behind the globe (desktop) — activates on globe hover */}
+      <motion.div
         className="hidden md:block"
         style={{
           position: "absolute",
           inset: 0,
           pointerEvents: "none",
           overflow: "hidden",
-          filter: "blur(2px)",
+          filter: "blur(60px)",
           background: `
-            radial-gradient(80% 60% at 15% 20%, rgba(13,190,130,0.22), rgba(0,0,0,0) 60%),
-            radial-gradient(70% 55% at 85% 30%, rgba(24,180,212,0.18), rgba(0,0,0,0) 60%),
-            radial-gradient(90% 70% at 50% 95%, rgba(24,180,212,0.12), rgba(0,0,0,0) 60%),
-            radial-gradient(60% 50% at 70% 70%, rgba(112,168,72,0.14), rgba(0,0,0,0) 60%)
+            radial-gradient(35% 40% at 5% 10%, rgba(24,180,212,0.20), rgba(0,0,0,0) 70%),
+            radial-gradient(30% 35% at 95% 8%, rgba(24,180,212,0.15), rgba(0,0,0,0) 70%),
+            radial-gradient(25% 30% at 8% 92%, rgba(112,168,72,0.12), rgba(0,0,0,0) 70%),
+            radial-gradient(28% 32% at 92% 90%, rgba(13,190,130,0.10), rgba(0,0,0,0) 70%)
           `,
-          animation: "cs-mesh 14s ease-in-out infinite",
           zIndex: 0,
         }}
+        initial={{ opacity: 0.35 }}
+        animate={isGlobeHovered ? { opacity: 1, scale: 1.06 } : { opacity: 0.35, scale: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
       />
 
       {/* Globe — large sphere anchored right, left edge bleeding into center */}
       <ThreeHero className="hidden md:block absolute top-0 left-0 w-full h-[60%] z-[1] md:top-1/2 md:left-[72%] md:w-[70%] md:h-[130%] md:[transform:translate(-50%,-50%)]" />
 
-      {/* Globe hover nav menu (desktop) */}
-      <GlobeMenu />
+      {/* Globe hover nav menu (desktop) — also drives the corner-glow hover state */}
+      <GlobeMenu onHoverChange={setIsGlobeHovered} />
 
       {/* Text block — absolute left overlay */}
-      <div className="absolute bottom-0 left-0 right-0 p-6 z-20 text-left md:top-[calc(50%-20px)] md:bottom-auto md:right-auto md:left-0 md:p-0 md:pl-20 md:max-w-[600px] md:[transform:translateY(-50%)]">
+      <div className="absolute bottom-0 left-0 right-0 p-6 z-20 text-left md:top-1/2 md:bottom-auto md:right-auto md:left-0 md:p-0 md:pl-20 md:max-w-[600px] md:[transform:translateY(-50%)]">
         <motion.div
           initial={FADE_IN_UP_BIG.initial}
           animate={FADE_IN_UP_BIG.animate}
@@ -258,7 +261,7 @@ function GlobePill({ to, label, accent }) {
   );
 }
 
-function GlobeMenu() {
+function GlobeMenu({ onHoverChange }) {
   const ref = useRef(null);
   const [active, setActive] = useState(null);
   const handleMove = (e) => {
@@ -285,8 +288,12 @@ function GlobeMenu() {
       ref={ref}
       className="hidden md:block absolute top-0 right-0 z-[15]"
       style={{ width: "55%", height: "100%" }}
+      onMouseEnter={() => onHoverChange && onHoverChange(true)}
       onMouseMove={handleMove}
-      onMouseLeave={() => setActive(null)}
+      onMouseLeave={() => {
+        setActive(null);
+        if (onHoverChange) onHoverChange(false);
+      }}
     >
       {GLOBE_LINKS.map((it, i) => (
         <div key={it.label} className="absolute" style={it.pos}>
@@ -413,7 +420,7 @@ function LeaderboardPreviewSection({ top5 }) {
           </h2>
         </div>
         <Link to="/compare" className="btn-cyan !py-2 !px-3 !text-[12px] hidden sm:inline-flex">
-          See all 37 <ArrowRight size={14} />
+          See all 37+ <ArrowRight size={14} />
         </Link>
       </div>
       <div className="hairline" style={{ borderRadius: 3 }}>

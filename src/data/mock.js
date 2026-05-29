@@ -504,6 +504,18 @@ export const EXCHANGES = [
     proSummary: "Leading AMM and liquidity hub on Solana.",
     estimated: true,
   }),
+  exch({
+    id: "lighter", name: "Lighter", slug: "lighter", domain: "lighter.xyz",
+    score: 79, rank: 37, bestFor: "#2 perps DEX globally by weekly volume, $17B revenue",
+    micarLicensed: false, hasCryptoCard: false, hasFutures: true, hasStaking: false,
+    type: ["all", "dex", "derivatives"],
+    vol24h: "$1.4B", vol24hDelta: 0, spreadBTC: 0.05, uptime90d: 99.88,
+    porCadence: "None", tradingFeeLow: 0.02, tradingFeeHigh: 0.05,
+    affiliateUrl: "https://lighter.xyz",
+    scoreBreakdown: { security: 80, compliance: 48, liquidity: 82, por: 70, trackRecord: 60, productDepth: 82 },
+    proSummary: "#2 perps DEX globally by weekly volume, $17B revenue.",
+    estimated: true,
+  }),
 ];
 
 // ---- Score helpers (refactored to rule-based maps) ----

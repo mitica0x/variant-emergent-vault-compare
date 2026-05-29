@@ -8,18 +8,15 @@ export default function Footer() {
       <div className="container-x py-14 grid grid-cols-1 md:grid-cols-4 gap-10">
         <div className="md:col-span-1">
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-7 h-7 flex items-center justify-center hairline">
-              <span className="font-mono text-[11px] text-cyan">C</span>
-            </div>
             <span className="text-[15px] font-semibold tracking-tight">
-              Coin<span className="text-cyan">S</span>iglieri
+              <span style={{ color: "#ffffff" }}>Coin</span><span style={{ color: "#18b4d4" }}>Siglieri</span>
             </span>
           </Link>
           <p className="mt-4 text-[13px] text-muted leading-relaxed">
             Independent EU/MiCAR crypto exchange intelligence.
           </p>
-          <p className="mt-3 font-mono text-[11px] uppercase tracking-widest text-emerald">
-            All Signal. 0 Guess.
+          <p className="mt-3 font-mono text-[11px] uppercase tracking-widest">
+            <span style={{ color: "#fff" }}>All Signal. </span><span style={{ color: "#18b4d4" }}>0</span><span style={{ color: "#fff" }}> Guess.</span>
           </p>
           <div className="flex items-center gap-3 mt-6 text-muted">
             <a href="https://x.com/coinsiglieri" target="_blank" rel="noopener noreferrer" className="hover:text-txt transition-colors"><Twitter size={16} /></a>
