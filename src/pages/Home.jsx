@@ -144,57 +144,63 @@ function Hero() {
       <GlobeMenu onHoverChange={setIsGlobeHovered} />
 
       {/* Text block — absolute left overlay */}
-      <div className="absolute bottom-0 left-0 right-0 p-6 z-20 text-left md:top-1/2 md:bottom-auto md:right-auto md:left-0 md:p-0 md:pl-20 md:max-w-[600px] md:[transform:translateY(-50%)]">
-        <motion.div
-          initial={FADE_IN_UP_BIG.initial}
-          animate={FADE_IN_UP_BIG.animate}
-          transition={softTransition(0, 0.7)}
-        >
-          <Eyebrow color="text-cyan">AI Infrastructure · Market Intelligence</Eyebrow>
-        </motion.div>
+      <div className="absolute bottom-0 left-0 right-0 p-6 z-20 text-left md:top-[18%] md:bottom-[14%] md:right-auto md:left-0 md:p-0 md:pl-20 md:max-w-[600px] md:flex md:flex-col md:justify-between">
+        {/* TOP group — anchored near the globe's top edge */}
+        <div>
+          <motion.div
+            initial={FADE_IN_UP_BIG.initial}
+            animate={FADE_IN_UP_BIG.animate}
+            transition={softTransition(0, 0.7)}
+          >
+            <Eyebrow color="text-cyan">AI Infrastructure · Market Intelligence</Eyebrow>
+          </motion.div>
 
-        <motion.h1
-          initial={FADE_IN_UP_BIG.initial}
-          animate={FADE_IN_UP_BIG.animate}
-          transition={softTransition(0.08, 0.8)}
-          className="mt-6 text-[48px] sm:text-[60px] lg:text-[88px] font-bold tracking-tight leading-[1.0]"
-        >
-          Building for<br />what comes next.
-        </motion.h1>
+          <motion.h1
+            initial={FADE_IN_UP_BIG.initial}
+            animate={FADE_IN_UP_BIG.animate}
+            transition={softTransition(0.08, 0.8)}
+            className="mt-6 text-[48px] sm:text-[60px] lg:text-[88px] font-bold tracking-tight leading-[1.0]"
+          >
+            Building for<br />what comes next.
+          </motion.h1>
 
-        <motion.p
-          initial={FADE_IN_UP_BIG.initial}
-          animate={FADE_IN_UP_BIG.animate}
-          transition={softTransition(0.16, 0.8)}
-          className="mt-6 max-w-xl text-[16px] sm:text-[18px] leading-relaxed"
-          style={{ color: "rgba(255,255,255,0.72)" }}
-        >
-          Everything in financial markets was built for humans.
-        </motion.p>
+          <motion.p
+            initial={FADE_IN_UP_BIG.initial}
+            animate={FADE_IN_UP_BIG.animate}
+            transition={softTransition(0.16, 0.8)}
+            className="mt-6 max-w-xl text-[16px] sm:text-[18px] leading-relaxed"
+            style={{ color: "rgba(255,255,255,0.72)" }}
+          >
+            Everything in financial markets was built for humans.
+          </motion.p>
 
-        <motion.div
-          initial={FADE_IN_UP_BIG.initial}
-          animate={FADE_IN_UP_BIG.animate}
-          transition={softTransition(0.2, 0.8)}
-          className="mt-6 font-mono text-[10px] uppercase tracking-widest"
-          style={{ color: "rgba(255,255,255,0.5)" }}
-        >
-          Crypto · Web3 · AI · In the market since 2017
-        </motion.div>
+          <motion.div
+            initial={FADE_IN_UP_BIG.initial}
+            animate={FADE_IN_UP_BIG.animate}
+            transition={softTransition(0.2, 0.8)}
+            className="mt-6 font-mono text-[10px] uppercase tracking-widest"
+            style={{ color: "rgba(255,255,255,0.5)" }}
+          >
+            Crypto · Web3 · AI · In the market since 2017
+          </motion.div>
+        </div>
 
-        <motion.div
-          initial={FADE_IN_UP_BIG.initial}
-          animate={FADE_IN_UP_BIG.animate}
-          transition={softTransition(0.24, 0.8)}
-          className="mt-10 flex flex-col sm:flex-row items-start gap-3"
-        >
-          <BtnSolid href="https://app.coinsiglieri.com" className="w-full md:w-auto">
-            Open the dashboard <ArrowRight size={16} />
-          </BtnSolid>
-          <BtnGhost to="/compare" className="w-full md:w-auto">
-            See the scores <ArrowUpRight size={14} />
-          </BtnGhost>
-        </motion.div>
+        {/* BOTTOM group — anchored near the globe's bottom edge */}
+        <div>
+          <motion.div
+            initial={FADE_IN_UP_BIG.initial}
+            animate={FADE_IN_UP_BIG.animate}
+            transition={softTransition(0.24, 0.8)}
+            className="mt-10 flex flex-col sm:flex-row items-start gap-3"
+          >
+            <BtnSolid href="https://app.coinsiglieri.com" className="w-full md:w-auto">
+              Open the dashboard <ArrowRight size={16} />
+            </BtnSolid>
+            <BtnGhost to="/compare" className="w-full md:w-auto">
+              See the scores <ArrowUpRight size={14} />
+            </BtnGhost>
+          </motion.div>
+        </div>
       </div>
 
       {/* Stat band — pinned bottom-left (desktop) */}
@@ -226,7 +232,7 @@ function HeroMetrics() {
 
 const GLOBE_LINKS = [
   { label: "Compare", to: "/compare", accent: "#18b4d4", pos: { top: "8%", left: "45%" }, zx: 0.45, zy: 0.08 },
-  { label: "Exchange Match", to: "/find-my-exchange", accent: "#0dbe82", pos: { top: "38%", right: "2%" }, zx: 0.9, zy: 0.38 },
+  { label: "Match Exchange", to: "/find-my-exchange", accent: "#0dbe82", pos: { top: "38%", right: "2%" }, zx: 0.9, zy: 0.38 },
   { label: "Cards", to: "/cards", accent: "#70a848", pos: { top: "68%", right: "6%" }, zx: 0.88, zy: 0.68 },
   { label: "News", to: "/news", accent: "#18b4d4", pos: { top: "72%", left: "8%" }, zx: 0.1, zy: 0.72 },
   { label: "Advertise", to: "/advertise", accent: "#e8703a", pos: { top: "35%", left: "4%" }, zx: 0.06, zy: 0.35 },
