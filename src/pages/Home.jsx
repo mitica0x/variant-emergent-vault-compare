@@ -313,8 +313,17 @@ function SurfaceCard({ surface }) {
     onMouseLeave: () => setHover(false),
     style: cardStyle,
   };
-  if (href) return <a href={href} target="_blank" rel="noopener noreferrer" {...handlers}>{inner}</a>;
-  return <Link to={to} {...handlers}>{inner}</Link>;
+  const card = href
+    ? <a href={href} target="_blank" rel="noopener noreferrer" {...handlers}>{inner}</a>
+    : <Link to={to} {...handlers}>{inner}</Link>;
+  return (
+    <motion.div
+      whileHover={{ scale: 1.015, y: -3 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+    >
+      {card}
+    </motion.div>
+  );
 }
 
 function TrackRecordSection() {
@@ -477,12 +486,13 @@ function ProductsSection() {
       <div className="mb-10">
         <Eyebrow color="text-cyan">Products</Eyebrow>
         <h2 className="text-[32px] sm:text-[40px] font-bold tracking-tight mt-3">
-          Two products. Both live.
+          Two products. One infrastructure.
         </h2>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <ProductCard
           glow="0 0 40px rgba(24,180,212,0.15)"
+          glowHover="0 0 40px rgba(24,180,212,0.35)"
           border="0.5px solid rgba(24,180,212,0.3)"
           wordmark={<>C<span style={{ color: "#18b4d4" }}>0</span>insiglieri</>}
           badge="LIVE · $699/MO"
@@ -495,6 +505,7 @@ function ProductsSection() {
         />
         <ProductCard
           glow="0 0 40px rgba(245,158,11,0.15)"
+          glowHover="0 0 40px rgba(245,158,11,0.35)"
           border="0.5px solid rgba(245,158,11,0.3)"
           wordmark={<>Ax<span style={{ color: "#f59e0b" }}>0</span>n</>}
           badge="IN DEV · Q4 2026"
@@ -510,9 +521,16 @@ function ProductsSection() {
   );
 }
 
-function ProductCard({ glow, border, wordmark, badge, badgeColor, heading, body, features, featureColor, cta }) {
+function ProductCard({ glow, glowHover, border, wordmark, badge, badgeColor, heading, body, features, featureColor, cta }) {
+  const [hover, setHover] = useState(false);
   return (
-    <div style={{ background: "#0f1422", border, borderRadius: 3, padding: 32, boxShadow: glow }}>
+    <motion.div
+      whileHover={{ scale: 1.02, y: -4 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      onHoverStart={() => setHover(true)}
+      onHoverEnd={() => setHover(false)}
+    >
+      <div style={{ background: "#0f1422", border, borderRadius: 3, padding: 32, boxShadow: hover ? glowHover : glow, transition: "box-shadow 200ms ease" }}>
       <span
         className="font-mono text-[10px] uppercase tracking-widest px-2 py-[3px]"
         style={{ color: badgeColor, background: `${badgeColor}1f`, borderRadius: 3 }}
@@ -530,7 +548,8 @@ function ProductCard({ glow, border, wordmark, badge, badgeColor, heading, body,
         ))}
       </ul>
       <div className="mt-7">{cta}</div>
-    </div>
+      </div>
+    </motion.div>
   );
 }
 
