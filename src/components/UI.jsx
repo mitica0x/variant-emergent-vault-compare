@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import React, { useState, useRef } from "react";
+import { useInView } from "framer-motion";
 import { Check, X as XIcon } from "lucide-react";
 import { scoreRingColor } from "../data/mock";
-import { useInView } from "../hooks/use-in-view";
+
+const SPRING = "cubic-bezier(0.34, 1.56, 0.64, 1)";
 
 export function Eyebrow({ children, color = "text-emerald" }) {
   return <span className={`eyebrow ${color}`}>{children}</span>;
@@ -30,44 +31,63 @@ export function Badge({ children, tone = "emerald" }) {
 }
 
 export function MiniBar({ value, color = "#0dbe82", delay = 0 }) {
+  const ref = useRef(null);
+  const shown = useInView(ref, { once: true, amount: 0.2 });
   return (
-    <div className="mini-bar" style={{ width: "100%" }}>
-      <motion.span
-        style={{ background: color }}
-        initial={{ width: 0 }}
-        whileInView={{ width: `${value}%` }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8, ease: "easeOut", delay: delay / 1000 }}
+    <div ref={ref} className="mini-bar" style={{ width: "100%" }}>
+      <span
+        style={{
+          background: color,
+          width: shown ? `${value}%` : 0,
+          transition: `width 800ms ${SPRING} ${delay}s`,
+        }}
       />
     </div>
   );
 }
 
 export function ScoreCircle({ value, size = 72 }) {
-  const [ref, inView] = useInView({ threshold: 0.3 });
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, amount: 0.2 });
   const color = scoreRingColor(value);
-  const deg = inView ? (value / 100) * 360 : 0;
+  const stroke = 5;
+  const r = size / 2 - stroke / 2;
+  const c = 2 * Math.PI * r;
+  const offset = inView ? c * (1 - value / 100) : c;
   return (
     <div
       ref={ref}
       className="relative flex items-center justify-center"
       style={{ width: size, height: size }}
     >
-      <div
-        className="absolute inset-0 rounded-full"
-        style={{
-          background: `conic-gradient(${color} ${deg}deg, rgba(255,255,255,0.05) 0)`,
-          transition: "background 900ms cubic-bezier(0.34, 1.56, 0.64, 1)",
-        }}
-      />
-      <div
-        className="absolute rounded-full bg-bg flex items-center justify-center"
-        style={{ inset: 5 }}
+      <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={r}
+          fill="none"
+          stroke="rgba(255,255,255,0.05)"
+          strokeWidth={stroke}
+        />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={r}
+          fill="none"
+          stroke={color}
+          strokeWidth={stroke}
+          strokeLinecap="round"
+          strokeDasharray={c}
+          strokeDashoffset={offset}
+          style={{ transition: `stroke-dashoffset 800ms ${SPRING}` }}
+        />
+      </svg>
+      <span
+        className="font-mono font-semibold absolute"
+        style={{ color, fontSize: size * 0.32 }}
       >
-        <span className="font-mono font-semibold" style={{ color, fontSize: size * 0.32 }}>
-          {value}
-        </span>
-      </div>
+        {value}
+      </span>
     </div>
   );
 }

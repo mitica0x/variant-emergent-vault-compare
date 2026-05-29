@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import {
   ArrowRight, ArrowUpRight, Check, X as XIcon, Shield, Activity, FileCheck2, Scale, History,
 } from "lucide-react";
@@ -26,6 +26,8 @@ const SIDEBAR = [
 ];
 
 const BAR_GRADIENT = "linear-gradient(90deg, #18b4d4 0%, #0dbe82 100%)";
+
+const SPRING = "cubic-bezier(0.34, 1.56, 0.64, 1)";
 const SIDEBAR_IDS = SIDEBAR.map((s) => s.id);
 
 const TRUST_ITEMS = [
@@ -251,7 +253,7 @@ function FeaturedBreakdown({ exchange }) {
               {BREAKDOWN_LABELS[key] ?? key}
             </span>
             <div className="flex-1">
-              <MiniBar value={value} color={BAR_GRADIENT} delay={idx * 60} />
+              <MiniBar value={value} color={BAR_GRADIENT} delay={idx * 0.06} />
             </div>
             <span className="font-mono text-[11px] text-muted w-6 text-right">{value}</span>
           </div>
@@ -302,33 +304,29 @@ function Metric({ label, value, delta }) {
 
 function RankedList({ items }) {
   return (
-    <motion.div
-      className="mt-8 hairline"
-      style={{ borderRadius: 3 }}
-      variants={{ visible: { transition: { staggerChildren: 0.06 } } }}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true }}
-    >
+    <div className="mt-8 hairline" style={{ borderRadius: 3 }}>
       {items.map((e, i) => (
-        <RankedRow
-          key={e.id}
-          exchange={e}
-          delay={i * 30}
-          isLast={i === items.length - 1}
-        />
+        <RankedRow key={e.id} exchange={e} isLast={i === items.length - 1} />
       ))}
-    </motion.div>
+    </div>
   );
 }
 
-function RankedRow({ exchange, delay, isLast }) {
+function RankedRow({ exchange, isLast }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, amount: 0.2 });
+  const rowDelay = (exchange.rank % 8) * 0.04;
   return (
-    <motion.div
+    <div
+      ref={ref}
       className={`px-5 py-4 flex items-center gap-4 ${
         isLast ? "" : "hairline-b"
-      } hover:bg-white/[0.02] transition-colors`}
-      variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }}
+      } hover:bg-white/[0.02]`}
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? "translateY(0)" : "translateY(16px)",
+        transition: `opacity 500ms ${SPRING} ${rowDelay}s, transform 500ms ${SPRING} ${rowDelay}s, background-color 150ms ease`,
+      }}
     >
       <span className="font-mono text-[12px] text-muted w-7">#{exchange.rank}</span>
       <ExchangeLogo domain={exchange.domain} name={exchange.name} size={24} />
@@ -342,7 +340,7 @@ function RankedRow({ exchange, delay, isLast }) {
       </div>
       <div className="hidden md:flex items-center gap-3 w-[200px]">
         <div className="flex-1">
-          <MiniBar value={exchange.score} color={BAR_GRADIENT} delay={delay} />
+          <MiniBar value={exchange.score} color={BAR_GRADIENT} />
         </div>
         <span className="font-mono text-[13px] text-txt w-7 text-right">{exchange.score}</span>
       </div>
@@ -354,7 +352,7 @@ function RankedRow({ exchange, delay, isLast }) {
       >
         Visit <ArrowUpRight size={12} />
       </a>
-    </motion.div>
+    </div>
   );
 }
 
