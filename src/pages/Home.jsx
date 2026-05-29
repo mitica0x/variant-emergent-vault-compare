@@ -76,11 +76,25 @@ function Hero() {
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: "55%",
-          height: "120%",
+          width: "75%",
+          height: "135%",
           zIndex: 0,
           opacity: 0.85,
           pointerEvents: "none",
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: "720px",
+          height: "520px",
+          background:
+            "radial-gradient(ellipse at center, rgba(8,11,22,0.85) 0%, rgba(8,11,22,0.5) 45%, transparent 75%)",
+          pointerEvents: "none",
+          zIndex: 5,
         }}
       />
       <div
@@ -108,7 +122,7 @@ function Hero() {
             initial={FADE_IN_UP_BIG.initial}
             animate={FADE_IN_UP_BIG.animate}
             transition={softTransition(0.08, 0.8)}
-            className="mt-8 text-[56px] sm:text-[72px] lg:text-[88px] font-bold tracking-tight leading-[0.95] text-balance"
+            className="mt-8 text-[56px] sm:text-[64px] font-bold tracking-tight leading-[1.05] text-balance"
           >
             Building for what comes next.
           </motion.h1>
