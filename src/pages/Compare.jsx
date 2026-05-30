@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence, useInView, useMotionValue, useSpring } from "framer-motion";
 import {
@@ -562,12 +562,12 @@ function RankedRow({ exchange, isLast }) {
   );
 }
 
-const COLLAPSED_TABLE_ROWS = 5;
+const COLLAPSED_TABLE_ROWS = 10;
 
 // Shared fixed column widths so the always-visible head table and the
 // animated tail table line up exactly (a true height accordion needs the
 // tail in its own block-level container, hence two stacked tables).
-const TABLE_COL_WIDTHS = ["24%", "10%", "9%", "9%", "10%", "13%", "13%", "12%"];
+const TABLE_COL_WIDTHS = ["24%", "9%", "8%", "8%", "9%", "11%", "11%", "20%"];
 function TableCols() {
   return (
     <colgroup>
@@ -595,11 +595,53 @@ function ComparisonTableHead() {
   );
 }
 
+const COMPARE_MAX = 7;
+
 function ComparisonTableSection({ list }) {
   const [expanded, setExpanded] = useState(false);
   const head = list.slice(0, COLLAPSED_TABLE_ROWS);
   const tail = list.slice(COLLAPSED_TABLE_ROWS);
   const hasTail = tail.length > 0;
+
+  // Custom comparison builder.
+  const [compareIds, setCompareIds] = useState([]);
+  const panelRef = useRef(null);
+  const wasEmpty = useRef(true);
+
+  const compareSelected = useMemo(
+    () => compareIds.map((id) => EXCHANGES.find((e) => e.id === id)).filter(Boolean),
+    [compareIds]
+  );
+  const compareFull = compareIds.length >= COMPARE_MAX;
+
+  // Auto-scroll to the panel the first time an exchange is added.
+  useEffect(() => {
+    if (compareIds.length > 0 && wasEmpty.current) {
+      panelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    wasEmpty.current = compareIds.length === 0;
+  }, [compareIds]);
+
+  const toggleCompare = (id) =>
+    setCompareIds((ids) =>
+      ids.includes(id)
+        ? ids.filter((x) => x !== id)
+        : ids.length >= COMPARE_MAX
+        ? ids
+        : [...ids, id]
+    );
+  const addCompare = (id) =>
+    setCompareIds((ids) =>
+      ids.includes(id) || ids.length >= COMPARE_MAX ? ids : [...ids, id]
+    );
+  const removeCompare = (id) => setCompareIds((ids) => ids.filter((x) => x !== id));
+  const clearCompare = () => setCompareIds([]);
+
+  const rowCompareProps = (e) => ({
+    inCompare: compareIds.includes(e.id),
+    compareFull,
+    onToggleCompare: toggleCompare,
+  });
 
   return (
     <section id="comparison" className="mt-20 scroll-mt-20">
@@ -614,6 +656,34 @@ function ComparisonTableSection({ list }) {
         Side-by-side on what matters.
       </motion.h2>
 
+      <AnimatePresence>
+        {compareIds.length > 0 && (
+          <motion.div
+            key="custom-compare-panel"
+            ref={panelRef}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, transition: { duration: 0.3 } }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="mt-6 p-5 mb-8"
+            style={{
+              background: "#080b16",
+              border: "0.5px solid rgba(13,190,130,0.2)",
+              borderRadius: 3,
+            }}
+          >
+            <CustomComparePanelInner
+              selected={compareSelected}
+              compareIds={compareIds}
+              full={compareFull}
+              onAdd={addCompare}
+              onRemove={removeCompare}
+              onClear={clearCompare}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="mt-6 overflow-x-auto hairline" style={{ borderRadius: 3 }}>
         <table className="w-full min-w-[920px] text-[13px] table-fixed">
           <TableCols />
@@ -624,6 +694,7 @@ function ComparisonTableSection({ list }) {
                 key={e.id}
                 exchange={e}
                 isLast={(!expanded || !hasTail) && i === head.length - 1}
+                {...rowCompareProps(e)}
               />
             ))}
           </tbody>
@@ -643,7 +714,12 @@ function ComparisonTableSection({ list }) {
                 <TableCols />
                 <tbody>
                   {tail.map((e, i) => (
-                    <ComparisonRow key={e.id} exchange={e} isLast={i === tail.length - 1} />
+                    <ComparisonRow
+                      key={e.id}
+                      exchange={e}
+                      isLast={i === tail.length - 1}
+                      {...rowCompareProps(e)}
+                    />
                   ))}
                 </tbody>
               </table>
@@ -663,7 +739,160 @@ function ComparisonTableSection({ list }) {
   );
 }
 
-function ComparisonRow({ exchange, isLast }) {
+function CompareButton({ inCompare, disabled, onClick }) {
+  const [hover, setHover] = useState(false);
+  const emerald = inCompare || (hover && !disabled);
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      className={`font-mono text-[10px] uppercase tracking-widest px-2 py-1 whitespace-nowrap ${
+        emerald ? "" : "text-muted"
+      } ${disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}
+      style={{
+        border: `0.5px solid ${emerald ? "#0dbe82" : "rgba(255,255,255,0.15)"}`,
+        color: emerald ? "#0dbe82" : undefined,
+        borderRadius: 3,
+        transition: "border-color 150ms ease, color 150ms ease",
+      }}
+    >
+      {inCompare ? "✓ Added" : "+ Compare"}
+    </button>
+  );
+}
+
+function CustomComparePanelInner({ selected, compareIds, full, onAdd, onRemove, onClear }) {
+  const [query, setQuery] = useState("");
+  const results = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return [];
+    return EXCHANGES.filter(
+      (e) => !compareIds.includes(e.id) && e.name.toLowerCase().includes(q)
+    ).slice(0, 5);
+  }, [query, compareIds]);
+
+  const sorted = useMemo(() => [...selected].sort((a, b) => b.score - a.score), [selected]);
+
+  const add = (id) => {
+    onAdd(id);
+    setQuery("");
+  };
+
+  return (
+    <div>
+      <div className="flex items-center flex-wrap gap-3">
+        <Eyebrow color="text-cyan">Your Comparison</Eyebrow>
+        <div className="flex items-center flex-wrap gap-2 flex-1">
+          {selected.map((e) => (
+            <span
+              key={e.id}
+              className="inline-flex items-center gap-2 font-mono text-[11px] px-3 py-1"
+              style={{
+                background: "#0f1422",
+                border: "0.5px solid rgba(13,190,130,0.4)",
+                color: "#0dbe82",
+                borderRadius: 3,
+              }}
+            >
+              {e.name}
+              <button
+                type="button"
+                onClick={() => onRemove(e.id)}
+                aria-label={`Remove ${e.name}`}
+                style={{ cursor: "pointer", lineHeight: 1 }}
+              >
+                ×
+              </button>
+            </span>
+          ))}
+
+          {full ? (
+            <span className="font-mono text-[11px] text-muted">Maximum 7 exchanges</span>
+          ) : (
+            <div className="relative">
+              <input
+                type="text"
+                value={query}
+                onChange={(ev) => setQuery(ev.target.value)}
+                placeholder="Add exchange…"
+                className="font-mono text-[12px] text-txt placeholder:text-muted px-3 py-1 min-w-[160px] outline-none"
+                style={{
+                  background: "#0f1422",
+                  border: "0.5px solid rgba(255,255,255,0.1)",
+                  borderRadius: 3,
+                }}
+              />
+              <AnimatePresence>
+                {results.length > 0 && (
+                  <motion.div
+                    key="compare-add-dropdown"
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute left-0 right-0 z-20 mt-1"
+                    style={{
+                      background: "#0f1422",
+                      border: "0.5px solid rgba(255,255,255,0.12)",
+                      borderRadius: 3,
+                      minWidth: 200,
+                      overflow: "hidden",
+                    }}
+                  >
+                    {results.map((e) => (
+                      <button
+                        key={e.id}
+                        type="button"
+                        onClick={() => add(e.id)}
+                        className="w-full flex items-center gap-3 px-3 py-2 text-left hairline-b hover:bg-white/[0.03] transition-colors"
+                        style={{ cursor: "pointer" }}
+                      >
+                        <ExchangeLogo domain={e.domain} name={e.name} size={18} />
+                        <span className="text-[12px] font-semibold flex-1 truncate">{e.name}</span>
+                        <ScorePill score={e.score} />
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
+        </div>
+        <button
+          type="button"
+          onClick={onClear}
+          className="font-mono text-[10px] uppercase tracking-widest text-muted hover:text-rust transition-colors"
+        >
+          Clear all
+        </button>
+      </div>
+
+      <div className="mt-4 overflow-x-auto hairline" style={{ borderRadius: 3 }}>
+        <table className="w-full min-w-[920px] text-[13px] table-fixed">
+          <TableCols />
+          <ComparisonTableHead />
+          <tbody>
+            {sorted.map((e, i) => (
+              <ComparisonRow
+                key={e.id}
+                exchange={e}
+                isLast={i === sorted.length - 1}
+                inCompare={true}
+                compareFull={full}
+                onToggleCompare={onRemove}
+              />
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function ComparisonRow({ exchange, isLast, inCompare = false, compareFull = false, onToggleCompare }) {
   return (
     <tr className={`${isLast ? "" : "hairline-b"} hover:bg-white/[0.02] transition-colors`}>
       <td className="p-3">
@@ -682,15 +911,24 @@ function ComparisonRow({ exchange, isLast }) {
       <td className="p-3 font-mono text-[12px] text-muted">
         {exchange.tradingFeeLow.toFixed(2)}–{exchange.tradingFeeHigh.toFixed(2)}%
       </td>
-      <td className="p-3 text-right">
-        <a
-          href={exchange.affiliateUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-mono text-[11px] uppercase tracking-widest text-cyan hover:text-emerald transition-colors"
-        >
-          Visit <ArrowUpRight size={10} className="inline" />
-        </a>
+      <td className="p-3">
+        <div className="flex items-center justify-end gap-2 whitespace-nowrap">
+          {onToggleCompare && (
+            <CompareButton
+              inCompare={inCompare}
+              disabled={compareFull && !inCompare}
+              onClick={() => onToggleCompare(exchange.id)}
+            />
+          )}
+          <a
+            href={exchange.affiliateUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-mono text-[11px] uppercase tracking-widest text-cyan hover:text-emerald transition-colors"
+          >
+            Visit <ArrowUpRight size={10} className="inline" />
+          </a>
+        </div>
       </td>
     </tr>
   );
