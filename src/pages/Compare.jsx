@@ -690,7 +690,9 @@ function DetailMetrics({ exchange, shown }) {
   );
 }
 
-const COLLAPSED_TABLE_ROWS = 5;
+// Pre-selected on load: top 5 by score.
+const COMPARE_DEFAULT_IDS = ["bybit", "kraken", "binance", "uniswap", "deribit"];
+const COMPARE_MAX = 7;
 
 // Shared fixed column widths so the always-visible head table and the
 // animated tail table line up exactly (a true height accordion needs the
@@ -723,11 +725,31 @@ function ComparisonTableHead() {
   );
 }
 
-function ComparisonTableSection({ list }) {
-  const [expanded, setExpanded] = useState(false);
-  const head = list.slice(0, COLLAPSED_TABLE_ROWS);
-  const tail = list.slice(COLLAPSED_TABLE_ROWS);
-  const hasTail = tail.length > 0;
+function ComparisonTableSection() {
+  // Selected exchange ids, kept in the order they were added.
+  const [selectedIds, setSelectedIds] = useState(COMPARE_DEFAULT_IDS);
+  const [query, setQuery] = useState("");
+
+  const selected = useMemo(
+    () => selectedIds.map((id) => EXCHANGES.find((e) => e.id === id)).filter(Boolean),
+    [selectedIds]
+  );
+
+  const atMax = selectedIds.length >= COMPARE_MAX;
+
+  const results = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return [];
+    return EXCHANGES.filter((e) => e.name.toLowerCase().includes(q));
+  }, [query]);
+
+  const addExchange = (id) => {
+    if (selectedIds.includes(id) || selectedIds.length >= COMPARE_MAX) return;
+    setSelectedIds((ids) => [...ids, id]);
+    setQuery("");
+  };
+  const removeExchange = (id) =>
+    setSelectedIds((ids) => ids.filter((x) => x !== id));
 
   return (
     <section id="comparison" className="mt-20 scroll-mt-20">
@@ -742,50 +764,106 @@ function ComparisonTableSection({ list }) {
         Side-by-side on what matters.
       </motion.h2>
 
-      <div className="mt-6 overflow-x-auto hairline" style={{ borderRadius: 3 }}>
-        <table className="w-full min-w-[920px] text-[13px] table-fixed">
-          <TableCols />
-          <ComparisonTableHead />
-          <tbody>
-            {head.map((e, i) => (
-              <ComparisonRow
-                key={e.id}
-                exchange={e}
-                isLast={(!expanded || !hasTail) && i === head.length - 1}
-              />
-            ))}
-          </tbody>
-        </table>
-
-        <AnimatePresence initial={false}>
-          {expanded && hasTail && (
+      {/* Search + dropdown */}
+      <div className="mt-6 relative">
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search exchanges…"
+          className="w-full font-mono text-[13px] text-txt placeholder:text-muted px-4 py-3 outline-none"
+          style={{
+            background: "#0f1422",
+            border: "0.5px solid rgba(255,255,255,0.12)",
+            borderRadius: 3,
+          }}
+        />
+        <AnimatePresence>
+          {results.length > 0 && (
             <motion.div
-              key="comparison-tail"
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={ACCORDION_TRANSITION}
-              style={{ overflow: "hidden" }}
+              key="compare-dropdown"
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.15 }}
+              className="absolute left-0 right-0 z-20 mt-1"
+              style={{
+                background: "#0f1422",
+                border: "0.5px solid rgba(255,255,255,0.12)",
+                borderRadius: 3,
+                maxHeight: 252,
+                overflowY: "auto",
+              }}
             >
-              <table className="w-full min-w-[920px] text-[13px] table-fixed">
-                <TableCols />
-                <tbody>
-                  {tail.map((e, i) => (
-                    <ComparisonRow key={e.id} exchange={e} isLast={i === tail.length - 1} />
-                  ))}
-                </tbody>
-              </table>
+              {results.map((e) => {
+                const already = selectedIds.includes(e.id);
+                const disabled = already || atMax;
+                return (
+                  <button
+                    key={e.id}
+                    onClick={() => addExchange(e.id)}
+                    disabled={disabled}
+                    className="w-full flex items-center gap-3 px-4 py-2 text-left hairline-b hover:bg-white/[0.03] transition-colors"
+                    style={{ opacity: already ? 0.4 : 1, cursor: disabled ? "not-allowed" : "pointer" }}
+                  >
+                    <ExchangeLogo domain={e.domain} name={e.name} size={20} />
+                    <span className="text-[13px] font-semibold flex-1 truncate">{e.name}</span>
+                    <ScorePill score={e.score} />
+                    {e.micarLicensed && <Badge tone="emerald">MiCAR</Badge>}
+                  </button>
+                );
+              })}
             </motion.div>
           )}
         </AnimatePresence>
       </div>
 
-      {hasTail && (
-        <ShowMoreButton
-          expanded={expanded}
-          onToggle={() => setExpanded((v) => !v)}
-          collapsedLabel={`Show all ${list.length} exchanges`}
-        />
+      {/* Selected chips */}
+      <div className="mt-3 flex flex-wrap gap-2">
+        {selected.map((e) => (
+          <span
+            key={e.id}
+            className="inline-flex items-center gap-2 font-mono text-[11px] px-3 py-1"
+            style={{
+              background: "#0f1422",
+              border: "0.5px solid rgba(13,190,130,0.4)",
+              color: "#0dbe82",
+              borderRadius: 3,
+            }}
+          >
+            {e.name}
+            <button
+              type="button"
+              onClick={() => removeExchange(e.id)}
+              aria-label={`Remove ${e.name}`}
+              style={{ cursor: "pointer", lineHeight: 1 }}
+            >
+              ×
+            </button>
+          </span>
+        ))}
+      </div>
+      {atMax && (
+        <div className="mt-2 font-mono text-[11px] text-muted">Maximum 7 exchanges selected</div>
+      )}
+
+      {/* Table — only the selected exchanges, min 2 to render */}
+      {selected.length < 2 ? (
+        <div className="mt-8 py-12 text-center font-mono text-[12px] text-muted">
+          Select at least 2 exchanges to compare
+        </div>
+      ) : (
+        <div className="mt-6 overflow-x-auto hairline" style={{ borderRadius: 3 }}>
+          <table className="w-full min-w-[920px] text-[13px] table-fixed">
+            <TableCols />
+            <ComparisonTableHead />
+            <tbody>
+              {selected.map((e, i) => (
+                <ComparisonRow key={e.id} exchange={e} isLast={i === selected.length - 1} />
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </section>
   );
