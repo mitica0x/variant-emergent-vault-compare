@@ -4,7 +4,7 @@ import { ArrowRight, ArrowLeft, ArrowUpRight, RefreshCw, Mail, Check } from "luc
 import { Eyebrow, Badge, MiniBar, ExchangeLogo } from "../components/UI";
 import {
   EXCHANGES, COUNTRIES, MICAR_COUNTRIES,
-  scoreForUser, getReasoning, getTierColor,
+  scoreForUser, getReasoning,
 } from "../data/mock";
 import { FADE_SWAP, EASE_SOFT } from "../lib/motion";
 
@@ -371,7 +371,6 @@ const LIVE_ROW_ANIM = { opacity: 1 };
 const LIVE_ROW_TRANS = { duration: 0.3 };
 
 function LiveRankRow({ exchange: e, position, isLast, isMicarCountry }) {
-  const tierColor = getTierColor(e._score);
   const isTopThree = position < 3;
   return (
     <motion.div
@@ -391,7 +390,7 @@ function LiveRankRow({ exchange: e, position, isLast, isMicarCountry }) {
           {e.micarLicensed && isMicarCountry && <Badge tone="emerald">MiCAR</Badge>}
         </div>
         <div className="mt-1">
-          <MiniBar value={e._score} color={tierColor} />
+          <MiniBar value={e._score} color="linear-gradient(90deg, #18b4d4 0%, #0dbe82 100%)" />
         </div>
       </div>
       <span className="font-mono text-[13px] text-txt w-7 text-right">{e._score}</span>
