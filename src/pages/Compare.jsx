@@ -432,6 +432,7 @@ function ShowMoreButton({ expanded, onToggle, collapsedLabel }) {
 
 function RankedList({ items, tab, featuredShown }) {
   const [expanded, setExpanded] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
 
   // Ordered entries (rows + optional cex/dex divider), matching the prior layout.
   const entries = useMemo(() => {
@@ -469,7 +470,13 @@ function RankedList({ items, tab, featuredShown }) {
     entry.kind === "divider" ? (
       <DexDivider key={`divider-${idx}`} />
     ) : (
-      <RankedRow key={entry.exchange.id} exchange={entry.exchange} isLast={isLast} />
+      <RankedRow
+        key={entry.exchange.id}
+        exchange={entry.exchange}
+        isLast={isLast}
+        selectedId={selectedId}
+        setSelectedId={setSelectedId}
+      />
     );
 
   return (
@@ -502,20 +509,25 @@ function RankedList({ items, tab, featuredShown }) {
   );
 }
 
-function RankedRow({ exchange, isLast }) {
+function RankedRow({ exchange, isLast, selectedId, setSelectedId }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, amount: 0.05 });
   const rowDelay = (exchange.rank % 8) * 0.04;
+  const isExpanded = selectedId === exchange.id;
   return (
+    <>
     <div
       ref={ref}
-      className={`px-5 py-4 flex items-center gap-4 ${
+      onClick={() => setSelectedId(isExpanded ? null : exchange.id)}
+      className={`px-5 py-4 flex items-center gap-4 cursor-pointer ${
         isLast ? "" : "hairline-b"
       } hover:bg-white/[0.02]`}
       style={{
         opacity: inView ? 1 : 0,
         transform: inView ? "translateY(0)" : "translateY(16px)",
         transition: `opacity 500ms ${SPRING} ${rowDelay}s, transform 500ms ${SPRING} ${rowDelay}s, background-color 150ms ease`,
+        borderLeft: isExpanded ? "3px solid #0dbe82" : "3px solid transparent",
+        background: isExpanded ? "rgba(13,190,130,0.04)" : undefined,
       }}
     >
       <span className="font-mono text-[12px] text-muted w-7">#{exchange.rank}</span>
@@ -554,10 +566,126 @@ function RankedRow({ exchange, isLast }) {
         href={exchange.affiliateUrl}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={(e) => e.stopPropagation()}
         className="btn-cyan !py-1 !px-2 !text-[11px]"
       >
         Visit <ArrowUpRight size={12} />
       </a>
+    </div>
+    <AnimatePresence initial={false}>
+      {isExpanded && (
+        <motion.div
+          key={exchange.id + "-detail"}
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: "auto", opacity: 1 }}
+          exit={{ height: 0, opacity: 0 }}
+          transition={{ duration: 0.35, ease: "easeInOut" }}
+          style={{ overflow: "hidden" }}
+        >
+          <ExchangeDetailCard exchange={exchange} shown={true} />
+        </motion.div>
+      )}
+    </AnimatePresence>
+    </>
+  );
+}
+
+// Inline accordion detail — mirrors FeaturedCard's 3-column layout, but reads
+// from the passed exchange (not the hardcoded featured one).
+function ExchangeDetailCard({ exchange, shown }) {
+  return (
+    <div
+      className="p-7 grid grid-cols-1 lg:grid-cols-[1fr_1.1fr_1.3fr] gap-8"
+      style={{
+        background: "#0f1422",
+        border: "0.5px solid rgba(163,230,53,0.2)",
+        borderLeft: "3px solid #0dbe82",
+        borderRadius: 3,
+      }}
+    >
+      <DetailIdentity exchange={exchange} shown={shown} />
+      <DetailBars exchange={exchange} shown={shown} />
+      <DetailMetrics exchange={exchange} shown={shown} />
+    </div>
+  );
+}
+
+function DetailIdentity({ exchange, shown }) {
+  return (
+    <div className="flex flex-col h-full">
+      <div className="flex items-baseline gap-3">
+        <span className="font-mono text-[14px]" style={{ color: "rgba(255,255,255,0.6)" }}>#{exchange.rank}</span>
+        <ExchangeLogo domain={exchange.domain} name={exchange.name} size={48} />
+        <div>
+          <div className="text-[20px] font-semibold leading-none">{exchange.name}</div>
+          <div className="text-[12px] mt-1" style={{ color: "rgba(255,255,255,0.6)" }}>{exchange.bestFor}</div>
+        </div>
+      </div>
+      <div className="mt-5 flex flex-wrap gap-2">
+        {exchange.micarLicensed && <Badge tone="emerald">✓ MiCAR</Badge>}
+        {exchange.type.includes("dex") && <Badge tone="cyan">DEX</Badge>}
+        {WEB3_NAMES.includes(exchange.name) && <Badge tone="rust">WEB3</Badge>}
+      </div>
+      <p className="mt-5 text-[13px] leading-relaxed text-muted">
+        {exchange.proSummary}
+      </p>
+      <div className="flex-1 flex items-center justify-center">
+        <ScoreCircle value={exchange.score} size={72} shown={shown} />
+      </div>
+    </div>
+  );
+}
+
+function DetailBars({ exchange, shown }) {
+  const bd = exchange.scoreBreakdown || {};
+  return (
+    <div className="h-full flex flex-col -ml-3">
+      <div className="space-y-2">
+        {FEATURED_PILLARS.map((p, idx) => {
+          const value = p.override ?? bd[p.key] ?? 80;
+          return (
+            <div key={p.label} className="flex items-center gap-3">
+              <span className="font-mono text-[10px] uppercase tracking-widest w-28" style={{ color: "rgba(255,255,255,0.6)" }}>
+                {p.label}
+              </span>
+              <div className="flex-1">
+                <MiniBar value={value} color={BAR_GRADIENT} delay={idx * 0.06} shown={shown} />
+              </div>
+              <span className="font-mono text-[11px] w-6 text-right" style={{ color: "rgba(255,255,255,0.6)" }}>{value}</span>
+            </div>
+          );
+        })}
+      </div>
+      <div className="flex-1 flex flex-col items-center justify-center gap-2">
+        <a
+          href={exchange.affiliateUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
+          className="btn-cyan"
+        >
+          Visit {exchange.name} <ArrowUpRight size={14} />
+        </a>
+        <p className="font-mono text-[10px] text-center text-muted">· Score independent</p>
+      </div>
+    </div>
+  );
+}
+
+function DetailMetrics({ exchange, shown }) {
+  const hasVol = exchange.vol24h !== undefined && exchange.vol24h !== null;
+  const hasSpread = typeof exchange.spreadBTC === "number";
+  const hasUptime = typeof exchange.uptime90d === "number";
+  return (
+    <div className="flex flex-col gap-3 h-full">
+      <div className="grid grid-cols-3 gap-3">
+        <CompactVital label="24h Vol" value={hasVol ? exchange.vol24h : "—"} delta={exchange.vol24hDelta} />
+        <CompactVital label="BTC Spread" value={hasSpread ? `${exchange.spreadBTC.toFixed(3)}%` : "—"} />
+        <CompactVital label="Uptime" value={hasUptime ? `${exchange.uptime90d}%` : "—"} />
+      </div>
+      <div className="flex-1" style={{ minHeight: 300 }}>
+        <RadarBreakdown exchange={exchange} shown={shown} />
+      </div>
     </div>
   );
 }
