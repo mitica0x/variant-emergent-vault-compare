@@ -220,7 +220,7 @@ function FeaturedCard({ exchange }) {
 
 function FeaturedIdentity({ exchange, shown }) {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col h-full">
       <div className="flex items-baseline gap-3">
         <span className="font-mono text-[14px]" style={{ color: "rgba(255,255,255,0.6)" }}>#{exchange.rank}</span>
         <ExchangeLogo domain={exchange.domain} name={exchange.name} size={48} />
@@ -237,20 +237,9 @@ function FeaturedIdentity({ exchange, shown }) {
       <p className="mt-5 text-[13px] leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>
         {exchange.proSummary}
       </p>
-      <div className="mt-6 flex justify-center">
+      <div className="flex-1 flex items-center justify-center">
         <ScoreCircle value={exchange.score} size={72} shown={shown} />
       </div>
-      <a
-        href={exchange.affiliateUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="btn-cyan mt-5 self-center"
-      >
-        Visit {exchange.name} <ArrowUpRight size={14} />
-      </a>
-      <p className="mt-2 text-[10px] font-mono text-center" style={{ color: "rgba(255,255,255,0.6)" }}>
-        Sponsored by {exchange.name} · CTR 24h: 3.4%
-      </p>
     </div>
   );
 }
@@ -268,7 +257,7 @@ const FEATURED_PILLARS = [
 function FeaturedBars({ exchange, shown }) {
   const bd = exchange.scoreBreakdown || {};
   return (
-    <div className="h-full flex flex-col justify-center -ml-3">
+    <div className="h-full flex flex-col -ml-3">
       <div className="space-y-2">
         {FEATURED_PILLARS.map((p, idx) => {
         const value = p.override ?? bd[p.key] ?? 80;
@@ -284,6 +273,19 @@ function FeaturedBars({ exchange, shown }) {
           </div>
         );
         })}
+      </div>
+      <div className="flex-1 flex flex-col items-center justify-center gap-2">
+        <a
+          href={exchange.affiliateUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn-cyan"
+        >
+          Visit {exchange.name} <ArrowUpRight size={14} />
+        </a>
+        <p className="text-[10px] font-mono text-center" style={{ color: "rgba(255,255,255,0.6)" }}>
+          Sponsored by {exchange.name} · CTR 24h: 3.4%
+        </p>
       </div>
     </div>
   );
