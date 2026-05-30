@@ -432,7 +432,6 @@ function ShowMoreButton({ expanded, onToggle, collapsedLabel }) {
 
 function RankedList({ items, tab, featuredShown }) {
   const [expanded, setExpanded] = useState(false);
-  const [selectedId, setSelectedId] = useState(null);
 
   // Ordered entries (rows + optional cex/dex divider), matching the prior layout.
   const entries = useMemo(() => {
@@ -470,13 +469,7 @@ function RankedList({ items, tab, featuredShown }) {
     entry.kind === "divider" ? (
       <DexDivider key={`divider-${idx}`} />
     ) : (
-      <RankedRow
-        key={entry.exchange.id}
-        exchange={entry.exchange}
-        isLast={isLast}
-        selectedId={selectedId}
-        setSelectedId={setSelectedId}
-      />
+      <RankedRow key={entry.exchange.id} exchange={entry.exchange} isLast={isLast} />
     );
 
   return (
@@ -509,25 +502,20 @@ function RankedList({ items, tab, featuredShown }) {
   );
 }
 
-function RankedRow({ exchange, isLast, selectedId, setSelectedId }) {
+function RankedRow({ exchange, isLast }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, amount: 0.05 });
   const rowDelay = (exchange.rank % 8) * 0.04;
-  const isExpanded = selectedId === exchange.id;
   return (
-    <>
     <div
       ref={ref}
-      onClick={() => setSelectedId(isExpanded ? null : exchange.id)}
-      className={`px-5 py-4 flex items-center gap-4 cursor-pointer ${
+      className={`px-5 py-4 flex items-center gap-4 ${
         isLast ? "" : "hairline-b"
       } hover:bg-white/[0.02]`}
       style={{
         opacity: inView ? 1 : 0,
         transform: inView ? "translateY(0)" : "translateY(16px)",
         transition: `opacity 500ms ${SPRING} ${rowDelay}s, transform 500ms ${SPRING} ${rowDelay}s, background-color 150ms ease`,
-        borderLeft: isExpanded ? "3px solid #0dbe82" : "3px solid transparent",
-        background: isExpanded ? "rgba(13,190,130,0.04)" : undefined,
       }}
     >
       <span className="font-mono text-[12px] text-muted w-7">#{exchange.rank}</span>
@@ -566,133 +554,15 @@ function RankedRow({ exchange, isLast, selectedId, setSelectedId }) {
         href={exchange.affiliateUrl}
         target="_blank"
         rel="noopener noreferrer"
-        onClick={(e) => e.stopPropagation()}
         className="btn-cyan !py-1 !px-2 !text-[11px]"
       >
         Visit <ArrowUpRight size={12} />
       </a>
     </div>
-    <AnimatePresence initial={false}>
-      {isExpanded && (
-        <motion.div
-          key={exchange.id + "-detail"}
-          initial={{ height: 0, opacity: 0 }}
-          animate={{ height: "auto", opacity: 1 }}
-          exit={{ height: 0, opacity: 0 }}
-          transition={{ duration: 0.35, ease: "easeInOut" }}
-          style={{ overflow: "hidden" }}
-        >
-          <ExchangeDetailCard exchange={exchange} shown={true} />
-        </motion.div>
-      )}
-    </AnimatePresence>
-    </>
   );
 }
 
-// Inline accordion detail — mirrors FeaturedCard's 3-column layout, but reads
-// from the passed exchange (not the hardcoded featured one).
-function ExchangeDetailCard({ exchange, shown }) {
-  return (
-    <div
-      className="p-7 grid grid-cols-1 lg:grid-cols-[1fr_1.1fr_1.3fr] gap-8"
-      style={{
-        background: "#0f1422",
-        border: "0.5px solid rgba(163,230,53,0.2)",
-        borderLeft: "3px solid #0dbe82",
-        borderRadius: 3,
-      }}
-    >
-      <DetailIdentity exchange={exchange} shown={shown} />
-      <DetailBars exchange={exchange} shown={shown} />
-      <DetailMetrics exchange={exchange} shown={shown} />
-    </div>
-  );
-}
-
-function DetailIdentity({ exchange, shown }) {
-  return (
-    <div className="flex flex-col h-full">
-      <div className="flex items-baseline gap-3">
-        <span className="font-mono text-[14px]" style={{ color: "rgba(255,255,255,0.6)" }}>#{exchange.rank}</span>
-        <ExchangeLogo domain={exchange.domain} name={exchange.name} size={48} />
-        <div>
-          <div className="text-[20px] font-semibold leading-none">{exchange.name}</div>
-          <div className="text-[12px] mt-1" style={{ color: "rgba(255,255,255,0.6)" }}>{exchange.bestFor}</div>
-        </div>
-      </div>
-      <div className="mt-5 flex flex-wrap gap-2">
-        {exchange.micarLicensed && <Badge tone="emerald">✓ MiCAR</Badge>}
-        {exchange.type.includes("dex") && <Badge tone="cyan">DEX</Badge>}
-        {WEB3_NAMES.includes(exchange.name) && <Badge tone="rust">WEB3</Badge>}
-      </div>
-      <p className="mt-5 text-[13px] leading-relaxed text-muted">
-        {exchange.proSummary}
-      </p>
-      <div className="flex-1 flex items-center justify-center">
-        <ScoreCircle value={exchange.score} size={72} shown={shown} />
-      </div>
-    </div>
-  );
-}
-
-function DetailBars({ exchange, shown }) {
-  const bd = exchange.scoreBreakdown || {};
-  return (
-    <div className="h-full flex flex-col -ml-3">
-      <div className="space-y-2">
-        {FEATURED_PILLARS.map((p, idx) => {
-          const value = p.override ?? bd[p.key] ?? 80;
-          return (
-            <div key={p.label} className="flex items-center gap-3">
-              <span className="font-mono text-[10px] uppercase tracking-widest w-28" style={{ color: "rgba(255,255,255,0.6)" }}>
-                {p.label}
-              </span>
-              <div className="flex-1">
-                <MiniBar value={value} color={BAR_GRADIENT} delay={idx * 0.06} shown={shown} />
-              </div>
-              <span className="font-mono text-[11px] w-6 text-right" style={{ color: "rgba(255,255,255,0.6)" }}>{value}</span>
-            </div>
-          );
-        })}
-      </div>
-      <div className="flex-1 flex flex-col items-center justify-center gap-2">
-        <a
-          href={exchange.affiliateUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={(e) => e.stopPropagation()}
-          className="btn-cyan"
-        >
-          Visit {exchange.name} <ArrowUpRight size={14} />
-        </a>
-        <p className="font-mono text-[10px] text-center text-muted">· Score independent</p>
-      </div>
-    </div>
-  );
-}
-
-function DetailMetrics({ exchange, shown }) {
-  const hasVol = exchange.vol24h !== undefined && exchange.vol24h !== null;
-  const hasSpread = typeof exchange.spreadBTC === "number";
-  const hasUptime = typeof exchange.uptime90d === "number";
-  return (
-    <div className="flex flex-col gap-3 h-full">
-      <div className="grid grid-cols-3 gap-3">
-        <CompactVital label="24h Vol" value={hasVol ? exchange.vol24h : "—"} delta={exchange.vol24hDelta} />
-        <CompactVital label="BTC Spread" value={hasSpread ? `${exchange.spreadBTC.toFixed(3)}%` : "—"} />
-        <CompactVital label="Uptime" value={hasUptime ? `${exchange.uptime90d}%` : "—"} />
-      </div>
-      <div className="flex-1" style={{ minHeight: 300 }}>
-        <RadarBreakdown exchange={exchange} shown={shown} />
-      </div>
-    </div>
-  );
-}
-
-// Pre-selected on load: top 5 by score.
-const COMPARE_DEFAULT_IDS = ["bybit", "kraken", "binance", "uniswap", "deribit"];
-const COMPARE_MAX = 7;
+const COLLAPSED_TABLE_ROWS = 5;
 
 // Shared fixed column widths so the always-visible head table and the
 // animated tail table line up exactly (a true height accordion needs the
@@ -725,31 +595,11 @@ function ComparisonTableHead() {
   );
 }
 
-function ComparisonTableSection() {
-  // Selected exchange ids, kept in the order they were added.
-  const [selectedIds, setSelectedIds] = useState(COMPARE_DEFAULT_IDS);
-  const [query, setQuery] = useState("");
-
-  const selected = useMemo(
-    () => selectedIds.map((id) => EXCHANGES.find((e) => e.id === id)).filter(Boolean),
-    [selectedIds]
-  );
-
-  const atMax = selectedIds.length >= COMPARE_MAX;
-
-  const results = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return [];
-    return EXCHANGES.filter((e) => e.name.toLowerCase().includes(q));
-  }, [query]);
-
-  const addExchange = (id) => {
-    if (selectedIds.includes(id) || selectedIds.length >= COMPARE_MAX) return;
-    setSelectedIds((ids) => [...ids, id]);
-    setQuery("");
-  };
-  const removeExchange = (id) =>
-    setSelectedIds((ids) => ids.filter((x) => x !== id));
+function ComparisonTableSection({ list }) {
+  const [expanded, setExpanded] = useState(false);
+  const head = list.slice(0, COLLAPSED_TABLE_ROWS);
+  const tail = list.slice(COLLAPSED_TABLE_ROWS);
+  const hasTail = tail.length > 0;
 
   return (
     <section id="comparison" className="mt-20 scroll-mt-20">
@@ -764,106 +614,50 @@ function ComparisonTableSection() {
         Side-by-side on what matters.
       </motion.h2>
 
-      {/* Search + dropdown */}
-      <div className="mt-6 relative">
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search exchanges…"
-          className="w-full font-mono text-[13px] text-txt placeholder:text-muted px-4 py-3 outline-none"
-          style={{
-            background: "#0f1422",
-            border: "0.5px solid rgba(255,255,255,0.12)",
-            borderRadius: 3,
-          }}
-        />
-        <AnimatePresence>
-          {results.length > 0 && (
+      <div className="mt-6 overflow-x-auto hairline" style={{ borderRadius: 3 }}>
+        <table className="w-full min-w-[920px] text-[13px] table-fixed">
+          <TableCols />
+          <ComparisonTableHead />
+          <tbody>
+            {head.map((e, i) => (
+              <ComparisonRow
+                key={e.id}
+                exchange={e}
+                isLast={(!expanded || !hasTail) && i === head.length - 1}
+              />
+            ))}
+          </tbody>
+        </table>
+
+        <AnimatePresence initial={false}>
+          {expanded && hasTail && (
             <motion.div
-              key="compare-dropdown"
-              initial={{ opacity: 0, y: -4 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -4 }}
-              transition={{ duration: 0.15 }}
-              className="absolute left-0 right-0 z-20 mt-1"
-              style={{
-                background: "#0f1422",
-                border: "0.5px solid rgba(255,255,255,0.12)",
-                borderRadius: 3,
-                maxHeight: 252,
-                overflowY: "auto",
-              }}
+              key="comparison-tail"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={ACCORDION_TRANSITION}
+              style={{ overflow: "hidden" }}
             >
-              {results.map((e) => {
-                const already = selectedIds.includes(e.id);
-                const disabled = already || atMax;
-                return (
-                  <button
-                    key={e.id}
-                    onClick={() => addExchange(e.id)}
-                    disabled={disabled}
-                    className="w-full flex items-center gap-3 px-4 py-2 text-left hairline-b hover:bg-white/[0.03] transition-colors"
-                    style={{ opacity: already ? 0.4 : 1, cursor: disabled ? "not-allowed" : "pointer" }}
-                  >
-                    <ExchangeLogo domain={e.domain} name={e.name} size={20} />
-                    <span className="text-[13px] font-semibold flex-1 truncate">{e.name}</span>
-                    <ScorePill score={e.score} />
-                    {e.micarLicensed && <Badge tone="emerald">MiCAR</Badge>}
-                  </button>
-                );
-              })}
+              <table className="w-full min-w-[920px] text-[13px] table-fixed">
+                <TableCols />
+                <tbody>
+                  {tail.map((e, i) => (
+                    <ComparisonRow key={e.id} exchange={e} isLast={i === tail.length - 1} />
+                  ))}
+                </tbody>
+              </table>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
 
-      {/* Selected chips */}
-      <div className="mt-3 flex flex-wrap gap-2">
-        {selected.map((e) => (
-          <span
-            key={e.id}
-            className="inline-flex items-center gap-2 font-mono text-[11px] px-3 py-1"
-            style={{
-              background: "#0f1422",
-              border: "0.5px solid rgba(13,190,130,0.4)",
-              color: "#0dbe82",
-              borderRadius: 3,
-            }}
-          >
-            {e.name}
-            <button
-              type="button"
-              onClick={() => removeExchange(e.id)}
-              aria-label={`Remove ${e.name}`}
-              style={{ cursor: "pointer", lineHeight: 1 }}
-            >
-              ×
-            </button>
-          </span>
-        ))}
-      </div>
-      {atMax && (
-        <div className="mt-2 font-mono text-[11px] text-muted">Maximum 7 exchanges selected</div>
-      )}
-
-      {/* Table — only the selected exchanges, min 2 to render */}
-      {selected.length < 2 ? (
-        <div className="mt-8 py-12 text-center font-mono text-[12px] text-muted">
-          Select at least 2 exchanges to compare
-        </div>
-      ) : (
-        <div className="mt-6 overflow-x-auto hairline" style={{ borderRadius: 3 }}>
-          <table className="w-full min-w-[920px] text-[13px] table-fixed">
-            <TableCols />
-            <ComparisonTableHead />
-            <tbody>
-              {selected.map((e, i) => (
-                <ComparisonRow key={e.id} exchange={e} isLast={i === selected.length - 1} />
-              ))}
-            </tbody>
-          </table>
-        </div>
+      {hasTail && (
+        <ShowMoreButton
+          expanded={expanded}
+          onToggle={() => setExpanded((v) => !v)}
+          collapsedLabel={`Show all ${list.length} exchanges`}
+        />
       )}
     </section>
   );
