@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence, useInView, useMotionValue, useSpring } from "framer-motion";
 import {
   ArrowRight, ArrowUpRight, Check, X as XIcon, Shield, Activity, FileCheck2, Scale, History,
-  ChevronDown, ChevronUp,
 } from "lucide-react";
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, ResponsiveContainer } from "recharts";
 import { Eyebrow, Badge, MiniBar, ScoreCircle, ProsCons, ExchangeLogo } from "../components/UI";
@@ -72,7 +71,7 @@ export default function Compare() {
             featured={featured}
             rest={rest}
           />
-          <ComparisonTableSection />
+          <ComparisonTableSection list={list} />
           <ReviewsSection list={list} />
           <MethodologySection />
         </div>
@@ -407,20 +406,26 @@ function DexDivider() {
 }
 
 const COLLAPSED_ROWS = 10;
-const ACCORDION_TRANSITION = { duration: 0.3, ease: "easeInOut" };
+const ACCORDION_TRANSITION = { duration: 0.35, ease: "easeInOut" };
 
-// Full-width ghost toggle shared by the expand/collapse sections.
+// Full-width ghost toggle shared by all three expand/collapse sections.
 function ShowMoreButton({ expanded, onToggle, collapsedLabel }) {
+  const [hover, setHover] = useState(false);
   return (
     <button
       onClick={onToggle}
-      className="btn-outline w-full justify-center mt-3 font-mono uppercase tracking-widest text-[11px]"
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      className="w-full mt-3 py-3 font-mono uppercase tracking-widest text-xs"
+      style={{
+        background: "transparent",
+        border: `1px solid ${hover ? "#ffffff30" : "#ffffff18"}`,
+        color: hover ? "#e4e4e7" : "#a1a1aa",
+        borderRadius: 3,
+        transition: "border-color 200ms ease, color 200ms ease",
+      }}
     >
-      {expanded ? (
-        <>Show less <ChevronUp size={14} /></>
-      ) : (
-        <>{collapsedLabel} <ChevronDown size={14} /></>
-      )}
+      {expanded ? "Show less ↑" : `${collapsedLabel} ↓`}
     </button>
   );
 }
@@ -557,38 +562,44 @@ function RankedRow({ exchange, isLast }) {
   );
 }
 
-// Pre-select the top 5 exchanges by score (stable sort → Bybit, Kraken,
-// Binance, Uniswap, Deribit) so the comparison table is never empty on load.
-const DEFAULT_COMPARE_IDS = EXCHANGES.map((e, i) => ({ id: e.id, score: e.score, i }))
-  .sort((a, b) => b.score - a.score || a.i - b.i)
-  .slice(0, 5)
-  .map((e) => e.id);
+const COLLAPSED_TABLE_ROWS = 5;
 
-const MAX_COMPARE = 7;
-
-function ComparisonTableSection() {
-  const [selectedIds, setSelectedIds] = useState(DEFAULT_COMPARE_IDS);
-  const [query, setQuery] = useState("");
-
-  const selected = useMemo(
-    () => EXCHANGES.filter((e) => selectedIds.includes(e.id)).sort((a, b) => b.score - a.score),
-    [selectedIds]
+// Shared fixed column widths so the always-visible head table and the
+// animated tail table line up exactly (a true height accordion needs the
+// tail in its own block-level container, hence two stacked tables).
+const TABLE_COL_WIDTHS = ["24%", "10%", "9%", "9%", "10%", "13%", "13%", "12%"];
+function TableCols() {
+  return (
+    <colgroup>
+      {TABLE_COL_WIDTHS.map((w, i) => (
+        <col key={i} style={{ width: w }} />
+      ))}
+    </colgroup>
   );
-  const atMax = selectedIds.length >= MAX_COMPARE;
+}
 
-  const results = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return [];
-    return EXCHANGES.filter(
-      (e) => !selectedIds.includes(e.id) && e.name.toLowerCase().includes(q)
-    ).slice(0, 8);
-  }, [query, selectedIds]);
+function ComparisonTableHead() {
+  return (
+    <thead className="font-mono text-[10px] uppercase tracking-widest text-muted">
+      <tr className="hairline-b">
+        <th className="text-left p-3 font-normal">Exchange</th>
+        <th className="text-left p-3 font-normal">Score</th>
+        <th className="text-left p-3 font-normal">MiCAR</th>
+        <th className="text-left p-3 font-normal">Card</th>
+        <th className="text-left p-3 font-normal">Futures</th>
+        <th className="text-left p-3 font-normal">PoR</th>
+        <th className="text-left p-3 font-normal">Fees</th>
+        <th className="text-right p-3 font-normal">Visit</th>
+      </tr>
+    </thead>
+  );
+}
 
-  const add = (id) => {
-    setSelectedIds((prev) => (prev.length >= MAX_COMPARE || prev.includes(id) ? prev : [...prev, id]));
-    setQuery("");
-  };
-  const remove = (id) => setSelectedIds((prev) => prev.filter((x) => x !== id));
+function ComparisonTableSection({ list }) {
+  const [expanded, setExpanded] = useState(false);
+  const head = list.slice(0, COLLAPSED_TABLE_ROWS);
+  const tail = list.slice(COLLAPSED_TABLE_ROWS);
+  const hasTail = tail.length > 0;
 
   return (
     <section id="comparison" className="mt-20 scroll-mt-20">
@@ -603,107 +614,52 @@ function ComparisonTableSection() {
         Side-by-side on what matters.
       </motion.h2>
 
-      <ComparisonSelector
-        selected={selected}
-        results={results}
-        query={query}
-        setQuery={setQuery}
-        onAdd={add}
-        onRemove={remove}
-        atMax={atMax}
-      />
-
-      {selected.length >= 2 ? (
-        <div className="mt-6 overflow-x-auto hairline" style={{ borderRadius: 3 }}>
-          <table className="w-full min-w-[920px] text-[13px]">
-            <thead className="font-mono text-[10px] uppercase tracking-widest text-muted">
-              <tr className="hairline-b">
-                <th className="text-left p-3 font-normal">Exchange</th>
-                <th className="text-left p-3 font-normal">Score</th>
-                <th className="text-left p-3 font-normal">MiCAR</th>
-                <th className="text-left p-3 font-normal">Card</th>
-                <th className="text-left p-3 font-normal">Futures</th>
-                <th className="text-left p-3 font-normal">PoR</th>
-                <th className="text-left p-3 font-normal">Fees</th>
-                <th className="text-right p-3 font-normal">Visit</th>
-              </tr>
-            </thead>
-            <tbody>
-              {selected.map((e, i) => (
-                <ComparisonRow key={e.id} exchange={e} isLast={i === selected.length - 1} />
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <p className="mt-6 font-mono text-[11px] uppercase tracking-widest text-muted">
-          Select at least 2 exchanges to compare
-        </p>
-      )}
-    </section>
-  );
-}
-
-function ComparisonSelector({ selected, results, query, setQuery, onAdd, onRemove, atMax }) {
-  return (
-    <div className="mt-6">
-      {selected.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-3">
-          {selected.map((e) => (
-            <span
-              key={e.id}
-              className="inline-flex items-center gap-2 pl-2 pr-1.5 py-[5px] text-[12px]"
-              style={{ background: "#0f1422", border: "0.5px solid rgba(24,180,212,0.4)", borderRadius: 3 }}
-            >
-              <ExchangeLogo domain={e.domain} name={e.name} size={16} />
-              {e.name}
-              <button
-                onClick={() => onRemove(e.id)}
-                aria-label={`Remove ${e.name}`}
-                className="text-muted hover:text-txt transition-colors"
-              >
-                <XIcon size={12} />
-              </button>
-            </span>
-          ))}
-        </div>
-      )}
-
-      <div className="relative max-w-md">
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          disabled={atMax}
-          placeholder={atMax ? "Maximum 7 exchanges" : "Search exchanges…"}
-          className="input-base w-full disabled:opacity-50 disabled:cursor-not-allowed"
-        />
-        {!atMax && results.length > 0 && (
-          <div
-            className="absolute z-30 mt-1 w-full hairline"
-            style={{ background: "#0f1422", borderRadius: 3, maxHeight: 280, overflowY: "auto" }}
-          >
-            {results.map((e) => (
-              <button
+      <div className="mt-6 overflow-x-auto hairline" style={{ borderRadius: 3 }}>
+        <table className="w-full min-w-[920px] text-[13px] table-fixed">
+          <TableCols />
+          <ComparisonTableHead />
+          <tbody>
+            {head.map((e, i) => (
+              <ComparisonRow
                 key={e.id}
-                onClick={() => onAdd(e.id)}
-                className="w-full text-left px-3 py-2 flex items-center gap-2 hover:bg-white/[0.04] transition-colors"
-              >
-                <ExchangeLogo domain={e.domain} name={e.name} size={18} />
-                <span className="text-[13px]">{e.name}</span>
-                <span className="ml-auto font-mono text-[11px] text-muted">{e.score}</span>
-              </button>
+                exchange={e}
+                isLast={(!expanded || !hasTail) && i === head.length - 1}
+              />
             ))}
-          </div>
-        )}
+          </tbody>
+        </table>
+
+        <AnimatePresence initial={false}>
+          {expanded && hasTail && (
+            <motion.div
+              key="comparison-tail"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={ACCORDION_TRANSITION}
+              style={{ overflow: "hidden" }}
+            >
+              <table className="w-full min-w-[920px] text-[13px] table-fixed">
+                <TableCols />
+                <tbody>
+                  {tail.map((e, i) => (
+                    <ComparisonRow key={e.id} exchange={e} isLast={i === tail.length - 1} />
+                  ))}
+                </tbody>
+              </table>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      {atMax && (
-        <p className="mt-2 font-mono text-[11px] uppercase tracking-widest" style={{ color: "#D4A853" }}>
-          Maximum 7 exchanges
-        </p>
+      {hasTail && (
+        <ShowMoreButton
+          expanded={expanded}
+          onToggle={() => setExpanded((v) => !v)}
+          collapsedLabel={`Show all ${list.length} exchanges`}
+        />
       )}
-    </div>
+    </section>
   );
 }
 
