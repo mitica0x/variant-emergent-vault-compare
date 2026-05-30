@@ -35,7 +35,7 @@ export default function About() {
 
 function AboutHero() {
   return (
-    <section className="container-x pt-16 pb-16">
+    <section className="container-x pt-12 md:pt-[153px] pb-16">
       <Eyebrow color="text-emerald">About</Eyebrow>
       <h1 className="mt-5 text-[44px] sm:text-[72px] font-bold tracking-tight leading-[0.98] max-w-4xl">
         Built by operators. Not by reporters.

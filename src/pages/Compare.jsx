@@ -59,7 +59,7 @@ export default function Compare() {
   const rest = useMemo(() => list.filter((e) => !e.featured), [list]);
 
   return (
-    <div className="container-x pt-24 pb-24">
+    <div className="container-x pt-12 md:pt-[153px] pb-24">
       <ComparisonHero />
       <TrustBand />
       <div className="mt-[120px] grid grid-cols-1 xl:grid-cols-[120px_1fr] gap-12">

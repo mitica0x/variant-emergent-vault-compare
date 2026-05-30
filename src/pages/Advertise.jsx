@@ -79,7 +79,7 @@ export default function Advertise() {
 function AdvertiseHero() {
   return (
     <section className="hairline-b">
-      <div className="container-x pt-16 pb-20 grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-12 items-end">
+      <div className="container-x pt-12 md:pt-[153px] pb-20 grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-12 items-end">
         <div>
           <Eyebrow color="text-emerald">Media Kit · CoinSiglieri</Eyebrow>
           <h1 className="mt-5 text-[44px] sm:text-[64px] font-bold tracking-tight leading-[1.02] text-balance">

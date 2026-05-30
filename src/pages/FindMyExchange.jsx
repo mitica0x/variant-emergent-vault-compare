@@ -71,7 +71,7 @@ export default function FindMyExchange() {
   }), [step, done]);
 
   return (
-    <div className="container-x pt-12 pb-24">
+    <div className="container-x pt-12 md:pt-[153px] pb-24">
       <QuizHero />
       <ProgressBar step={step} done={done} progress={progress} />
       <div className="mt-10 grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-10">

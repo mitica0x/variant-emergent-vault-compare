@@ -13,7 +13,7 @@ const TRUST_ITEMS = [
 export default function Cards() {
   const featured = CARDS.find((c) => c.featured);
   return (
-    <div className="container-x pt-12 pb-24">
+    <div className="container-x pt-12 md:pt-[153px] pb-24">
       <CardsHero />
       <TrustBand />
       {featured && <FeaturedCard card={featured} />}

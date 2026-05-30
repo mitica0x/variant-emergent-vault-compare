@@ -13,7 +13,7 @@ export default function News() {
   const grid = list.filter((a) => !a.featured);
 
   return (
-    <div className="container-x pt-12 pb-24">
+    <div className="container-x pt-12 md:pt-[153px] pb-24">
       <section className="max-w-3xl">
         <Eyebrow color="text-emerald">News</Eyebrow>
         <h1 className="mt-4 text-[44px] sm:text-[56px] font-bold tracking-tight leading-[1.02]">
