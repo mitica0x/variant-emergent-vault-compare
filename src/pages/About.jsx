@@ -35,12 +35,12 @@ export default function About() {
 
 function AboutHero() {
   return (
-    <section className="container-x pt-12 md:pt-[153px] pb-16">
+    <section className="container-x pt-12 md:pt-[153px] pb-20">
       <Eyebrow color="text-emerald">About</Eyebrow>
       <h1 className="mt-5 text-[44px] sm:text-[72px] font-bold tracking-tight leading-[0.98] max-w-4xl">
         Built by operators. Not by reporters.
       </h1>
-      <p className="mt-6 text-[17px] text-muted leading-relaxed max-w-2xl">
+      <p className="mt-20 text-[17px] text-muted leading-relaxed max-w-2xl">
         CoinSiglieri is an EU/MiCAR-focused crypto exchange intelligence platform. Independent,
         score-driven, operator-built.
       </p>

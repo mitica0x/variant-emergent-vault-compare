@@ -19,12 +19,12 @@ export default function News() {
         <h1 className="mt-4 text-[44px] sm:text-[56px] font-bold tracking-tight leading-[1.02]">
           What we're watching.
         </h1>
-        <p className="mt-5 text-[16px] text-muted leading-relaxed max-w-2xl">
+        <p className="mt-20 text-[16px] text-muted leading-relaxed max-w-2xl">
           Weekly signal on EU crypto licensing, exchange moves and the data that actually changes a leaderboard.
         </p>
       </section>
 
-      <div className="mt-10 flex flex-wrap gap-2">
+      <div className="mt-20 flex flex-wrap gap-2">
         {CATS.map((c) => (
           <button
             key={c}
@@ -41,7 +41,7 @@ export default function News() {
 
       {/* Featured */}
       {featured && cat === "All" && (
-        <Link to={`/news/${featured.slug}`} className="block mt-10">
+        <Link to={`/news/${featured.slug}`} className="block mt-20">
           <div className="hairline p-8 lg:p-12 card-lift" style={{ borderRadius: 3, background: "#0f1422" }}>
             <div className="flex flex-wrap items-center gap-3">
               <Badge tone="emerald">{featured.category}</Badge>

@@ -30,7 +30,7 @@ function CardsHero() {
       <h1 className="mt-4 text-[44px] sm:text-[56px] font-bold tracking-tight leading-[1.02]">
         The card stack that actually ships.
       </h1>
-      <p className="mt-5 text-[16px] text-muted leading-relaxed max-w-2xl">
+      <p className="mt-20 text-[16px] text-muted leading-relaxed max-w-2xl">
         Seven crypto-funded cards — ranked on real cashback, all-in fees, country support and
         the parts of the fine print most cardholders never read.
       </p>
@@ -41,7 +41,7 @@ function CardsHero() {
 function TrustBand() {
   return (
     <section
-      className="mt-12 grid grid-cols-2 lg:grid-cols-4 gap-px"
+      className="mt-20 grid grid-cols-2 lg:grid-cols-4 gap-px"
       style={{ background: "rgba(255,255,255,0.07)", borderRadius: 3 }}
     >
       {TRUST_ITEMS.map((m) => (
@@ -56,7 +56,7 @@ function TrustBand() {
 
 function FeaturedCard({ card: featured }) {
   return (
-    <section className="mt-16">
+    <section className="mt-20">
       <div
         className="p-7 grid grid-cols-1 lg:grid-cols-[1fr_1.4fr] gap-8"
         style={{

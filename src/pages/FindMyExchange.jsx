@@ -74,7 +74,7 @@ export default function FindMyExchange() {
     <div className="container-x pt-12 md:pt-[153px] pb-24">
       <QuizHero />
       <ProgressBar step={step} done={done} progress={progress} />
-      <div className="mt-10 grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-10">
+      <div className="mt-20 grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-10">
         <QuestionPanel
           step={step}
           done={done}
@@ -97,7 +97,7 @@ function QuizHero() {
       <h1 className="mt-4 text-[44px] sm:text-[56px] font-bold tracking-tight leading-[1.02]">
         8 questions. Your match.
       </h1>
-      <p className="mt-5 text-[16px] text-muted leading-relaxed max-w-2xl">
+      <p className="mt-20 text-[16px] text-muted leading-relaxed max-w-2xl">
         Answer 8 quick questions — we rerank our 22 venues live as you go. No email required.
       </p>
     </section>
@@ -107,7 +107,7 @@ function QuizHero() {
 function ProgressBar({ step, done, progress }) {
   const label = done ? "Complete" : `Question ${step + 1} of ${TOTAL}`;
   return (
-    <div className="mt-10">
+    <div className="mt-20">
       <div className="flex items-center justify-between font-mono text-[11px] uppercase tracking-widest text-muted">
         <span>{label}</span>
         <span className="text-cyan">{progress}%</span>

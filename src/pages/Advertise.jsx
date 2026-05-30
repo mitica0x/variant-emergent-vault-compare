@@ -85,14 +85,14 @@ function AdvertiseHero() {
           <h1 className="mt-5 text-[44px] sm:text-[64px] font-bold tracking-tight leading-[1.02] text-balance">
             The leaderboard nobody paid to be on. The real estate around it is.
           </h1>
-          <p className="mt-6 text-[17px] text-muted leading-relaxed max-w-2xl">
+          <p className="mt-20 text-[17px] text-muted leading-relaxed max-w-2xl">
             Independent intelligence. Editorial scoring. Commercial placement available — always disclosed.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-20 flex flex-wrap gap-3">
             <a href="#contact" className="btn-primary">Reserve placement <ArrowRight size={14} /></a>
             <a href="#solutions" className="btn-outline">Explore solutions <ArrowUpRight size={14} /></a>
           </div>
-          <p className="mt-6 font-mono text-[11px] uppercase tracking-widest text-muted">
+          <p className="mt-20 font-mono text-[11px] uppercase tracking-widest text-muted">
             Faster:{" "}
             <a href="https://t.me/coinsiglieri" target="_blank" rel="noopener noreferrer" className="text-cyan hover:text-emerald">
               DM @coinsiglieri on Telegram
