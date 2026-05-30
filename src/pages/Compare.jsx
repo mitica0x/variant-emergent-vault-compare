@@ -1,8 +1,9 @@
 import React, { useState, useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
-import { motion, useInView, useMotionValue, useSpring } from "framer-motion";
+import { motion, AnimatePresence, useInView, useMotionValue, useSpring } from "framer-motion";
 import {
   ArrowRight, ArrowUpRight, Check, X as XIcon, Shield, Activity, FileCheck2, Scale, History,
+  ChevronDown, ChevronUp,
 } from "lucide-react";
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, ResponsiveContainer } from "recharts";
 import { Eyebrow, Badge, MiniBar, ScoreCircle, ProsCons, ExchangeLogo } from "../components/UI";
@@ -71,7 +72,7 @@ export default function Compare() {
             featured={featured}
             rest={rest}
           />
-          <ComparisonTableSection list={list} />
+          <ComparisonTableSection />
           <ReviewsSection list={list} />
           <MethodologySection />
         </div>
@@ -191,7 +192,7 @@ function TopExchangesSection({ tab, setTab, featured, rest }) {
       </motion.h2>
       <TabBar tab={tab} setTab={setTab} />
       {showFeatured && <FeaturedCard exchange={featured} />}
-      <RankedList items={rest} tab={tab} />
+      <RankedList items={rest} tab={tab} featuredShown={!!showFeatured} />
     </div>
   );
 }
@@ -405,29 +406,94 @@ function DexDivider() {
   );
 }
 
-function RankedList({ items, tab }) {
-  if (tab !== "all") {
-    return (
-      <div className="mt-8 hairline" style={{ borderRadius: 3 }}>
-        {items.map((e, i) => (
-          <RankedRow key={e.id} exchange={e} isLast={i === items.length - 1} />
-        ))}
-      </div>
-    );
-  }
-  const cex = items.filter((e) => !e.type.includes("dex"));
-  const dex = items.filter((e) => e.type.includes("dex"));
-  const showDivider = cex.length > 0 && dex.length > 0;
+const COLLAPSED_ROWS = 10;
+const ACCORDION_TRANSITION = { duration: 0.3, ease: "easeInOut" };
+
+// Full-width ghost toggle shared by the expand/collapse sections.
+function ShowMoreButton({ expanded, onToggle, collapsedLabel }) {
   return (
-    <div className="mt-8 hairline" style={{ borderRadius: 3 }}>
-      {cex.map((e, i) => (
-        <RankedRow key={e.id} exchange={e} isLast={dex.length === 0 && i === cex.length - 1} />
-      ))}
-      {showDivider && <DexDivider />}
-      {dex.map((e, i) => (
-        <RankedRow key={e.id} exchange={e} isLast={i === dex.length - 1} />
-      ))}
-    </div>
+    <button
+      onClick={onToggle}
+      className="btn-outline w-full justify-center mt-3 font-mono uppercase tracking-widest text-[11px]"
+    >
+      {expanded ? (
+        <>Show less <ChevronUp size={14} /></>
+      ) : (
+        <>{collapsedLabel} <ChevronDown size={14} /></>
+      )}
+    </button>
+  );
+}
+
+function RankedList({ items, tab, featuredShown }) {
+  const [expanded, setExpanded] = useState(false);
+
+  // Ordered entries (rows + optional cex/dex divider), matching the prior layout.
+  const entries = useMemo(() => {
+    if (tab !== "all") {
+      return items.map((e) => ({ kind: "row", exchange: e }));
+    }
+    const cex = items.filter((e) => !e.type.includes("dex"));
+    const dex = items.filter((e) => e.type.includes("dex"));
+    const out = cex.map((e) => ({ kind: "row", exchange: e }));
+    if (cex.length > 0 && dex.length > 0) out.push({ kind: "divider" });
+    dex.forEach((e) => out.push({ kind: "row", exchange: e }));
+    return out;
+  }, [items, tab]);
+
+  // Split after the first COLLAPSED_ROWS rows (a divider before them rides along).
+  const { head, tail, totalRows } = useMemo(() => {
+    let rowCount = 0;
+    let splitAt = entries.length;
+    for (let i = 0; i < entries.length; i++) {
+      if (entries[i].kind === "row") {
+        rowCount += 1;
+        if (rowCount === COLLAPSED_ROWS) { splitAt = i + 1; break; }
+      }
+    }
+    const total = entries.reduce((n, e) => (e.kind === "row" ? n + 1 : n), 0);
+    return { head: entries.slice(0, splitAt), tail: entries.slice(splitAt), totalRows: total };
+  }, [entries]);
+
+  const hasTail = tail.some((e) => e.kind === "row");
+  const headLastRow = head.reduce((acc, e, i) => (e.kind === "row" ? i : acc), -1);
+  const tailLastRow = tail.reduce((acc, e, i) => (e.kind === "row" ? i : acc), -1);
+  const totalLabel = totalRows + (featuredShown ? 1 : 0);
+
+  const renderEntry = (entry, idx, isLast) =>
+    entry.kind === "divider" ? (
+      <DexDivider key={`divider-${idx}`} />
+    ) : (
+      <RankedRow key={entry.exchange.id} exchange={entry.exchange} isLast={isLast} />
+    );
+
+  return (
+    <>
+      <div className="mt-8 hairline" style={{ borderRadius: 3 }}>
+        {head.map((e, i) => renderEntry(e, i, !expanded && i === headLastRow))}
+        <AnimatePresence initial={false}>
+          {expanded && hasTail && (
+            <motion.div
+              key="ranked-tail"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={ACCORDION_TRANSITION}
+              style={{ overflow: "hidden" }}
+            >
+              {tail.map((e, i) => renderEntry(e, i, i === tailLastRow))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+      {hasTail && (
+        <ShowMoreButton
+          expanded={expanded}
+          onToggle={() => setExpanded((v) => !v)}
+          collapsedLabel={`Show all ${totalLabel} exchanges`}
+        />
+      )}
+    </>
   );
 }
 
@@ -491,7 +557,39 @@ function RankedRow({ exchange, isLast }) {
   );
 }
 
-function ComparisonTableSection({ list }) {
+// Pre-select the top 5 exchanges by score (stable sort → Bybit, Kraken,
+// Binance, Uniswap, Deribit) so the comparison table is never empty on load.
+const DEFAULT_COMPARE_IDS = EXCHANGES.map((e, i) => ({ id: e.id, score: e.score, i }))
+  .sort((a, b) => b.score - a.score || a.i - b.i)
+  .slice(0, 5)
+  .map((e) => e.id);
+
+const MAX_COMPARE = 7;
+
+function ComparisonTableSection() {
+  const [selectedIds, setSelectedIds] = useState(DEFAULT_COMPARE_IDS);
+  const [query, setQuery] = useState("");
+
+  const selected = useMemo(
+    () => EXCHANGES.filter((e) => selectedIds.includes(e.id)).sort((a, b) => b.score - a.score),
+    [selectedIds]
+  );
+  const atMax = selectedIds.length >= MAX_COMPARE;
+
+  const results = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return [];
+    return EXCHANGES.filter(
+      (e) => !selectedIds.includes(e.id) && e.name.toLowerCase().includes(q)
+    ).slice(0, 8);
+  }, [query, selectedIds]);
+
+  const add = (id) => {
+    setSelectedIds((prev) => (prev.length >= MAX_COMPARE || prev.includes(id) ? prev : [...prev, id]));
+    setQuery("");
+  };
+  const remove = (id) => setSelectedIds((prev) => prev.filter((x) => x !== id));
+
   return (
     <section id="comparison" className="mt-20 scroll-mt-20">
       <Eyebrow color="text-cyan">Comparison Table</Eyebrow>
@@ -504,28 +602,108 @@ function ComparisonTableSection({ list }) {
       >
         Side-by-side on what matters.
       </motion.h2>
-      <div className="mt-6 overflow-x-auto hairline" style={{ borderRadius: 3 }}>
-        <table className="w-full min-w-[920px] text-[13px]">
-          <thead className="font-mono text-[10px] uppercase tracking-widest text-muted">
-            <tr className="hairline-b">
-              <th className="text-left p-3 font-normal">Exchange</th>
-              <th className="text-left p-3 font-normal">Score</th>
-              <th className="text-left p-3 font-normal">MiCAR</th>
-              <th className="text-left p-3 font-normal">Card</th>
-              <th className="text-left p-3 font-normal">Futures</th>
-              <th className="text-left p-3 font-normal">PoR</th>
-              <th className="text-left p-3 font-normal">Fees</th>
-              <th className="text-right p-3 font-normal">Visit</th>
-            </tr>
-          </thead>
-          <tbody>
-            {list.map((e, i) => (
-              <ComparisonRow key={e.id} exchange={e} isLast={i === list.length - 1} />
-            ))}
-          </tbody>
-        </table>
-      </div>
+
+      <ComparisonSelector
+        selected={selected}
+        results={results}
+        query={query}
+        setQuery={setQuery}
+        onAdd={add}
+        onRemove={remove}
+        atMax={atMax}
+      />
+
+      {selected.length >= 2 ? (
+        <div className="mt-6 overflow-x-auto hairline" style={{ borderRadius: 3 }}>
+          <table className="w-full min-w-[920px] text-[13px]">
+            <thead className="font-mono text-[10px] uppercase tracking-widest text-muted">
+              <tr className="hairline-b">
+                <th className="text-left p-3 font-normal">Exchange</th>
+                <th className="text-left p-3 font-normal">Score</th>
+                <th className="text-left p-3 font-normal">MiCAR</th>
+                <th className="text-left p-3 font-normal">Card</th>
+                <th className="text-left p-3 font-normal">Futures</th>
+                <th className="text-left p-3 font-normal">PoR</th>
+                <th className="text-left p-3 font-normal">Fees</th>
+                <th className="text-right p-3 font-normal">Visit</th>
+              </tr>
+            </thead>
+            <tbody>
+              {selected.map((e, i) => (
+                <ComparisonRow key={e.id} exchange={e} isLast={i === selected.length - 1} />
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p className="mt-6 font-mono text-[11px] uppercase tracking-widest text-muted">
+          Select at least 2 exchanges to compare
+        </p>
+      )}
     </section>
+  );
+}
+
+function ComparisonSelector({ selected, results, query, setQuery, onAdd, onRemove, atMax }) {
+  return (
+    <div className="mt-6">
+      {selected.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-3">
+          {selected.map((e) => (
+            <span
+              key={e.id}
+              className="inline-flex items-center gap-2 pl-2 pr-1.5 py-[5px] text-[12px]"
+              style={{ background: "#0f1422", border: "0.5px solid rgba(24,180,212,0.4)", borderRadius: 3 }}
+            >
+              <ExchangeLogo domain={e.domain} name={e.name} size={16} />
+              {e.name}
+              <button
+                onClick={() => onRemove(e.id)}
+                aria-label={`Remove ${e.name}`}
+                className="text-muted hover:text-txt transition-colors"
+              >
+                <XIcon size={12} />
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+
+      <div className="relative max-w-md">
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          disabled={atMax}
+          placeholder={atMax ? "Maximum 7 exchanges" : "Search exchanges…"}
+          className="input-base w-full disabled:opacity-50 disabled:cursor-not-allowed"
+        />
+        {!atMax && results.length > 0 && (
+          <div
+            className="absolute z-30 mt-1 w-full hairline"
+            style={{ background: "#0f1422", borderRadius: 3, maxHeight: 280, overflowY: "auto" }}
+          >
+            {results.map((e) => (
+              <button
+                key={e.id}
+                onClick={() => onAdd(e.id)}
+                className="w-full text-left px-3 py-2 flex items-center gap-2 hover:bg-white/[0.04] transition-colors"
+              >
+                <ExchangeLogo domain={e.domain} name={e.name} size={18} />
+                <span className="text-[13px]">{e.name}</span>
+                <span className="ml-auto font-mono text-[11px] text-muted">{e.score}</span>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {atMax && (
+        <p className="mt-2 font-mono text-[11px] uppercase tracking-widest" style={{ color: "#D4A853" }}>
+          Maximum 7 exchanges
+        </p>
+      )}
+    </div>
   );
 }
 
@@ -578,8 +756,13 @@ function BoolCheck({ on }) {
   return <XIcon size={14} className="text-dim" />;
 }
 
+const COLLAPSED_REVIEWS = 3;
+
 function ReviewsSection({ list }) {
   const top = list.slice(0, 7);
+  const [expanded, setExpanded] = useState(false);
+  const head = top.slice(0, COLLAPSED_REVIEWS);
+  const tail = top.slice(COLLAPSED_REVIEWS);
   return (
     <section id="reviews" className="mt-20 scroll-mt-20">
       <Eyebrow color="text-emerald">Exchange Reviews</Eyebrow>
@@ -600,10 +783,37 @@ function ReviewsSection({ list }) {
         whileInView="visible"
         viewport={{ once: true }}
       >
-        {top.map((e) => (
+        {head.map((e) => (
           <ReviewBlock key={e.id} exchange={e} />
         ))}
+        <AnimatePresence initial={false}>
+          {expanded && tail.length > 0 && (
+            <motion.div
+              key="reviews-tail"
+              className="space-y-px"
+              style={{ overflow: "hidden", background: "rgba(255,255,255,0.07)" }}
+              variants={{
+                hidden: { height: 0, opacity: 0, transition: ACCORDION_TRANSITION },
+                visible: { height: "auto", opacity: 1, transition: { ...ACCORDION_TRANSITION, staggerChildren: 0.1 } },
+              }}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+            >
+              {tail.map((e) => (
+                <ReviewBlock key={e.id} exchange={e} />
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
+      {tail.length > 0 && (
+        <ShowMoreButton
+          expanded={expanded}
+          onToggle={() => setExpanded((v) => !v)}
+          collapsedLabel={`Show all ${top.length} reviews`}
+        />
+      )}
     </section>
   );
 }
