@@ -59,7 +59,7 @@ export default function Compare() {
   const rest = useMemo(() => list.filter((e) => !e.featured), [list]);
 
   return (
-    <div className="container-x pt-12 pb-24">
+    <div className="container-x pt-24 pb-24">
       <ComparisonHero />
       <TrustBand />
       <div className="mt-[120px] grid grid-cols-1 xl:grid-cols-[120px_1fr] gap-12">
@@ -99,7 +99,7 @@ function ComparisonHero() {
 function TrustBand() {
   return (
     <motion.section
-      className="mt-20 grid grid-cols-2 lg:grid-cols-4 gap-px"
+      className="mt-32 grid grid-cols-2 lg:grid-cols-4 gap-px"
       style={{ background: "rgba(255,255,255,0.07)", borderRadius: 3 }}
       variants={{ visible: { transition: { staggerChildren: 0.08 } } }}
       initial="hidden"
@@ -202,7 +202,7 @@ function FeaturedCard({ exchange }) {
   return (
     <div
       ref={ref}
-      className="mt-10 md:mt-[120px] p-7 grid grid-cols-1 lg:grid-cols-[1fr_1.1fr_1.3fr] gap-8"
+      className="mt-8 p-7 grid grid-cols-1 lg:grid-cols-[1fr_1.1fr_1.3fr] gap-8"
       style={{
         background: "#0f1422",
         borderLeft: "3px solid #a3e635",
