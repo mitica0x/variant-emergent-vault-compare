@@ -115,27 +115,87 @@ function FeaturedVisual({ card: c }) {
   );
 }
 
-function CardVisual({ card: c, cardNumber }) {
+function CardVisual({ cardNumber }) {
+  // Real current Bybit Card — white/off-white matte (2025 rebrand).
   return (
     <div
       className="relative aspect-[1.586/1]"
       style={{
-        background: "linear-gradient(135deg, #0f1422 0%, #18223c 100%)",
-        border: "0.5px solid rgba(255,255,255,0.08)",
-        borderRadius: 8,
+        background:
+          "radial-gradient(ellipse at 80% 20%, rgba(0,0,0,0.03) 0%, transparent 60%), linear-gradient(135deg, #ffffff 0%, #f5f5f0 60%, #ebebeb 100%)",
+        borderRadius: 12,
+        overflow: "hidden",
+        boxShadow: "0 20px 60px rgba(0,0,0,0.25), 0 0 0 0.5px rgba(0,0,0,0.08)",
       }}
     >
-      <div className="absolute top-4 left-4">
-        <ExchangeLogo domain={c.domain} name={c.name} size={28} />
+      {/* BYBIT wordmark */}
+      <div
+        className="absolute"
+        style={{
+          top: "12%",
+          left: "8%",
+          color: "#1a1a1a",
+          fontWeight: 800,
+          letterSpacing: "0.15em",
+          fontSize: "clamp(14px,2.5vw,18px)",
+        }}
+      >
+        BYBIT
       </div>
-      <div className="absolute bottom-4 left-4 right-4">
-        <div className="font-mono text-[14px] tracking-widest">
-          •••• •••• •••• {cardNumber}
-        </div>
-        <div className="flex items-center justify-between mt-2">
-          <span className="font-mono text-[10px] uppercase text-muted">Cardholder</span>
-          <span className="font-mono text-[10px] uppercase text-muted">{c.issuer}</span>
-        </div>
+
+      {/* EMV chip */}
+      <div
+        className="absolute"
+        style={{
+          top: "38%",
+          left: "8%",
+          width: "14%",
+          aspectRatio: "1.4 / 1",
+          borderRadius: 3,
+          background:
+            "linear-gradient(135deg, #d4a843 0%, #f0c040 30%, #b8860b 60%, #d4a843 100%)",
+        }}
+      />
+
+      {/* Card number */}
+      <div
+        className="absolute"
+        style={{
+          bottom: "28%",
+          left: "8%",
+          color: "rgba(0,0,0,0.6)",
+          fontFamily: "monospace",
+          fontSize: "clamp(10px,1.8vw,13px)",
+          letterSpacing: "0.12em",
+        }}
+      >
+        •••• •••• •••• {cardNumber}
+      </div>
+
+      {/* Cardholder label */}
+      <div
+        className="absolute font-mono text-[9px] uppercase tracking-widest"
+        style={{ bottom: "14%", left: "8%", color: "rgba(0,0,0,0.35)" }}
+      >
+        Cardholder
+      </div>
+
+      {/* Mastercard mark */}
+      <div
+        className="absolute"
+        style={{ bottom: "12%", right: "8%", display: "flex", alignItems: "center" }}
+      >
+        <span style={{ width: 24, height: 24, borderRadius: "50%", background: "#eb001b" }} />
+        <span
+          style={{
+            width: 24,
+            height: 24,
+            borderRadius: "50%",
+            background: "#f79e1b",
+            marginLeft: -10,
+            mixBlendMode: "multiply",
+          }}
+        />
       </div>
     </div>
   );
