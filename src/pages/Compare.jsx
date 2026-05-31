@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, ResponsiveContainer } from "recharts";
 import { Eyebrow, Badge, MiniBar, ScoreCircle, ProsCons, ExchangeLogo } from "../components/UI";
+import PhoneMockup from "../components/PhoneMockup";
 import { EXCHANGES, SCORE_PILLARS, getTierBg, scoreColor } from "../data/mock";
 import { useScrollSpy } from "../hooks/use-in-view";
 
@@ -258,7 +259,7 @@ function FeaturedBars({ exchange, shown }) {
   const bd = exchange.scoreBreakdown || {};
   return (
     <div className="h-full flex flex-col -ml-3">
-      <div className="space-y-2">
+      <div className="space-y-4">
         {FEATURED_PILLARS.map((p, idx) => {
         const value = p.override ?? bd[p.key] ?? 80;
         return (
@@ -640,7 +641,7 @@ function DetailBars({ exchange, shown }) {
   const bd = exchange.scoreBreakdown || {};
   return (
     <div className="h-full flex flex-col -ml-3">
-      <div className="space-y-2">
+      <div className="space-y-4">
         {FEATURED_PILLARS.map((p, idx) => {
           const value = p.override ?? bd[p.key] ?? 80;
           return (
@@ -1179,60 +1180,11 @@ function ReviewBlock({ exchange: e }) {
           </p>
         )}
       </div>
-      <PhoneMockup exchange={e} />
+      <PhoneMockup
+        screenshots={[`/phones/${e.id}.png`]}
+        abbreviation={e.abbreviation || (e.name || e.id).substring(0, 2).toUpperCase()}
+      />
     </motion.div>
-  );
-}
-
-function PhoneMockup({ exchange }) {
-  const initials = exchange.name.slice(0, 2).toUpperCase();
-  const frame = {
-    width: 180,
-    height: 320,
-    borderRadius: 28,
-    border: "6px solid #1e2d45",
-    background: "#0a0e1a",
-    overflow: "hidden",
-  };
-  return (
-    <div className="flex items-center justify-center">
-      <div className="relative" style={{ minWidth: 240, height: 340 }}>
-        {/* Back phone — peeking behind-right */}
-        <div
-          className="absolute top-0 left-0"
-          style={{ ...frame, transform: "translateX(28px) translateY(12px)", zIndex: 1 }}
-        >
-          {/* Placeholder — swap for <img src={appStoreScreenshot} alt="" className="w-full h-full object-cover" /> */}
-          <div className="w-full h-full flex items-center justify-center">
-            <span style={{ color: "#18b4d4", fontSize: 32, fontWeight: 700 }}>{initials}</span>
-          </div>
-        </div>
-        {/* Front phone */}
-        <div className="absolute top-0 left-0" style={{ ...frame, zIndex: 2 }}>
-          {/* Placeholder — swap for <img src={appStoreScreenshot} alt="" className="w-full h-full object-cover" /> */}
-          <div className="w-full h-full flex items-center justify-center">
-            <span style={{ color: "#18b4d4", fontSize: 32, fontWeight: 700 }}>{initials}</span>
-          </div>
-        </div>
-        {/* Score · rank badge — floats over the front phone's top-left corner (sibling, so not clipped) */}
-        <div
-          className="absolute"
-          style={{
-            top: -10,
-            left: -10,
-            zIndex: 3,
-            background: "#0dbe82",
-            color: "#000",
-            fontSize: 11,
-            fontWeight: 700,
-            borderRadius: 3,
-            padding: "4px 8px",
-          }}
-        >
-          {exchange.score} · #{exchange.rank} EU
-        </div>
-      </div>
-    </div>
   );
 }
 
