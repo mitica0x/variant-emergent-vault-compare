@@ -30,7 +30,7 @@ const OPERATOR_ITEMS = [
   { value: "15+", label: "Years in derivatives markets" },
   { value: "2× Editions", label: "Web3 startup competition · €440,775" },
   { value: "On Stage", label: "Crypto Expo Europe · Next Block · ETH Bucharest" },
-  { value: "Lunu POS", label: "Crypto Payments · Beach Please Festival" },
+  { value: "Crypto Payments", label: "Lunu POS · Beach Please Festival" },
 ];
 
 const SERVICES = [
@@ -195,7 +195,7 @@ function Hero() {
             transition={softTransition(0.08, 0.8)}
             className="mt-6 text-[48px] sm:text-[60px] lg:text-[88px] font-bold tracking-tight leading-[1.0]"
           >
-            Building for<br />what comes next.
+            Picks and shovels for the AI rush.
           </motion.h1>
 
           <motion.p
