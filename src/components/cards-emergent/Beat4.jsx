@@ -6,8 +6,8 @@ import {
   SPEND_TYPES,
   CASHBACK_PRIORITIES,
   ECOSYSTEMS,
-} from "../data/scoring";
-import { COUNTRIES } from "../data/cards";
+} from "../../data/scoring";
+import { COUNTRIES } from "../../data/cards";
 import FlipCard from "./FlipCard";
 import ScoreRing from "./ScoreRing";
 import MiniCard from "./MiniCard";

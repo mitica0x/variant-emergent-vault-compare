@@ -3,7 +3,7 @@ import React from "react";
 import HeroScene from "./HeroScene";
 import FlipCard from "./FlipCard";
 import DimensionBars from "./DimensionBars";
-import { CARDS } from "../data/cards";
+import { CARDS } from "../../data/cards";
 
 const Beat3 = () => {
   const bybit = CARDS.find((c) => c.id === "bybit");

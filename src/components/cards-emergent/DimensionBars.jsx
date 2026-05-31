@@ -1,6 +1,6 @@
 // 5 dimension bars — horizontal — used in Beat 3 + Beat 4
 import React from "react";
-import { DIMENSIONS } from "../data/cards";
+import { DIMENSIONS } from "../../data/cards";
 
 const DimensionBars = ({ card, layout = "vertical", barHeight = 6 }) => {
   if (!card) return null;

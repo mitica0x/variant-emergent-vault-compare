@@ -204,8 +204,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
-/* No box-shadow ever */
-* { box-shadow: none !important; }
+/* No box-shadow ever — except inside the emergent cards page (.cards-page),
+   whose card glows, holographic faces and pulsing dots rely on box-shadow. */
+*:where(:not(.cards-page):not(.cards-page *)) { box-shadow: none !important; }
 
 @keyframes scanline {
   0% { top: -2px; }
@@ -226,4 +227,186 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   position: absolute;
   left: 0;
   right: 0;
+}
+
+/* =====================================================================
+   EMERGENT CARDS PAGE — scoped styles (ported from the emergent build's
+   index.css). Everything is confined to the .cards-page subtree so the
+   shadow/glow-heavy card design system does not bleed into other pages,
+   which deliberately run no box-shadows and use different --muted/--rust
+   values. The wrapper redefines the emergent palette (incl. --surface,
+   which the components reference inline via var(--surface)).
+   ===================================================================== */
+.cards-page {
+  --bg: #080b16;
+  --surface: #0f1422;
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.14);
+  --text: #e8eaf0;
+  --muted: #6b7280;
+  --emerald: #0dbe82;
+  --cyan: #18b4d4;
+  --lime: #70a848;
+  --rust: #e8703a;
+  --red: #ff4d6d;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* Subtle 1px grid overlay for terminal feel */
+.cards-page .terminal-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 80px 80px;
+}
+
+/* Grain noise overlay */
+.cards-page .grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.08 0'/></filter><rect width='180' height='180' filter='url(%23n)'/></svg>");
+  opacity: 0.3;
+  mix-blend-mode: overlay;
+}
+
+/* Hairline borders (emergent naming) */
+.cards-page .hair { border: 0.5px solid var(--line); }
+.cards-page .hair-t { border-top: 0.5px solid var(--line); }
+.cards-page .hair-b { border-bottom: 0.5px solid var(--line); }
+.cards-page .hair-l { border-left: 0.5px solid var(--line); }
+.cards-page .hair-r { border-right: 0.5px solid var(--line); }
+
+/* Tabular numerals for data */
+.cards-page .tabnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* Holographic shimmer for card faces (driven by --x, --y, --angle) */
+.cards-page .holo {
+  --x: 50%;
+  --y: 50%;
+  --angle: 0deg;
+  position: relative;
+  overflow: hidden;
+}
+.cards-page .holo::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(600px circle at var(--x) var(--y), rgba(255, 255, 255, 0.22), transparent 40%);
+  mix-blend-mode: screen;
+  transition: opacity 0.4s ease;
+}
+.cards-page .holo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: conic-gradient(
+    from var(--angle),
+    transparent,
+    rgba(255, 255, 255, 0.18),
+    transparent 25%,
+    rgba(13, 190, 130, 0.16),
+    transparent 55%,
+    rgba(24, 180, 212, 0.15),
+    transparent 80%
+  );
+  mix-blend-mode: overlay;
+  opacity: 0.7;
+  transition: opacity 0.4s ease;
+}
+
+/* The physical-card preserve-3d setup */
+.cards-page .card3d-wrap { perspective: 1400px; }
+.cards-page .card3d-inner {
+  transform-style: preserve-3d;
+  transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
+}
+.cards-page .face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 14px;
+  overflow: hidden;
+}
+.cards-page .face.back { transform: rotateY(180deg); }
+
+/* Mini-card tilt for list rows */
+.cards-page .mini-tilt {
+  transform: rotateY(var(--ry, -14deg)) rotateX(var(--rx, 6deg));
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.cards-page .mini-row:hover .mini-tilt {
+  transform: rotateY(var(--ry-h, -22deg)) rotateX(var(--rx-h, 10deg)) translateZ(8px);
+}
+
+/* Hover glow utilities */
+.cards-page .glow-emerald {
+  box-shadow: 0 0 0 0.5px rgba(13, 190, 130, 0.5),
+              0 18px 60px -20px rgba(13, 190, 130, 0.35),
+              inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+.cards-page .glow-cyan {
+  box-shadow: 0 0 0 0.5px rgba(24, 180, 212, 0.5),
+              0 18px 60px -20px rgba(24, 180, 212, 0.35),
+              inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+.cards-page .glow-rust {
+  box-shadow: 0 0 0 0.5px rgba(232, 112, 58, 0.5),
+              0 18px 60px -20px rgba(232, 112, 58, 0.35),
+              inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* Reusable mono-uppercase label */
+.cards-page .kicker {
+  font-family: "Geist Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Pulsing dot (keyframe namespaced to avoid colliding with site animations) */
+.cards-page .live-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--emerald);
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(13, 190, 130, 0.6);
+  animation: cards-pulse-dot 1.6s infinite;
+}
+
+/* Floating idle animation */
+.cards-page .float-y { animation: cards-float-y 6s ease-in-out infinite; }
+
+/* Hero stat counter font crispness */
+.cards-page .stat-num {
+  font-family: "Geist Mono", monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+@keyframes cards-pulse-dot {
+  0% { box-shadow: 0 0 0 0 rgba(13, 190, 130, 0.6); }
+  70% { box-shadow: 0 0 0 8px rgba(13, 190, 130, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(13, 190, 130, 0); }
+}
+
+@keyframes cards-float-y {
+  0%, 100% { transform: translateY(0px) rotate(-0.3deg); }
+  50% { transform: translateY(-10px) rotate(0.3deg); }
+}
+
+@keyframes shimmer-keyframe {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }

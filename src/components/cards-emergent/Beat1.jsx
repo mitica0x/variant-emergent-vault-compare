@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import HeroScene from "./HeroScene";
 import FlipCard from "./FlipCard";
-import { CARDS } from "../data/cards";
+import { CARDS } from "../../data/cards";
 
 const Stat = ({ value, suffix = "", label, delay = 0, color = "#e8eaf0" }) => {
   const [n, setN] = useState(0);

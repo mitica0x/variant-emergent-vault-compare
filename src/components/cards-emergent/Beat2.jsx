@@ -1,6 +1,6 @@
 // Beat 2 — The Intelligence. Filter sidebar + 17 ranked rows w/ expandable detail
 import React, { useMemo, useState } from "react";
-import { CARDS, COUNTRIES } from "../data/cards";
+import { CARDS, COUNTRIES } from "../../data/cards";
 import MiniCard from "./MiniCard";
 import FlipCard from "./FlipCard";
 import DimensionBars from "./DimensionBars";

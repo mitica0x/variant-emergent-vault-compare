@@ -1,6 +1,6 @@
 // Card back face — score ring + 5 dim bars + emerald cashback + Apply CTA
 import React from "react";
-import { DIMENSIONS } from "../data/cards";
+import { DIMENSIONS } from "../../data/cards";
 
 const ScoreRingMini = ({ score, size = 64 }) => {
   const r = size / 2 - 3;
