@@ -221,7 +221,7 @@ function FeaturedCard({ exchange }) {
 
 function FeaturedIdentity({ exchange, shown }) {
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full" style={{ borderRight: "1px solid rgba(255,255,255,0.06)" }}>
       <div className="flex items-baseline gap-3">
         <span className="font-mono text-[15px]" style={{ color: "rgba(255,255,255,0.6)" }}>#{exchange.rank}</span>
         <ExchangeLogo domain={exchange.domain} name={exchange.name} size={48} />
@@ -258,7 +258,7 @@ const FEATURED_PILLARS = [
 function FeaturedBars({ exchange, shown }) {
   const bd = exchange.scoreBreakdown || {};
   return (
-    <div className="h-full flex flex-col -ml-3">
+    <div className="h-full flex flex-col -ml-3" style={{ borderRight: "1px solid rgba(255,255,255,0.06)" }}>
       <div className="flex flex-col" style={{ gap: "20px" }}>
         {FEATURED_PILLARS.map((p, idx) => {
         const value = p.override ?? bd[p.key] ?? 80;
@@ -613,7 +613,7 @@ function ExchangeDetailCard({ exchange, shown }) {
 
 function DetailIdentity({ exchange, shown }) {
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full" style={{ borderRight: "1px solid rgba(255,255,255,0.06)" }}>
       <div className="flex items-baseline gap-3">
         <span className="font-mono text-[15px]" style={{ color: "rgba(255,255,255,0.6)" }}>#{exchange.rank}</span>
         <ExchangeLogo domain={exchange.domain} name={exchange.name} size={48} />
@@ -640,7 +640,7 @@ function DetailIdentity({ exchange, shown }) {
 function DetailBars({ exchange, shown }) {
   const bd = exchange.scoreBreakdown || {};
   return (
-    <div className="h-full flex flex-col -ml-3">
+    <div className="h-full flex flex-col -ml-3" style={{ borderRight: "1px solid rgba(255,255,255,0.06)" }}>
       <div className="flex flex-col" style={{ gap: "20px" }}>
         {FEATURED_PILLARS.map((p, idx) => {
           const value = p.override ?? bd[p.key] ?? 80;
