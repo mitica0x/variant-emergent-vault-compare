@@ -641,11 +641,11 @@ function DetailBars({ exchange, shown }) {
   const bd = exchange.scoreBreakdown || {};
   return (
     <div className="h-full flex flex-col -ml-3">
-      <div className="space-y-4">
+      <div className="flex flex-col" style={{ gap: "20px" }}>
         {FEATURED_PILLARS.map((p, idx) => {
           const value = p.override ?? bd[p.key] ?? 80;
           return (
-            <div key={p.label} className="flex items-center gap-3">
+            <div key={p.label} className="flex items-center gap-3" style={{ minHeight: "36px", display: "flex", alignItems: "center" }}>
               <span className="font-mono text-[10px] uppercase tracking-widest w-28" style={{ color: "rgba(255,255,255,0.6)" }}>
                 {p.label}
               </span>
@@ -657,7 +657,7 @@ function DetailBars({ exchange, shown }) {
           );
         })}
       </div>
-      <div className="flex-1 flex flex-col items-center justify-center gap-2">
+      <div className="flex-1 flex flex-col items-center justify-center gap-2" style={{ marginTop: 40 }}>
         <a
           href={exchange.affiliateUrl}
           target="_blank"
