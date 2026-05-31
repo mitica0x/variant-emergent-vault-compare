@@ -1099,8 +1099,7 @@ function ReviewsSection({ list }) {
         The top {top.length} — in detail.
       </motion.h2>
       <motion.div
-        className="mt-8 space-y-px"
-        style={{ background: "rgba(255,255,255,0.07)" }}
+        className="mt-8"
         variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
         initial="hidden"
         whileInView="visible"
@@ -1113,8 +1112,7 @@ function ReviewsSection({ list }) {
           {expanded && tail.length > 0 && (
             <motion.div
               key="reviews-tail"
-              className="space-y-px"
-              style={{ overflow: "hidden", background: "rgba(255,255,255,0.07)" }}
+              style={{ overflow: "hidden" }}
               variants={{
                 hidden: { height: 0, opacity: 0, transition: ACCORDION_TRANSITION },
                 visible: { height: "auto", opacity: 1, transition: { ...ACCORDION_TRANSITION, staggerChildren: 0.1 } },
@@ -1145,6 +1143,7 @@ function ReviewBlock({ exchange: e }) {
   return (
     <motion.div
       className="bg-bg p-7 grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-8"
+      style={{ marginBottom: "64px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}
       variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}
     >
       <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignSelf: "stretch" }}>

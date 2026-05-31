@@ -74,7 +74,7 @@ export const PhoneMockup = ({ screenshots, abbreviation, screenshot, fallback, s
                 <div aria-hidden="true" style={{ position: "absolute", top: "12px", left: "50%", transform: "translateX(-50%)", width: "120px", height: "34px", borderRadius: "20px", background: "#000", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.05)", zIndex: 5 }} />
 
                 {/* HOME INDICATOR */}
-                <div aria-hidden="true" style={{ position: "absolute", bottom: "10px", left: "50%", transform: "translateX(-50%)", width: "120px", height: "5px", borderRadius: "3px", background: "rgba(255,255,255,0.25)", zIndex: 5 }} />
+                <div aria-hidden="true" style={{ position: "absolute", bottom: "10px", left: "50%", transform: "translateX(-50%)", width: "120px", height: "5px", borderRadius: "3px", background: "rgba(255,255,255,0.15)", zIndex: 5 }} />
 
                 {/* GLASS SHINE */}
                 <div aria-hidden="true" className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(118deg, rgba(255,255,255,0) 28%, rgba(255,255,255,0.055) 44%, rgba(255,255,255,0.015) 56%, rgba(255,255,255,0) 72%)", mixBlendMode: "screen", zIndex: 6 }} />
