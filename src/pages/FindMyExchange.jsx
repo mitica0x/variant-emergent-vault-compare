@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, ArrowLeft, ArrowUpRight, Check } from "lucide-react";
-import { RadarChart, Radar, PolarGrid, PolarAngleAxis, ResponsiveContainer } from "recharts";
 import { Eyebrow, Badge, MiniBar, ScoreCircle, ExchangeLogo } from "../components/UI";
 import {
   EXCHANGES, COUNTRIES, MICAR_COUNTRIES,
@@ -34,18 +33,13 @@ const TOTAL = QUESTIONS.length;
 const SWAP_TRANSITION = { duration: 0.35, ease: EASE_SOFT };
 const PROGRESS_TRANSITION = { duration: 0.5, ease: EASE_SOFT };
 
-// Featured match card config — mirrors the FeaturedCard treatment on /compare.
+// Cyan→emerald score bar, matching the ranked list on /compare.
 const BAR_GRADIENT = "linear-gradient(90deg, #18b4d4 0%, #0dbe82 100%)";
 
-const MATCH_PILLARS = [
-  { label: "Custody", key: "security" },
-  { label: "Liquidity", key: "liquidity" },
-  { label: "Compliance", key: "compliance" },
-  { label: "Transparent", key: "por", override: 88 },
-  { label: "Product Depth", key: "productDepth" },
-  { label: "Track Record", key: "trackRecord" },
-  { label: "Execution", key: "execution", override: 90 },
-];
+const COLLAPSED_RANK_ROWS = 10;
+
+// Left accent on the top-3 ranking rows: #1 emerald, #2 cyan, #3 faint cyan.
+const RANK_ROW_ACCENT = ["3px solid #0dbe82", "3px solid #18b4d4", "3px solid rgba(24,180,212,0.5)"];
 
 // ---- Main page ----
 
@@ -54,14 +48,15 @@ export default function FindMyExchange() {
   const [answers, setAnswers] = useState({});
   const [done, setDone] = useState(false);
 
-  const ranked = useMemo(
+  const rankedFull = useMemo(
     () =>
       [...EXCHANGES]
         .map((e) => ({ ...e, _score: scoreForUser(e, answers) }))
-        .sort((a, b) => b._score - a._score)
-        .slice(0, 8),
+        .sort((a, b) => b._score - a._score),
     [answers]
   );
+  // Live panel during the quiz shows the running top 8.
+  const ranked = useMemo(() => rankedFull.slice(0, 8), [rankedFull]);
 
   const progress = done ? 100 : Math.round((step / TOTAL) * 100);
 
@@ -88,16 +83,14 @@ export default function FindMyExchange() {
     <div className="container-x pt-12 md:pt-[153px] pb-24">
       <QuizHero />
       <ProgressBar step={step} done={done} progress={progress} />
-      <div className="mt-20 grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-10">
-        <QuestionPanel
-          step={step}
-          done={done}
-          answers={answers}
-          ranked={ranked}
-          handlers={handlers}
-        />
-        <LiveRankingPanel ranked={ranked} answers={answers} done={done} />
-      </div>
+      {done ? (
+        <ResultsDisplay ranked={rankedFull} answers={answers} onRestart={handlers.restart} />
+      ) : (
+        <div className="mt-20 grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-10">
+          <QuestionPanel step={step} answers={answers} handlers={handlers} />
+          <LiveRankingPanel ranked={ranked} answers={answers} />
+        </div>
+      )}
     </div>
   );
 }
@@ -138,18 +131,14 @@ function ProgressBar({ step, done, progress }) {
   );
 }
 
-function QuestionPanel({ step, done, answers, ranked, handlers }) {
+function QuestionPanel({ step, answers, handlers }) {
   return (
     <div
       className="hairline p-7 lg:p-10"
       style={{ borderRadius: 3, background: "#0f1422", minHeight: 460 }}
     >
-      {done ? (
-        <ResultsDisplay ranked={ranked} answers={answers} onRestart={handlers.restart} />
-      ) : (
-        <ActiveQuestion step={step} answers={answers} handlers={handlers} />
-      )}
-      {!done && <QuizNav step={step} handlers={handlers} />}
+      <ActiveQuestion step={step} answers={answers} handlers={handlers} />
+      <QuizNav step={step} handlers={handlers} />
     </div>
   );
 }
@@ -291,31 +280,14 @@ function QuizNav({ step, handlers }) {
 }
 
 function ResultsDisplay({ ranked, answers, onRestart }) {
-  const [first, ...runnersUp] = ranked.slice(0, 3);
+  const top3 = ranked.slice(0, 3);
   return (
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-      <Eyebrow color="text-emerald">Your match</Eyebrow>
-      <h2 className="mt-3 text-[32px] font-bold tracking-tight">{first.name} is your match.</h2>
-      <p className="mt-3 text-[15px] text-muted leading-relaxed max-w-xl">
-        Based on your answers we re-ranked {EXCHANGES.length} venues. This is the strongest fit for
-        your profile across compliance, product, and execution.
-      </p>
-
-      <div className="mt-7">
-        <MatchFeaturedCard exchange={first} answers={answers} />
-      </div>
-
-      {runnersUp.length > 0 && (
-        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-          {runnersUp.map((e, i) => (
-            <MatchCompactCard key={e.id} exchange={e} rank={i + 2} answers={answers} />
-          ))}
-        </div>
-      )}
-
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-20">
+      <PersonalizedRanking ranked={ranked} />
+      <TopThreeMatches top3={top3} answers={answers} />
       <button
         onClick={onRestart}
-        className="mt-6 inline-flex items-center gap-1.5 font-mono text-[12px] uppercase tracking-widest text-muted hover:text-cyan transition-colors"
+        className="mt-8 inline-flex items-center gap-1.5 font-mono text-[12px] uppercase tracking-widest text-muted hover:text-cyan transition-colors"
       >
         Retake quiz <ArrowRight size={12} />
       </button>
@@ -323,186 +295,185 @@ function ResultsDisplay({ ranked, answers, onRestart }) {
   );
 }
 
-// #1 match — full featured treatment mirroring FeaturedCard on /compare:
-// identity + reasons left, 7 pillar bars center, radar right.
-function MatchFeaturedCard({ exchange: e, answers }) {
-  const reasons = getReasoning(e, answers);
-  return (
-    <div
-      className="p-7 grid grid-cols-1 lg:grid-cols-[1fr_1.1fr_1.3fr] gap-8"
-      style={{
-        background: "#0f1422",
-        border: "0.5px solid rgba(255,255,255,0.08)",
-        borderLeft: "3px solid #0dbe82",
-        borderRadius: 3,
-      }}
-    >
-      <MatchIdentity exchange={e} reasons={reasons} />
-      <MatchBars exchange={e} />
-      <MatchMetrics exchange={e} />
-    </div>
-  );
-}
+// ---- Section 1: full-width personalized ranking (style mirrors /compare's list) ----
 
-function MatchIdentity({ exchange: e, reasons }) {
+function PersonalizedRanking({ ranked }) {
+  const [expanded, setExpanded] = useState(false);
+  const hasMore = ranked.length > COLLAPSED_RANK_ROWS;
+  const visible = expanded ? ranked : ranked.slice(0, COLLAPSED_RANK_ROWS);
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex items-baseline gap-3">
-        <span className="font-mono text-[15px]" style={{ color: "rgba(255,255,255,0.6)" }}>#1</span>
-        <ExchangeLogo domain={e.domain} name={e.name} size={48} />
-        <div>
-          <div className="text-[22px] font-semibold leading-none">{e.name}</div>
-          <div className="text-[13px] mt-1" style={{ color: "rgba(255,255,255,0.6)" }}>{e.bestFor}</div>
-        </div>
-      </div>
-      <div className="mt-5 flex flex-wrap gap-2">
-        <Badge tone="emerald">★ Your match</Badge>
-        {e.micarLicensed && <Badge tone="emerald">✓ MiCAR</Badge>}
-        {e.hasCryptoCard && <Badge tone="cyan">Card</Badge>}
-      </div>
-      <p className="mt-5 text-[14px] leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>
-        {e.proSummary}
+    <section>
+      <Eyebrow color="text-cyan">Personalized Ranking</Eyebrow>
+      <h2 className="mt-3 text-[28px] font-bold tracking-tight">Ranked for you.</h2>
+      <p className="mt-3 text-[15px] text-muted leading-relaxed max-w-xl">
+        Based on your answers, we re-ranked all {EXCHANGES.length} venues.
       </p>
-      {reasons.length > 0 && (
-        <ul className="mt-4 text-[13px] space-y-1.5" style={{ color: "rgba(255,255,255,0.75)" }}>
-          {reasons.map((r) => (
-            <li key={r} className="flex gap-2">
-              <span className="text-emerald">+</span>
-              <span>{r}</span>
-            </li>
-          ))}
-        </ul>
-      )}
-      <div className="flex-1 flex items-center justify-center" style={{ marginTop: 24 }}>
-        <ScoreCircle value={e._score} size={72} shown={true} />
-      </div>
-    </div>
-  );
-}
-
-function MatchBars({ exchange: e }) {
-  const bd = e.scoreBreakdown || {};
-  return (
-    <div className="h-full flex flex-col">
-      <div className="flex flex-col" style={{ gap: "20px" }}>
-        {MATCH_PILLARS.map((p, idx) => {
-          const value = p.override ?? bd[p.key] ?? 80;
-          return (
-            <div key={p.label} className="flex items-center gap-3" style={{ minHeight: "36px" }}>
-              <span className="font-mono text-[11px] uppercase tracking-widest w-28" style={{ color: "rgba(255,255,255,0.6)" }}>
-                {p.label}
-              </span>
-              <div className="flex-1">
-                <MiniBar value={value} color={BAR_GRADIENT} delay={idx * 0.06} shown={true} />
-              </div>
-              <span className="font-mono text-[12px] w-6 text-right" style={{ color: "rgba(255,255,255,0.6)" }}>{value}</span>
-            </div>
-          );
-        })}
-      </div>
-      <div className="flex-1 flex flex-col items-center justify-center" style={{ marginTop: 32 }}>
-        <a href={e.affiliateUrl} target="_blank" rel="noopener noreferrer" className="btn-cyan">
-          Visit {e.name} <ArrowUpRight size={14} />
-        </a>
-      </div>
-    </div>
-  );
-}
-
-function MatchMetrics({ exchange: e }) {
-  return (
-    <div className="flex-1 flex flex-col" style={{ minHeight: 300 }}>
-      <MatchRadar exchange={e} />
-    </div>
-  );
-}
-
-function MatchRadar({ exchange: e }) {
-  const bd = e.scoreBreakdown || {};
-  const data = [
-    { axis: "Custody", value: bd.security ?? 80 },
-    { axis: "Liquidity", value: bd.liquidity ?? 80 },
-    { axis: "Compliance", value: bd.compliance ?? 80 },
-    { axis: "Transparency", value: 88 },
-    { axis: "Product", value: bd.productDepth ?? 80 },
-    { axis: "Track Rec.", value: bd.trackRecord ?? 80 },
-    { axis: "Execution", value: bd.execution ?? 90 },
-  ];
-  return (
-    <div style={{ position: "relative", width: "100%", height: "100%", minHeight: 300 }}>
-      <div style={{ position: "absolute", top: 0, right: 0, display: "flex", alignItems: "center", gap: 6, fontFamily: "monospace", fontSize: 10, letterSpacing: "0.14em", color: "#0dbe82", textTransform: "uppercase", zIndex: 2 }}>
-        <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#0dbe82", display: "inline-block" }} />
-        SCORE BREAKDOWN
-      </div>
-      <ResponsiveContainer width="100%" height="100%">
-        <RadarChart data={data} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-          <PolarGrid stroke="rgba(255,255,255,0.07)" />
-          <PolarAngleAxis
-            dataKey="axis"
-            tick={{ fill: "rgba(255,255,255,0.45)", fontSize: 11, fontFamily: "monospace" }}
+      <div className="mt-8 hairline" style={{ borderRadius: 3 }}>
+        {visible.map((e, i) => (
+          <PersonalRankRow
+            key={e.id}
+            exchange={e}
+            position={i}
+            isLast={i === visible.length - 1}
           />
-          <Radar name="score" dataKey="value" stroke="#0dbe82" fill="#0dbe82" fillOpacity={0.15} strokeWidth={1.5} />
-        </RadarChart>
-      </ResponsiveContainer>
-    </div>
+        ))}
+      </div>
+      {hasMore && (
+        <ShowAllButton
+          expanded={expanded}
+          onToggle={() => setExpanded((v) => !v)}
+          total={ranked.length}
+        />
+      )}
+    </section>
   );
 }
 
-// #2 / #3 — compact cards: name, tagline, badges, score, 3 reasons, visit. No bars/radar.
-function MatchCompactCard({ exchange: e, rank, answers }) {
-  const reasons = getReasoning(e, answers, 3);
+function PersonalRankRow({ exchange: e, position, isLast }) {
+  const accent = RANK_ROW_ACCENT[position] || "3px solid transparent";
   return (
     <div
-      className="p-5 flex flex-col"
-      style={{
-        background: "#0f1422",
-        border: "0.5px solid rgba(255,255,255,0.08)",
-        borderLeft: "3px solid #18b4d4",
-        borderRadius: 3,
-      }}
+      className={`px-5 py-4 flex items-center gap-4 ${isLast ? "" : "hairline-b"} hover:bg-white/[0.02] transition-colors`}
+      style={{ borderLeft: accent }}
     >
-      <div className="flex items-center gap-3">
-        <span className="font-mono text-[14px]" style={{ color: "rgba(255,255,255,0.5)" }}>#{rank}</span>
-        <ExchangeLogo domain={e.domain} name={e.name} size={32} />
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-semibold text-[16px]">{e.name}</span>
-            {e.micarLicensed && <Badge tone="emerald">MiCAR</Badge>}
-            {e.hasCryptoCard && <Badge tone="cyan">Card</Badge>}
-          </div>
-          <div className="text-[12px] text-muted mt-[2px] truncate">{e.bestFor}</div>
+      <span className="font-mono text-[13px] text-muted w-7">#{position + 1}</span>
+      <ExchangeLogo domain={e.domain} name={e.name} size={24} />
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2">
+          <span className="text-[15px] font-semibold">{e.name}</span>
+          {e.micarLicensed && <Badge tone="emerald">MiCAR</Badge>}
+          {e.type?.includes("dex") && <Badge tone="cyan">DEX</Badge>}
         </div>
-        <span className="font-mono text-[20px] text-cyan">{e._score}</span>
+        <div className="text-[12px] text-muted mt-[2px] truncate">{e.bestFor}</div>
       </div>
-      {reasons.length > 0 && (
-        <ul className="mt-3 text-[13px] text-muted space-y-1">
-          {reasons.map((r) => (
-            <li key={r} className="flex gap-2">
-              <span className="text-cyan">+</span>
-              <span>{r}</span>
-            </li>
-          ))}
-        </ul>
-      )}
+      <div className="hidden md:flex items-center gap-3 w-[200px]">
+        <div className="flex-1">
+          <MiniBar value={e._score} color={BAR_GRADIENT} />
+        </div>
+        <span className="font-mono text-[14px] text-txt w-7 text-right">{e._score}</span>
+      </div>
       <a
         href={e.affiliateUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="btn-outline mt-4 !text-[13px] !py-2 self-start"
+        className="btn-cyan !py-1 !px-2 !text-[12px]"
       >
-        Visit {e.name} <ArrowUpRight size={12} />
+        Visit <ArrowUpRight size={12} />
       </a>
     </div>
   );
 }
 
-function LiveRankingPanel({ ranked, answers, done }) {
+function ShowAllButton({ expanded, onToggle, total }) {
+  const [hover, setHover] = useState(false);
+  return (
+    <button
+      onClick={onToggle}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      className="w-full mt-3 py-3 font-mono uppercase tracking-widest text-xs"
+      style={{
+        background: "transparent",
+        border: `1px solid ${hover ? "#ffffff30" : "#ffffff18"}`,
+        color: hover ? "#e4e4e7" : "#a1a1aa",
+        borderRadius: 3,
+        transition: "border-color 200ms ease, color 200ms ease",
+      }}
+    >
+      {expanded ? "Show less ↑" : `Show all ${total} →`}
+    </button>
+  );
+}
+
+// ---- Section 2: equal-size top 3 cards (no bars, no radar) ----
+
+function TopThreeMatches({ top3, answers }) {
+  return (
+    <section className="mt-20">
+      <Eyebrow color="text-emerald">Your Top 3 Matches</Eyebrow>
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-5 items-stretch">
+        {top3.map((e, i) => (
+          <TopMatchCard key={e.id} exchange={e} rank={i + 1} answers={answers} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function TopMatchCard({ exchange: e, rank, answers }) {
+  const reasons = getReasoning(e, answers, 2);
+  const isFirst = rank === 1;
+  const border = isFirst ? "1px solid #0dbe82" : "1px solid rgba(24,180,212,0.4)";
+  return (
+    <div className="flex flex-col h-full">
+      {/* Reserved label row keeps all three card tops aligned. */}
+      <div className="h-6 mb-2 flex items-center">
+        {isFirst && (
+          <span
+            className="font-mono text-[10px] uppercase tracking-widest text-emerald"
+            style={{ background: "rgba(13,190,130,0.15)", padding: "3px 8px", borderRadius: 3 }}
+          >
+            ★ Your match
+          </span>
+        )}
+      </div>
+      <div
+        className="flex-1 flex flex-col p-6"
+        style={{ background: "#0f1422", border, borderRadius: 3 }}
+      >
+        <div className="flex items-center gap-3">
+          <span
+            className="font-mono text-[14px]"
+            style={{ color: isFirst ? "#0dbe82" : "rgba(255,255,255,0.5)" }}
+          >
+            #{rank}
+          </span>
+          <ExchangeLogo domain={e.domain} name={e.name} size={40} />
+          <div className="min-w-0">
+            <div className="text-[18px] font-semibold leading-tight truncate">{e.name}</div>
+            <div className="text-[12px] text-muted mt-[2px] truncate">{e.bestFor}</div>
+          </div>
+        </div>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {e.micarLicensed && <Badge tone="emerald">MiCAR</Badge>}
+          {e.hasCryptoCard && <Badge tone="cyan">Card</Badge>}
+          {e.type?.includes("dex") && <Badge tone="cyan">DEX</Badge>}
+        </div>
+        <div className="mt-5 flex justify-center">
+          <ScoreCircle value={e._score} size={56} shown={true} />
+        </div>
+        {reasons.length > 0 && (
+          <ul className="mt-5 text-[13px] text-muted space-y-1.5">
+            {reasons.map((r) => (
+              <li key={r} className="flex gap-2">
+                <span className={isFirst ? "text-emerald" : "text-cyan"}>+</span>
+                <span>{r}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+        <div className="mt-auto pt-5">
+          <a
+            href={e.affiliateUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`${isFirst ? "btn-primary" : "btn-outline"} !text-[13px] w-full justify-center`}
+          >
+            Visit {e.name} <ArrowUpRight size={12} />
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function LiveRankingPanel({ ranked, answers }) {
   const isMicarCountry = answers.country && MICAR_COUNTRIES.has(answers.country);
   return (
     <div>
       <div className="flex items-center gap-2">
         <span className="w-[6px] h-[6px] rounded-full bg-cyan animate-pulse-dot" />
-        <Eyebrow color="text-cyan">{done ? "Final Ranking" : "Live Ranking"}</Eyebrow>
+        <Eyebrow color="text-cyan">Live Ranking</Eyebrow>
       </div>
       <div className="mt-3 text-[14px] text-muted">Updates as you answer.</div>
       <div className="mt-6 hairline" style={{ borderRadius: 3 }}>
