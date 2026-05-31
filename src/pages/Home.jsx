@@ -57,7 +57,7 @@ function BtnSolid({ href, to, children, className = "" }) {
   const [hover, setHover] = useState(false);
   const sx = {
     backgroundImage: CTA_GRADIENT,
-    color: "#fff",
+    color: "#0a0a0a",
     fontWeight: 600,
     padding: "10px 18px",
     borderRadius: 3,

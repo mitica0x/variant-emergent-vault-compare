@@ -52,46 +52,15 @@ export function ScoreCircle({ value, size = 72, shown }) {
   const selfInView = useInView(ref, { once: true, amount: 0.2 });
   const inView = shown !== undefined ? shown : selfInView;
   const color = scoreRingColor(value);
-  const stroke = 5;
-  const r = size / 2 - stroke / 2;
-  const c = 2 * Math.PI * r;
-  const offset = inView ? c * (1 - value / 100) : c;
-  const gradId = `ringGrad-${value}`;
+  const pct = Math.max(0, Math.min(100, value));
+  const deg = inView ? pct * 3.6 : 0;
   return (
     <div
       ref={ref}
       className="relative flex items-center justify-center"
       style={{ width: size, height: size }}
     >
-      <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
-        <defs>
-          <linearGradient id={gradId} x1="0%" y1="100%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#18b4d4" />
-            <stop offset="50%" stopColor="#0dbe82" />
-            <stop offset="100%" stopColor="#a3e635" />
-          </linearGradient>
-        </defs>
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={r}
-          fill="none"
-          stroke="rgba(255,255,255,0.05)"
-          strokeWidth={stroke}
-        />
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={r}
-          fill="none"
-          stroke={`url(#${gradId})`}
-          strokeWidth={stroke}
-          strokeLinecap="round"
-          strokeDasharray={c}
-          strokeDashoffset={offset}
-          style={{ transition: `stroke-dashoffset 800ms ${SPRING}` }}
-        />
-      </svg>
+      <div className="score-ring absolute inset-0" style={{ "--ring-deg": `${deg}deg` }} />
       <span
         className="font-mono font-semibold absolute"
         style={{ color, fontSize: size * 0.32 }}

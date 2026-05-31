@@ -64,7 +64,7 @@ function OpenAppButton({ className = "" }) {
       className={`items-center gap-1.5 rounded-[3px] font-semibold ${className}`}
       style={{
         background: hover ? "#a3e635" : "#0dbe82",
-        color: "#000",
+        color: "#0a0a0a",
         transition: "background-color 150ms ease",
       }}
     >

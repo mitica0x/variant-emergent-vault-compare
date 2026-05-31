@@ -116,8 +116,8 @@ function ProgressBar({ step, done, progress }) {
         <motion.div
           animate={{ width: `${progress}%` }}
           transition={PROGRESS_TRANSITION}
-          className="h-full bg-emerald"
-          style={{ borderRadius: 2 }}
+          className="h-full"
+          style={{ borderRadius: 2, background: "linear-gradient(90deg, #18b4d4 0%, #0dbe82 50%, #70a848 100%)" }}
         />
       </div>
     </div>

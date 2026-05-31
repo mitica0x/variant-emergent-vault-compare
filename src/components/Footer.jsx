@@ -1,6 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Twitter, Send, Linkedin, Mail } from "lucide-react";
+import { Send, Linkedin, Mail } from "lucide-react";
+
+function XIcon({ size = 16 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  );
+}
 
 export default function Footer() {
   return (
@@ -19,7 +27,7 @@ export default function Footer() {
             <span style={{ color: "#fff" }}>All Signal. </span><span style={{ color: "#18b4d4" }}>0</span><span style={{ color: "#fff" }}> Guess.</span>
           </p>
           <div className="flex items-center gap-3 mt-6 text-muted">
-            <a href="https://x.com/coinsiglieri" target="_blank" rel="noopener noreferrer" className="hover:text-txt transition-colors"><Twitter size={16} /></a>
+            <a href="https://x.com/coinsiglieri" target="_blank" rel="noopener noreferrer" className="hover:text-txt transition-colors"><XIcon size={16} /></a>
             <a href="https://t.me/coinsiglieri" target="_blank" rel="noopener noreferrer" className="hover:text-txt transition-colors"><Send size={16} /></a>
             <a href="https://linkedin.com/company/coinsiglieri" target="_blank" rel="noopener noreferrer" className="hover:text-txt transition-colors"><Linkedin size={16} /></a>
             <a href="mailto:hello@coinsiglieri.com" className="hover:text-txt transition-colors"><Mail size={16} /></a>
