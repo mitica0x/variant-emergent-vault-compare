@@ -1180,10 +1180,17 @@ function ReviewBlock({ exchange: e }) {
           </p>
         )}
       </div>
-      <PhoneMockup
-        screenshots={[`/phones/${e.id}.png`]}
-        abbreviation={e.abbreviation || (e.name || e.id).substring(0, 2).toUpperCase()}
-      />
+      <div className="flex justify-end" style={{ marginLeft: "auto", flexShrink: 0 }}>
+        <PhoneMockup
+          size="lg"
+          screenshots={[
+            `/phones/${e.id}.png`,
+            `/phones/${e.id}-2.png`,
+            `/phones/${e.id}-3.png`,
+          ]}
+          abbreviation={e.abbreviation || (e.name || e.id).substring(0, 2).toUpperCase()}
+        />
+      </div>
     </motion.div>
   );
 }
