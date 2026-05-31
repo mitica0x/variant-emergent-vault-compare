@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 // Base design is authored at 260x520; named sizes scale the whole frame
 // to the requested size (X/Y independently so the frame can be made wider/shorter).
 const SIZES = {
-  lg: { w: 282, h: 480 },
+  lg: { w: 272, h: 480 },
 };
 
 export const PhoneMockup = ({ screenshots, abbreviation, screenshot, fallback, size }) => {
