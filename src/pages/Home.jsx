@@ -30,7 +30,7 @@ const OPERATOR_ITEMS = [
   { value: "15+", label: "Years in derivatives markets" },
   { value: "2× Editions", label: "Web3 startup competition · €440,775" },
   { value: "On Stage", label: "Crypto Expo Europe · Next Block · ETH Bucharest" },
-  { value: "Lunu POS", label: "Largest crypto payment · Beach Please Festival" },
+  { value: "Lunu POS", label: "Crypto Payments · Beach Please Festival" },
 ];
 
 const SERVICES = [
