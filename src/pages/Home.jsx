@@ -61,7 +61,7 @@ function BtnSolid({ href, to, children, className = "" }) {
     fontWeight: 600,
     padding: "10px 18px",
     borderRadius: 3,
-    fontSize: 16,
+    fontSize: 15,
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
@@ -86,7 +86,7 @@ function BtnGhost({ href, to, children, color = "#18b4d4", hoverColor = "#a3e635
       padding: "10px 18px",
       borderRadius: 3,
       fontWeight: 500,
-      fontSize: 16,
+      fontSize: 15,
       border: "0.5px solid transparent",
       background: `linear-gradient(#080b16, #080b16) padding-box, ${CTA_GRADIENT} border-box`,
       filter: hover ? "brightness(1.15)" : "none",
@@ -114,7 +114,7 @@ function BtnGhost({ href, to, children, color = "#18b4d4", hoverColor = "#a3e635
     fontWeight: 500,
     padding: "10px 18px",
     borderRadius: 3,
-    fontSize: 16,
+    fontSize: 15,
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
@@ -202,7 +202,7 @@ function Hero() {
             initial={FADE_IN_UP_BIG.initial}
             animate={FADE_IN_UP_BIG.animate}
             transition={softTransition(0.16, 0.8)}
-            className="mt-6 max-w-xl text-[18px] sm:text-[21px] leading-relaxed"
+            className="mt-6 max-w-xl text-[18px] sm:text-[20px] leading-relaxed"
             style={{ color: "rgba(255,255,255,0.72)" }}
           >
             Everything in financial markets was built for humans.
@@ -212,7 +212,7 @@ function Hero() {
             initial={FADE_IN_UP_BIG.initial}
             animate={FADE_IN_UP_BIG.animate}
             transition={softTransition(0.2, 0.8)}
-            className="mt-6 font-mono text-[12px] uppercase tracking-widest"
+            className="mt-6 font-mono text-[11px] uppercase tracking-widest"
             style={{ color: "rgba(255,255,255,0.5)" }}
           >
             Crypto · Web3 · AI · In the market since 2017
@@ -256,7 +256,7 @@ function HeroMetrics() {
     >
       {HERO_METRICS.map((m) => (
         <div key={m.label} className="bg-bg p-4">
-          <div className="font-mono text-[25px] text-txt">{m.value}</div>
+          <div className="font-mono text-[24px] text-txt">{m.value}</div>
           <div className="eyebrow text-muted mt-1">{m.label}</div>
         </div>
       ))}
@@ -285,7 +285,7 @@ function GlobePill({ to, label, accent }) {
         borderRadius: 3,
         padding: "6px 12px",
         fontFamily: "monospace",
-        fontSize: 13,
+        fontSize: 12,
         color: hover ? accent : "#e4e4e7",
         letterSpacing: "0.08em",
         textTransform: "uppercase",
@@ -385,9 +385,9 @@ function SurfaceCard({ surface }) {
         {lime ? "$699/MO" : "LIVE"}
       </span>
       <h3 className="font-mono text-[13px] uppercase tracking-widest text-txt pr-16">{name}</h3>
-      <p className="mt-3 text-[16px] leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>{desc}</p>
+      <p className="mt-3 text-[15px] leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>{desc}</p>
       {!lime && (
-        <div className="mt-6 font-mono text-[13px] uppercase tracking-widest" style={{ color: accent }}>{stat}</div>
+        <div className="mt-6 font-mono text-[12px] uppercase tracking-widest" style={{ color: accent }}>{stat}</div>
       )}
     </>
   );
@@ -439,8 +439,8 @@ function TrackRecordSection() {
         >
           {OPERATOR_ITEMS.map((s) => (
             <div key={s.value} className="bg-bg p-6">
-              <div className="font-mono text-[28px] text-txt leading-tight">{s.value}</div>
-              <div className="mt-3 font-mono text-[13px] uppercase tracking-widest leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>{s.label}</div>
+              <div className="font-mono text-[26px] text-txt leading-tight">{s.value}</div>
+              <div className="mt-3 font-mono text-[12px] uppercase tracking-widest leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>{s.label}</div>
             </div>
           ))}
         </div>
@@ -459,7 +459,7 @@ function LeaderboardPreviewSection({ top5 }) {
             Top 5 exchanges right now.
           </h2>
         </div>
-        <Link to="/compare" className="btn-cyan !py-2 !px-3 !text-[14px] hidden sm:inline-flex">
+        <Link to="/compare" className="btn-cyan !py-2 !px-3 !text-[13px] hidden sm:inline-flex">
           See all 37+ <ArrowRight size={14} />
         </Link>
       </div>
@@ -481,15 +481,15 @@ function PreviewRow({ exchange, isLast, index = 0 }) {
         isLast ? "" : "hairline-b"
       } hover:bg-white/[0.02] transition-colors`}
     >
-      <span className="font-mono text-[14px] text-muted w-8">#{exchange.rank}</span>
+      <span className="font-mono text-[13px] text-muted w-8">#{exchange.rank}</span>
       <ExchangeLogo domain={exchange.domain} name={exchange.name} size={28} />
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <span className="font-semibold text-[16px]">{exchange.name}</span>
+          <span className="font-semibold text-[15px]">{exchange.name}</span>
           {exchange.micarLicensed && <Badge tone="emerald">MiCAR</Badge>}
           {exchange.featured && <Badge tone="rust">Featured</Badge>}
         </div>
-        <div className="text-[14px] text-muted mt-[2px]">{exchange.bestFor}</div>
+        <div className="text-[13px] text-muted mt-[2px]">{exchange.bestFor}</div>
       </div>
       <div className="hidden md:flex items-center gap-3 min-w-[180px]">
         <div ref={barRef} className="flex-1 h-[3px] bg-white/[0.05] rounded">
@@ -501,13 +501,13 @@ function PreviewRow({ exchange, isLast, index = 0 }) {
             transition={{ type: "spring", stiffness: 120, damping: 18, delay: index * 0.08 }}
           />
         </div>
-        <span className="font-mono text-[16px] text-txt w-7 text-right">{exchange.score}</span>
+        <span className="font-mono text-[15px] text-txt w-7 text-right">{exchange.score}</span>
       </div>
       <a
         href={exchange.affiliateUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="btn-cyan !py-1 !px-2 !text-[13px]"
+        className="btn-cyan !py-1 !px-2 !text-[12px]"
       >
         Visit <ArrowUpRight size={12} />
       </a>
@@ -544,14 +544,14 @@ function C0insiglieriTeaser() {
       >
         <div className="p-6 space-y-3">
           {TEASER_SIGNALS.map((s) => (
-            <div key={s.text} className="font-mono text-[14px] sm:text-[15px]" style={{ color: s.color }}>
+            <div key={s.text} className="font-mono text-[13px] sm:text-[14px]" style={{ color: s.color }}>
               {s.text}
             </div>
           ))}
-          <div className="font-mono text-[14px] sm:text-[15px]" style={{ color: "rgba(255,255,255,0.22)" }}>
+          <div className="font-mono text-[13px] sm:text-[14px]" style={{ color: "rgba(255,255,255,0.22)" }}>
             ● ████████ · ████████ · ██████████████ · ██:██ UTC
           </div>
-          <div className="font-mono text-[14px] sm:text-[15px]" style={{ color: "rgba(255,255,255,0.12)" }}>
+          <div className="font-mono text-[13px] sm:text-[14px]" style={{ color: "rgba(255,255,255,0.12)" }}>
             ● ██████ · ████████ · ████████████ · ██:██ UTC
           </div>
         </div>
@@ -631,17 +631,17 @@ function ProductCard({ glow, glowHover, border, wordmark, badge, badgeColor, hea
     >
       <div style={{ background: "#0f1422", border, borderRadius: 3, padding: 32, boxShadow: hover ? glowHover : glow, transition: "box-shadow 200ms ease" }}>
       <span
-        className="font-mono text-[12px] uppercase tracking-widest px-2 py-[3px]"
+        className="font-mono text-[11px] uppercase tracking-widest px-2 py-[3px]"
         style={{ color: badgeColor, background: `${badgeColor}1f`, borderRadius: 3 }}
       >
         {badge}
       </span>
       <h3 className="mt-5 text-[28px] font-semibold tracking-tight">{wordmark}</h3>
-      <p className="mt-2 text-[21px] font-semibold tracking-tight text-txt">{heading}</p>
-      <p className="mt-3 text-[16px] leading-relaxed max-w-md" style={{ color: "rgba(255,255,255,0.6)" }}>{body}</p>
+      <p className="mt-2 text-[20px] font-semibold tracking-tight text-txt">{heading}</p>
+      <p className="mt-3 text-[15px] leading-relaxed max-w-md" style={{ color: "rgba(255,255,255,0.6)" }}>{body}</p>
       <ul className="mt-6 space-y-2">
         {features.map((f) => (
-          <li key={f} className="flex items-start gap-2 text-[15px] text-txt/90">
+          <li key={f} className="flex items-start gap-2 text-[14px] text-txt/90">
             <CheckCircle2 size={14} style={{ color: featureColor }} className="shrink-0 mt-[2px]" /> {f}
           </li>
         ))}
@@ -673,10 +673,10 @@ function ServicesSection() {
           >
             <Icon size={20} className="text-emerald" />
             <h3 className="mt-4 font-mono text-[12px] uppercase tracking-widest text-txt">{title}</h3>
-            <p className="mt-2 text-[16px] leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>{desc}</p>
+            <p className="mt-2 text-[15px] leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>{desc}</p>
             <Link
               to="/advertise#contact"
-              className="mt-5 inline-flex items-center gap-1 font-mono text-[13px] uppercase tracking-widest text-cyan hover:text-emerald transition-colors"
+              className="mt-5 inline-flex items-center gap-1 font-mono text-[12px] uppercase tracking-widest text-cyan hover:text-emerald transition-colors"
             >
               Get in touch <ArrowRight size={12} />
             </Link>

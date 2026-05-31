@@ -113,8 +113,8 @@ function TrustBand() {
           variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4 } } }}
         >
           <Icon size={16} className="text-cyan" />
-          <div className="mt-3 font-mono text-[13px] uppercase tracking-widest text-txt">{title}</div>
-          <div className="mt-1 text-[14px] text-muted">{desc}</div>
+          <div className="mt-3 font-mono text-[12px] uppercase tracking-widest text-txt">{title}</div>
+          <div className="mt-1 text-[13px] text-muted">{desc}</div>
         </motion.div>
       ))}
     </motion.section>
@@ -135,7 +135,7 @@ function Sidebar({ active }) {
                 href={`#${s.id}`}
                 className="relative h-8 flex items-center pl-3 font-mono uppercase transition-colors"
                 style={{
-                  fontSize: "12px",
+                  fontSize: "11px",
                   letterSpacing: "2px",
                   color: isActive ? "#0dbe82" : "rgba(255,255,255,0.4)",
                   borderLeft: isActive ? "0.5px solid #0dbe82" : "0.5px solid transparent",
@@ -223,11 +223,11 @@ function FeaturedIdentity({ exchange, shown }) {
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-baseline gap-3">
-        <span className="font-mono text-[16px]" style={{ color: "rgba(255,255,255,0.6)" }}>#{exchange.rank}</span>
+        <span className="font-mono text-[15px]" style={{ color: "rgba(255,255,255,0.6)" }}>#{exchange.rank}</span>
         <ExchangeLogo domain={exchange.domain} name={exchange.name} size={48} />
         <div>
-          <div className="text-[23px] font-semibold leading-none">{exchange.name}</div>
-          <div className="text-[14px] mt-1" style={{ color: "rgba(255,255,255,0.6)" }}>{exchange.bestFor}</div>
+          <div className="text-[22px] font-semibold leading-none">{exchange.name}</div>
+          <div className="text-[13px] mt-1" style={{ color: "rgba(255,255,255,0.6)" }}>{exchange.bestFor}</div>
         </div>
       </div>
       <div className="mt-5 flex flex-wrap gap-2">
@@ -235,7 +235,7 @@ function FeaturedIdentity({ exchange, shown }) {
         {exchange.micarLicensed && <Badge tone="emerald">✓ MiCAR</Badge>}
         {exchange.hasCryptoCard && <Badge tone="cyan">Card</Badge>}
       </div>
-      <p className="mt-5 text-[15px] leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>
+      <p className="mt-5 text-[14px] leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>
         {exchange.proSummary}
       </p>
       <div className="flex-1 flex items-center justify-center">
@@ -264,13 +264,13 @@ function FeaturedBars({ exchange, shown }) {
         const value = p.override ?? bd[p.key] ?? 80;
         return (
           <div key={p.label} className="flex items-center gap-3" style={{ minHeight: "36px", display: "flex", alignItems: "center" }}>
-            <span className="font-mono text-[12px] uppercase tracking-widest w-28" style={{ color: "rgba(255,255,255,0.6)" }}>
+            <span className="font-mono text-[11px] uppercase tracking-widest w-28" style={{ color: "rgba(255,255,255,0.6)" }}>
               {p.label}
             </span>
             <div className="flex-1">
               <MiniBar value={value} color={BAR_GRADIENT} delay={idx * 0.06} shown={shown} />
             </div>
-            <span className="font-mono text-[13px] w-6 text-right" style={{ color: "rgba(255,255,255,0.6)" }}>{value}</span>
+            <span className="font-mono text-[12px] w-6 text-right" style={{ color: "rgba(255,255,255,0.6)" }}>{value}</span>
           </div>
         );
         })}
@@ -284,7 +284,7 @@ function FeaturedBars({ exchange, shown }) {
         >
           Visit {exchange.name} <ArrowUpRight size={14} />
         </a>
-        <p className="text-[12px] font-mono text-center" style={{ color: "rgba(255,255,255,0.6)" }}>
+        <p className="text-[11px] font-mono text-center" style={{ color: "rgba(255,255,255,0.6)" }}>
           Sponsored by {exchange.name} · CTR 24h: 3.4%
         </p>
       </div>
@@ -313,9 +313,9 @@ function CompactVital({ label, value, delta }) {
   return (
     <div className="hairline-b pb-2">
       <div className="font-mono text-[10px] uppercase tracking-widest text-muted">{label}</div>
-      <div className="font-mono text-[15px] mt-1">{value}</div>
+      <div className="font-mono text-[14px] mt-1">{value}</div>
       {hasDelta && (
-        <div className={`font-mono text-[12px] ${positive ? "text-emerald" : "text-rust"}`}>
+        <div className={`font-mono text-[11px] ${positive ? "text-emerald" : "text-rust"}`}>
           {positive ? "+" : ""}{delta.toFixed(1)}%
         </div>
       )}
@@ -372,7 +372,7 @@ function RadarBreakdown({ exchange, shown }) {
             <PolarGrid stroke="rgba(255,255,255,0.07)" />
             <PolarAngleAxis
               dataKey="axis"
-              tick={{ fill: "rgba(255,255,255,0.45)", fontSize: 12, fontFamily: "monospace" }}
+              tick={{ fill: "rgba(255,255,255,0.45)", fontSize: 11, fontFamily: "monospace" }}
             />
             <Radar
               name="score"
@@ -396,7 +396,7 @@ function DexDivider() {
       style={{
         borderTop: "0.5px solid rgba(255,255,255,0.08)",
         padding: "12px 14px",
-        fontSize: 12,
+        fontSize: 11,
         letterSpacing: "2px",
         color: "rgba(255,255,255,0.3)",
       }}
@@ -531,11 +531,11 @@ function RankedRow({ exchange, isLast, selectedId, setSelectedId }) {
         background: isExpanded ? "rgba(13,190,130,0.04)" : undefined,
       }}
     >
-      <span className="font-mono text-[14px] text-muted w-7">#{exchange.rank}</span>
+      <span className="font-mono text-[13px] text-muted w-7">#{exchange.rank}</span>
       <ExchangeLogo domain={exchange.domain} name={exchange.name} size={24} />
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <span className="text-[16px] font-semibold">{exchange.name}</span>
+          <span className="text-[15px] font-semibold">{exchange.name}</span>
           {WEB3_NAMES.includes(exchange.name) && (
             <span
               style={{
@@ -555,20 +555,20 @@ function RankedRow({ exchange, isLast, selectedId, setSelectedId }) {
           {exchange.micarLicensed && <Badge tone="emerald">MiCAR</Badge>}
           {exchange.type.includes("dex") && <Badge tone="cyan">DEX</Badge>}
         </div>
-        <div className="text-[13px] text-muted mt-[2px]">{exchange.bestFor}</div>
+        <div className="text-[12px] text-muted mt-[2px]">{exchange.bestFor}</div>
       </div>
       <div className="hidden md:flex items-center gap-3 w-[200px]">
         <div className="flex-1">
           <MiniBar value={exchange.score} color={BAR_GRADIENT} />
         </div>
-        <span className="font-mono text-[15px] text-txt w-7 text-right">{exchange.score}</span>
+        <span className="font-mono text-[14px] text-txt w-7 text-right">{exchange.score}</span>
       </div>
       <a
         href={exchange.affiliateUrl}
         target="_blank"
         rel="noopener noreferrer"
         onClick={(e) => e.stopPropagation()}
-        className="btn-cyan !py-1 !px-2 !text-[13px]"
+        className="btn-cyan !py-1 !px-2 !text-[12px]"
       >
         Visit <ArrowUpRight size={12} />
       </a>
@@ -615,11 +615,11 @@ function DetailIdentity({ exchange, shown }) {
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-baseline gap-3">
-        <span className="font-mono text-[16px]" style={{ color: "rgba(255,255,255,0.6)" }}>#{exchange.rank}</span>
+        <span className="font-mono text-[15px]" style={{ color: "rgba(255,255,255,0.6)" }}>#{exchange.rank}</span>
         <ExchangeLogo domain={exchange.domain} name={exchange.name} size={48} />
         <div>
-          <div className="text-[23px] font-semibold leading-none">{exchange.name}</div>
-          <div className="text-[14px] mt-1" style={{ color: "rgba(255,255,255,0.6)" }}>{exchange.bestFor}</div>
+          <div className="text-[22px] font-semibold leading-none">{exchange.name}</div>
+          <div className="text-[13px] mt-1" style={{ color: "rgba(255,255,255,0.6)" }}>{exchange.bestFor}</div>
         </div>
       </div>
       <div className="mt-5 flex flex-wrap gap-2">
@@ -627,7 +627,7 @@ function DetailIdentity({ exchange, shown }) {
         {exchange.type.includes("dex") && <Badge tone="cyan">DEX</Badge>}
         {WEB3_NAMES.includes(exchange.name) && <Badge tone="rust">WEB3</Badge>}
       </div>
-      <p className="mt-5 text-[15px] leading-relaxed text-muted">
+      <p className="mt-5 text-[14px] leading-relaxed text-muted">
         {exchange.proSummary}
       </p>
       <div className="flex-1 flex items-center justify-center">
@@ -646,13 +646,13 @@ function DetailBars({ exchange, shown }) {
           const value = p.override ?? bd[p.key] ?? 80;
           return (
             <div key={p.label} className="flex items-center gap-3" style={{ minHeight: "36px", display: "flex", alignItems: "center" }}>
-              <span className="font-mono text-[12px] uppercase tracking-widest w-28" style={{ color: "rgba(255,255,255,0.6)" }}>
+              <span className="font-mono text-[11px] uppercase tracking-widest w-28" style={{ color: "rgba(255,255,255,0.6)" }}>
                 {p.label}
               </span>
               <div className="flex-1">
                 <MiniBar value={value} color={BAR_GRADIENT} delay={idx * 0.06} shown={shown} />
               </div>
-              <span className="font-mono text-[13px] w-6 text-right" style={{ color: "rgba(255,255,255,0.6)" }}>{value}</span>
+              <span className="font-mono text-[12px] w-6 text-right" style={{ color: "rgba(255,255,255,0.6)" }}>{value}</span>
             </div>
           );
         })}
@@ -667,7 +667,7 @@ function DetailBars({ exchange, shown }) {
         >
           Visit {exchange.name} <ArrowUpRight size={14} />
         </a>
-        <p className="font-mono text-[12px] text-center text-muted">· Score independent</p>
+        <p className="font-mono text-[11px] text-center text-muted">· Score independent</p>
       </div>
     </div>
   );
@@ -709,7 +709,7 @@ function TableCols() {
 
 function ComparisonTableHead() {
   return (
-    <thead className="font-mono text-[12px] uppercase tracking-widest text-muted">
+    <thead className="font-mono text-[11px] uppercase tracking-widest text-muted">
       <tr className="hairline-b">
         <th className="text-left p-3 font-normal">Exchange</th>
         <th className="text-left p-3 font-normal">Score</th>
@@ -814,7 +814,7 @@ function ComparisonTableSection({ list }) {
       </AnimatePresence>
 
       <div className="mt-6 overflow-x-auto hairline" style={{ borderRadius: 3 }}>
-        <table className="w-full min-w-[920px] text-[15px] table-fixed">
+        <table className="w-full min-w-[920px] text-[14px] table-fixed">
           <TableCols />
           <ComparisonTableHead />
           <tbody>
@@ -839,7 +839,7 @@ function ComparisonTableSection({ list }) {
               transition={ACCORDION_TRANSITION}
               style={{ overflow: "hidden" }}
             >
-              <table className="w-full min-w-[920px] text-[15px] table-fixed">
+              <table className="w-full min-w-[920px] text-[14px] table-fixed">
                 <TableCols />
                 <tbody>
                   {tail.map((e, i) => (
@@ -918,7 +918,7 @@ function CustomComparePanelInner({ selected, compareIds, full, onAdd, onRemove, 
           {selected.map((e) => (
             <span
               key={e.id}
-              className="inline-flex items-center gap-2 font-mono text-[13px] px-3 py-1"
+              className="inline-flex items-center gap-2 font-mono text-[12px] px-3 py-1"
               style={{
                 background: "#0f1422",
                 border: "0.5px solid rgba(13,190,130,0.4)",
@@ -939,7 +939,7 @@ function CustomComparePanelInner({ selected, compareIds, full, onAdd, onRemove, 
           ))}
 
           {full ? (
-            <span className="font-mono text-[13px] text-muted">Maximum 7 exchanges</span>
+            <span className="font-mono text-[12px] text-muted">Maximum 7 exchanges</span>
           ) : (
             <div className="relative">
               <input
@@ -947,7 +947,7 @@ function CustomComparePanelInner({ selected, compareIds, full, onAdd, onRemove, 
                 value={query}
                 onChange={(ev) => setQuery(ev.target.value)}
                 placeholder="Add exchange…"
-                className="font-mono text-[14px] text-txt placeholder:text-muted px-3 py-1 min-w-[160px] outline-none"
+                className="font-mono text-[13px] text-txt placeholder:text-muted px-3 py-1 min-w-[160px] outline-none"
                 style={{
                   background: "#0f1422",
                   border: "0.5px solid rgba(255,255,255,0.1)",
@@ -980,7 +980,7 @@ function CustomComparePanelInner({ selected, compareIds, full, onAdd, onRemove, 
                         style={{ cursor: "pointer" }}
                       >
                         <ExchangeLogo domain={e.domain} name={e.name} size={18} />
-                        <span className="text-[14px] font-semibold flex-1 truncate">{e.name}</span>
+                        <span className="text-[13px] font-semibold flex-1 truncate">{e.name}</span>
                         <ScorePill score={e.score} />
                       </button>
                     ))}
@@ -1000,7 +1000,7 @@ function CustomComparePanelInner({ selected, compareIds, full, onAdd, onRemove, 
       </div>
 
       <div className="mt-4 overflow-x-auto hairline" style={{ borderRadius: 3 }}>
-        <table className="w-full min-w-[920px] text-[15px] table-fixed">
+        <table className="w-full min-w-[920px] text-[14px] table-fixed">
           <TableCols />
           <ComparisonTableHead />
           <tbody>
@@ -1036,8 +1036,8 @@ function ComparisonRow({ exchange, isLast, inCompare = false, compareFull = fals
       <td className="p-3"><BoolCheck on={exchange.micarLicensed} /></td>
       <td className="p-3"><BoolCheck on={exchange.hasCryptoCard} /></td>
       <td className="p-3"><BoolCheck on={exchange.hasFutures} /></td>
-      <td className="p-3 font-mono text-[14px] text-muted">{exchange.porCadence}</td>
-      <td className="p-3 font-mono text-[14px] text-muted">
+      <td className="p-3 font-mono text-[13px] text-muted">{exchange.porCadence}</td>
+      <td className="p-3 font-mono text-[13px] text-muted">
         {exchange.tradingFeeLow.toFixed(2)}–{exchange.tradingFeeHigh.toFixed(2)}%
       </td>
       <td className="p-3">
@@ -1053,7 +1053,7 @@ function ComparisonRow({ exchange, isLast, inCompare = false, compareFull = fals
             href={exchange.affiliateUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-mono text-[13px] uppercase tracking-widest text-cyan hover:text-emerald transition-colors"
+            className="font-mono text-[12px] uppercase tracking-widest text-cyan hover:text-emerald transition-colors"
           >
             Visit <ArrowUpRight size={10} className="inline" />
           </a>
@@ -1066,7 +1066,7 @@ function ComparisonRow({ exchange, isLast, inCompare = false, compareFull = fals
 function ScorePill({ score }) {
   return (
     <span
-      className={`px-2 py-[2px] font-mono text-[14px] ${scoreColor(score)}`}
+      className={`px-2 py-[2px] font-mono text-[13px] ${scoreColor(score)}`}
       style={{ background: getTierBg(score), borderRadius: 3 }}
     >
       {score}
@@ -1153,16 +1153,16 @@ function ReviewBlock({ exchange: e }) {
           <div>
             <div className="flex items-center gap-2">
               <h3 className="text-[22px] font-semibold">{e.name}</h3>
-              <span className="font-mono text-[13px] text-muted">#{e.rank}</span>
+              <span className="font-mono text-[12px] text-muted">#{e.rank}</span>
               {e.micarLicensed && <Badge tone="emerald">MiCAR</Badge>}
             </div>
-            <div className="text-[14px] text-muted mt-1">{e.bestFor}</div>
+            <div className="text-[13px] text-muted mt-1">{e.bestFor}</div>
           </div>
           <div className="ml-auto">
             <ScoreCircle value={e.score} size={56} />
           </div>
         </div>
-        <p className="mt-5 text-[16px] text-txt/90 leading-relaxed">{e.proSummary}</p>
+        <p className="mt-5 text-[15px] text-txt/90 leading-relaxed">{e.proSummary}</p>
         <div className="mt-6">
           <ProsCons pros={e.pros} cons={e.cons} />
         </div>
@@ -1175,7 +1175,7 @@ function ReviewBlock({ exchange: e }) {
           </a>
         </div>
         {e.featured && (
-          <p className="mt-3 font-mono text-[12px] uppercase tracking-widest text-muted">
+          <p className="mt-3 font-mono text-[11px] uppercase tracking-widest text-muted">
             Featured placement disclosed · score independent
           </p>
         )}
@@ -1208,7 +1208,7 @@ function MethodologySection() {
       >
         Seven pillars. One transparent formula.
       </motion.h2>
-      <p className="mt-4 text-[16px] text-muted leading-relaxed max-w-3xl">
+      <p className="mt-4 text-[15px] text-muted leading-relaxed max-w-3xl">
         Every exchange is scored on seven pillars. Each pillar is normalized to 0–100, weighted,
         and combined. The weights are public, the inputs are documented, and placement on /compare
         or /cards has no effect on the resulting score.
@@ -1222,8 +1222,8 @@ function MethodologySection() {
 function PillarsTable() {
   return (
     <div className="mt-8 hairline cs-scanline" style={{ borderRadius: 3 }}>
-      <table className="w-full text-[16px]">
-        <thead className="font-mono text-[12px] uppercase tracking-widest text-muted hairline-b">
+      <table className="w-full text-[15px]">
+        <thead className="font-mono text-[11px] uppercase tracking-widest text-muted hairline-b">
           <tr>
             <th className="text-left p-4 font-normal">Pillar</th>
             <th className="text-left p-4 font-normal">Weight</th>
@@ -1249,12 +1249,12 @@ function IndependenceNote() {
     <div className="mt-10 p-7 hairline" style={{ borderRadius: 3, background: "#0f1422" }}>
       <Shield size={20} className="text-emerald" />
       <h3 className="mt-4 text-[18px] font-semibold">Editorial independence is the product.</h3>
-      <p className="mt-3 text-[16px] text-muted leading-relaxed">
+      <p className="mt-3 text-[15px] text-muted leading-relaxed">
         Bybit currently ranks #1 (94/100) on our EU/MiCAR leaderboard. Bybit also runs a featured
         placement on this page, which is disclosed as commercial. The score and the placement are
         produced by separate processes. We will publish a methodology change before adjusting either.
       </p>
-      <Link to="/about" className="btn-cyan mt-6 !text-[14px]">
+      <Link to="/about" className="btn-cyan mt-6 !text-[13px]">
         Read full methodology <ArrowRight size={12} />
       </Link>
     </div>

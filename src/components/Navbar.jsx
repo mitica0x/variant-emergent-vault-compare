@@ -95,7 +95,7 @@ export default function Navbar() {
     >
       <div className="container-x flex items-center justify-between h-16">
         <Link to="/" className="flex items-center gap-2 group" onClick={() => setOpen(false)}>
-          <span className="text-[15px] font-semibold tracking-tight">
+          <span className="text-[18px] font-semibold tracking-tight">
             <span style={{ color: "#fff" }}>Coin</span><span style={{ color: "#18b4d4" }}>Siglieri</span>
           </span>
         </Link>
@@ -155,7 +155,7 @@ export default function Navbar() {
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
             <div className="container-x flex items-center justify-between h-16">
-              <span className="text-[15px] font-semibold tracking-tight">
+              <span className="text-[18px] font-semibold tracking-tight">
                 <span style={{ color: "#fff" }}>Coin</span>
                 <span style={{ color: "#18b4d4" }}>Siglieri</span>
               </span>

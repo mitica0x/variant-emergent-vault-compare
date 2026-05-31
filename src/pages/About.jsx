@@ -40,7 +40,7 @@ function AboutHero() {
       <h1 className="mt-5 text-[44px] sm:text-[72px] font-bold tracking-tight leading-[0.98] max-w-4xl">
         Built by operators. Not by reporters.
       </h1>
-      <p className="mt-20 text-[20px] text-muted leading-relaxed max-w-2xl">
+      <p className="mt-20 text-[19px] text-muted leading-relaxed max-w-2xl">
         CoinSiglieri is an EU/MiCAR-focused crypto exchange intelligence platform. Independent,
         score-driven, operator-built.
       </p>
@@ -59,8 +59,8 @@ function TrackRecord() {
         >
           {TRACK_STATS.map((s) => (
             <div key={s.l} className="bg-bg p-8">
-              <div className="font-mono text-[51px] text-txt leading-none">{s.v}</div>
-              <div className="mt-3 text-[16px] text-muted">{s.l}</div>
+              <div className="font-mono text-[48px] text-txt leading-none">{s.v}</div>
+              <div className="mt-3 text-[15px] text-muted">{s.l}</div>
             </div>
           ))}
         </div>
@@ -84,7 +84,7 @@ function SpeakingSection() {
           >
             <Mic size={14} className="text-cyan mr-4" />
             <span className="flex-1 text-[17px] font-semibold">{s.ev}</span>
-            <span className="font-mono text-[14px] text-muted">{s.yr}</span>
+            <span className="font-mono text-[13px] text-muted">{s.yr}</span>
           </div>
         ))}
       </div>
@@ -112,7 +112,7 @@ function TeamCard({ member: p }) {
     <div className="hairline p-7" style={{ borderRadius: 3, background: "#0f1422" }}>
       <div className="flex items-start gap-5">
         <div
-          className="flex items-center justify-center font-mono text-[28px] text-emerald shrink-0"
+          className="flex items-center justify-center font-mono text-[26px] text-emerald shrink-0"
           style={{
             width: 80,
             height: 80,
@@ -125,8 +125,8 @@ function TeamCard({ member: p }) {
         </div>
         <div>
           <h3 className="text-[20px] font-semibold">{p.name}</h3>
-          <div className="mt-1 font-mono text-[13px] uppercase tracking-widest text-cyan">{p.role}</div>
-          <p className="mt-4 text-[16px] text-muted leading-relaxed">{p.bio}</p>
+          <div className="mt-1 font-mono text-[12px] uppercase tracking-widest text-cyan">{p.role}</div>
+          <p className="mt-4 text-[15px] text-muted leading-relaxed">{p.bio}</p>
         </div>
       </div>
     </div>
@@ -141,8 +141,8 @@ function MethodologySection() {
         Seven pillars. Public weights. Documented inputs.
       </h2>
       <div className="mt-8 hairline" style={{ borderRadius: 3 }}>
-        <table className="w-full text-[16px]">
-          <thead className="font-mono text-[12px] uppercase tracking-widest text-muted hairline-b">
+        <table className="w-full text-[15px]">
+          <thead className="font-mono text-[11px] uppercase tracking-widest text-muted hairline-b">
             <tr>
               <th className="text-left p-4 font-normal">Pillar</th>
               <th className="text-left p-4 font-normal">Weight</th>
