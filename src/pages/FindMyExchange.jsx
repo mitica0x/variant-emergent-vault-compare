@@ -1,7 +1,8 @@
 import React, { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, ArrowLeft, ArrowUpRight, RefreshCw, Mail, Check } from "lucide-react";
-import { Eyebrow, Badge, MiniBar, ExchangeLogo } from "../components/UI";
+import { ArrowRight, ArrowLeft, ArrowUpRight, Check } from "lucide-react";
+import { RadarChart, Radar, PolarGrid, PolarAngleAxis, ResponsiveContainer } from "recharts";
+import { Eyebrow, Badge, MiniBar, ScoreCircle, ExchangeLogo } from "../components/UI";
 import {
   EXCHANGES, COUNTRIES, MICAR_COUNTRIES,
   scoreForUser, getReasoning,
@@ -32,6 +33,19 @@ const TOTAL = QUESTIONS.length;
 
 const SWAP_TRANSITION = { duration: 0.35, ease: EASE_SOFT };
 const PROGRESS_TRANSITION = { duration: 0.5, ease: EASE_SOFT };
+
+// Featured match card config — mirrors the FeaturedCard treatment on /compare.
+const BAR_GRADIENT = "linear-gradient(90deg, #18b4d4 0%, #0dbe82 100%)";
+
+const MATCH_PILLARS = [
+  { label: "Custody", key: "security" },
+  { label: "Liquidity", key: "liquidity" },
+  { label: "Compliance", key: "compliance" },
+  { label: "Transparent", key: "por", override: 88 },
+  { label: "Product Depth", key: "productDepth" },
+  { label: "Track Record", key: "trackRecord" },
+  { label: "Execution", key: "execution", override: 90 },
+];
 
 // ---- Main page ----
 
@@ -82,7 +96,7 @@ export default function FindMyExchange() {
           ranked={ranked}
           handlers={handlers}
         />
-        <LiveRankingPanel ranked={ranked} answers={answers} />
+        <LiveRankingPanel ranked={ranked} answers={answers} done={done} />
       </div>
     </div>
   );
@@ -277,62 +291,204 @@ function QuizNav({ step, handlers }) {
 }
 
 function ResultsDisplay({ ranked, answers, onRestart }) {
-  const top3 = ranked.slice(0, 3);
+  const [first, ...runnersUp] = ranked.slice(0, 3);
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
       <Eyebrow color="text-emerald">Your match</Eyebrow>
-      <h2 className="mt-3 text-[32px] font-bold tracking-tight">Here's your top 3.</h2>
+      <h2 className="mt-3 text-[32px] font-bold tracking-tight">{first.name} is your match.</h2>
       <p className="mt-3 text-[15px] text-muted leading-relaxed max-w-xl">
-        Based on your answers we re-ranked 22 venues. These three best fit your profile across
-        compliance, product, and execution.
+        Based on your answers we re-ranked {EXCHANGES.length} venues. This is the strongest fit for
+        your profile across compliance, product, and execution.
       </p>
-      <div className="mt-7 space-y-3">
-        {top3.map((e, idx) => (
-          <ResultCard key={e.id} exchange={e} rank={idx + 1} answers={answers} />
-        ))}
+
+      <div className="mt-7">
+        <MatchFeaturedCard exchange={first} answers={answers} />
       </div>
-      <div className="mt-8 flex gap-3 flex-wrap">
-        <button onClick={onRestart} className="btn-outline">
-          <RefreshCw size={14} /> Restart quiz
-        </button>
-        <button className="btn-cyan">
-          <Mail size={14} /> Email me this result
-        </button>
-      </div>
+
+      {runnersUp.length > 0 && (
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+          {runnersUp.map((e, i) => (
+            <MatchCompactCard key={e.id} exchange={e} rank={i + 2} answers={answers} />
+          ))}
+        </div>
+      )}
+
+      <button
+        onClick={onRestart}
+        className="mt-6 inline-flex items-center gap-1.5 font-mono text-[12px] uppercase tracking-widest text-muted hover:text-cyan transition-colors"
+      >
+        Retake quiz <ArrowRight size={12} />
+      </button>
     </motion.div>
   );
 }
 
-function ResultCard({ exchange: e, rank, answers }) {
+// #1 match — full featured treatment mirroring FeaturedCard on /compare:
+// identity + reasons left, 7 pillar bars center, radar right.
+function MatchFeaturedCard({ exchange: e, answers }) {
   const reasons = getReasoning(e, answers);
   return (
-    <div className="p-5 hairline" style={{ borderRadius: 3 }}>
-      <div className="flex items-center gap-4">
-        <span className="font-mono text-[22px] text-emerald w-6">#{rank}</span>
-        <ExchangeLogo domain={e.domain} name={e.name} size={36} />
-        <div className="flex-1">
-          <div className="flex items-center gap-2">
-            <span className="font-semibold text-[17px]">{e.name}</span>
+    <div
+      className="p-7 grid grid-cols-1 lg:grid-cols-[1fr_1.1fr_1.3fr] gap-8"
+      style={{
+        background: "#0f1422",
+        border: "0.5px solid rgba(255,255,255,0.08)",
+        borderLeft: "3px solid #0dbe82",
+        borderRadius: 3,
+      }}
+    >
+      <MatchIdentity exchange={e} reasons={reasons} />
+      <MatchBars exchange={e} />
+      <MatchMetrics exchange={e} />
+    </div>
+  );
+}
+
+function MatchIdentity({ exchange: e, reasons }) {
+  return (
+    <div className="flex flex-col h-full">
+      <div className="flex items-baseline gap-3">
+        <span className="font-mono text-[15px]" style={{ color: "rgba(255,255,255,0.6)" }}>#1</span>
+        <ExchangeLogo domain={e.domain} name={e.name} size={48} />
+        <div>
+          <div className="text-[22px] font-semibold leading-none">{e.name}</div>
+          <div className="text-[13px] mt-1" style={{ color: "rgba(255,255,255,0.6)" }}>{e.bestFor}</div>
+        </div>
+      </div>
+      <div className="mt-5 flex flex-wrap gap-2">
+        <Badge tone="emerald">★ Your match</Badge>
+        {e.micarLicensed && <Badge tone="emerald">✓ MiCAR</Badge>}
+        {e.hasCryptoCard && <Badge tone="cyan">Card</Badge>}
+      </div>
+      <p className="mt-5 text-[14px] leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>
+        {e.proSummary}
+      </p>
+      {reasons.length > 0 && (
+        <ul className="mt-4 text-[13px] space-y-1.5" style={{ color: "rgba(255,255,255,0.75)" }}>
+          {reasons.map((r) => (
+            <li key={r} className="flex gap-2">
+              <span className="text-emerald">+</span>
+              <span>{r}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+      <div className="flex-1 flex items-center justify-center" style={{ marginTop: 24 }}>
+        <ScoreCircle value={e._score} size={72} shown={true} />
+      </div>
+    </div>
+  );
+}
+
+function MatchBars({ exchange: e }) {
+  const bd = e.scoreBreakdown || {};
+  return (
+    <div className="h-full flex flex-col">
+      <div className="flex flex-col" style={{ gap: "20px" }}>
+        {MATCH_PILLARS.map((p, idx) => {
+          const value = p.override ?? bd[p.key] ?? 80;
+          return (
+            <div key={p.label} className="flex items-center gap-3" style={{ minHeight: "36px" }}>
+              <span className="font-mono text-[11px] uppercase tracking-widest w-28" style={{ color: "rgba(255,255,255,0.6)" }}>
+                {p.label}
+              </span>
+              <div className="flex-1">
+                <MiniBar value={value} color={BAR_GRADIENT} delay={idx * 0.06} shown={true} />
+              </div>
+              <span className="font-mono text-[12px] w-6 text-right" style={{ color: "rgba(255,255,255,0.6)" }}>{value}</span>
+            </div>
+          );
+        })}
+      </div>
+      <div className="flex-1 flex flex-col items-center justify-center" style={{ marginTop: 32 }}>
+        <a href={e.affiliateUrl} target="_blank" rel="noopener noreferrer" className="btn-cyan">
+          Visit {e.name} <ArrowUpRight size={14} />
+        </a>
+      </div>
+    </div>
+  );
+}
+
+function MatchMetrics({ exchange: e }) {
+  return (
+    <div className="flex-1 flex flex-col" style={{ minHeight: 300 }}>
+      <MatchRadar exchange={e} />
+    </div>
+  );
+}
+
+function MatchRadar({ exchange: e }) {
+  const bd = e.scoreBreakdown || {};
+  const data = [
+    { axis: "Custody", value: bd.security ?? 80 },
+    { axis: "Liquidity", value: bd.liquidity ?? 80 },
+    { axis: "Compliance", value: bd.compliance ?? 80 },
+    { axis: "Transparency", value: 88 },
+    { axis: "Product", value: bd.productDepth ?? 80 },
+    { axis: "Track Rec.", value: bd.trackRecord ?? 80 },
+    { axis: "Execution", value: bd.execution ?? 90 },
+  ];
+  return (
+    <div style={{ position: "relative", width: "100%", height: "100%", minHeight: 300 }}>
+      <div style={{ position: "absolute", top: 0, right: 0, display: "flex", alignItems: "center", gap: 6, fontFamily: "monospace", fontSize: 10, letterSpacing: "0.14em", color: "#0dbe82", textTransform: "uppercase", zIndex: 2 }}>
+        <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#0dbe82", display: "inline-block" }} />
+        SCORE BREAKDOWN
+      </div>
+      <ResponsiveContainer width="100%" height="100%">
+        <RadarChart data={data} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+          <PolarGrid stroke="rgba(255,255,255,0.07)" />
+          <PolarAngleAxis
+            dataKey="axis"
+            tick={{ fill: "rgba(255,255,255,0.45)", fontSize: 11, fontFamily: "monospace" }}
+          />
+          <Radar name="score" dataKey="value" stroke="#0dbe82" fill="#0dbe82" fillOpacity={0.15} strokeWidth={1.5} />
+        </RadarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+// #2 / #3 — compact cards: name, tagline, badges, score, 3 reasons, visit. No bars/radar.
+function MatchCompactCard({ exchange: e, rank, answers }) {
+  const reasons = getReasoning(e, answers, 3);
+  return (
+    <div
+      className="p-5 flex flex-col"
+      style={{
+        background: "#0f1422",
+        border: "0.5px solid rgba(255,255,255,0.08)",
+        borderLeft: "3px solid #18b4d4",
+        borderRadius: 3,
+      }}
+    >
+      <div className="flex items-center gap-3">
+        <span className="font-mono text-[14px]" style={{ color: "rgba(255,255,255,0.5)" }}>#{rank}</span>
+        <ExchangeLogo domain={e.domain} name={e.name} size={32} />
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-semibold text-[16px]">{e.name}</span>
             {e.micarLicensed && <Badge tone="emerald">MiCAR</Badge>}
             {e.hasCryptoCard && <Badge tone="cyan">Card</Badge>}
           </div>
-          <div className="text-[13px] text-muted mt-[2px]">{e.bestFor}</div>
+          <div className="text-[12px] text-muted mt-[2px] truncate">{e.bestFor}</div>
         </div>
-        <span className="font-mono text-[22px] text-emerald">{e._score}</span>
+        <span className="font-mono text-[20px] text-cyan">{e._score}</span>
       </div>
-      <ul className="mt-3 ml-10 text-[14px] text-muted space-y-1">
-        {reasons.map((r) => (
-          <li key={r} className="flex gap-2">
-            <span className="text-emerald">+</span>
-            {r}
-          </li>
-        ))}
-      </ul>
+      {reasons.length > 0 && (
+        <ul className="mt-3 text-[13px] text-muted space-y-1">
+          {reasons.map((r) => (
+            <li key={r} className="flex gap-2">
+              <span className="text-cyan">+</span>
+              <span>{r}</span>
+            </li>
+          ))}
+        </ul>
+      )}
       <a
         href={e.affiliateUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="btn-primary mt-4 !text-[13px] !py-2"
+        className="btn-outline mt-4 !text-[13px] !py-2 self-start"
       >
         Visit {e.name} <ArrowUpRight size={12} />
       </a>
@@ -340,13 +496,13 @@ function ResultCard({ exchange: e, rank, answers }) {
   );
 }
 
-function LiveRankingPanel({ ranked, answers }) {
+function LiveRankingPanel({ ranked, answers, done }) {
   const isMicarCountry = answers.country && MICAR_COUNTRIES.has(answers.country);
   return (
     <div>
       <div className="flex items-center gap-2">
         <span className="w-[6px] h-[6px] rounded-full bg-cyan animate-pulse-dot" />
-        <Eyebrow color="text-cyan">Live Ranking</Eyebrow>
+        <Eyebrow color="text-cyan">{done ? "Final Ranking" : "Live Ranking"}</Eyebrow>
       </div>
       <div className="mt-3 text-[14px] text-muted">Updates as you answer.</div>
       <div className="mt-6 hairline" style={{ borderRadius: 3 }}>
