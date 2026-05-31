@@ -30,7 +30,7 @@ function CardsHero() {
       <h1 className="mt-4 text-[44px] sm:text-[56px] font-bold tracking-tight leading-[1.02]">
         The card stack that actually ships.
       </h1>
-      <p className="mt-20 text-[16px] text-muted leading-relaxed max-w-2xl">
+      <p className="mt-20 text-[20px] text-muted leading-relaxed max-w-2xl">
         Seven crypto-funded cards — ranked on real cashback, all-in fees, country support and
         the parts of the fine print most cardholders never read.
       </p>
@@ -46,8 +46,8 @@ function TrustBand() {
     >
       {TRUST_ITEMS.map((m) => (
         <div key={m.t} className="bg-bg p-5">
-          <div className="font-semibold text-[14px]">{m.t}</div>
-          <div className="mt-1 text-[12px] text-muted">{m.d}</div>
+          <div className="font-semibold text-[18px]">{m.t}</div>
+          <div className="mt-1 text-[15px] text-muted">{m.d}</div>
         </div>
       ))}
     </section>
@@ -85,16 +85,16 @@ function FeaturedDetails({ card: c }) {
         <ExchangeLogo domain={c.domain} name={c.name} size={48} />
         <div>
           <h2 className="text-[26px] font-semibold leading-none">{c.name}</h2>
-          <div className="text-[12px] text-muted mt-2">Issuer: {c.issuer}</div>
+          <div className="text-[15px] text-muted mt-2">Issuer: {c.issuer}</div>
         </div>
       </div>
-      <p className="mt-5 text-[14px] text-muted leading-relaxed">{c.proSummary}</p>
+      <p className="mt-5 text-[18px] text-muted leading-relaxed">{c.proSummary}</p>
       <div className="mt-6 flex gap-3">
         <a href={c.affiliateUrl} target="_blank" rel="noopener noreferrer" className="btn-primary">
           Apply for {c.name} <ArrowUpRight size={14} />
         </a>
       </div>
-      <p className="mt-3 font-mono text-[10px] uppercase tracking-widest text-muted">
+      <p className="mt-3 font-mono text-[13px] uppercase tracking-widest text-muted">
         Sponsored placement · score independent
       </p>
     </div>
@@ -174,7 +174,7 @@ function CardVisual({ cardNumber }) {
 
       {/* Cardholder label */}
       <div
-        className="absolute font-mono text-[9px] uppercase tracking-widest"
+        className="absolute font-mono text-[11px] uppercase tracking-widest"
         style={{ bottom: "14%", left: "8%", color: "rgba(0,0,0,0.35)" }}
       >
         Cardholder
@@ -204,8 +204,8 @@ function CardVisual({ cardNumber }) {
 function CardStat({ label, value }) {
   return (
     <div className="hairline-b pb-2">
-      <div className="font-mono text-[10px] uppercase tracking-widest text-muted">{label}</div>
-      <div className="font-mono text-[16px] mt-1">{value}</div>
+      <div className="font-mono text-[13px] uppercase tracking-widest text-muted">{label}</div>
+      <div className="font-mono text-[20px] mt-1">{value}</div>
     </div>
   );
 }
@@ -216,8 +216,8 @@ function ComparisonTableSection() {
       <Eyebrow color="text-cyan">Comparison</Eyebrow>
       <h2 className="mt-3 text-[28px] font-bold tracking-tight">Side-by-side card stack.</h2>
       <div className="mt-6 overflow-x-auto hairline" style={{ borderRadius: 3 }}>
-        <table className="w-full min-w-[1000px] text-[13px]">
-          <thead className="font-mono text-[10px] uppercase tracking-widest text-muted">
+        <table className="w-full min-w-[1000px] text-[16px]">
+          <thead className="font-mono text-[13px] uppercase tracking-widest text-muted">
             <tr className="hairline-b">
               {["Card", "Issuer", "Region", "Cashback", "Curr.", "Issuance", "Monthly", "ATM", "Apple Pay"].map((h) => (
                 <th key={h} className="text-left p-3 font-normal">{h}</th>
@@ -261,7 +261,7 @@ function CardTableRow({ card: c, isLast }) {
           href={c.affiliateUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="font-mono text-[11px] uppercase tracking-widest text-cyan hover:text-emerald transition-colors"
+          className="font-mono text-[14px] uppercase tracking-widest text-cyan hover:text-emerald transition-colors"
         >
           Visit <ArrowUpRight size={10} className="inline" />
         </a>
@@ -303,12 +303,12 @@ function CardReviewDetails({ card: c }) {
             <h3 className="text-[22px] font-semibold">{c.name}</h3>
             {c.featured && <Badge tone="rust">Featured</Badge>}
           </div>
-          <div className="text-[12px] text-muted mt-1">
+          <div className="text-[15px] text-muted mt-1">
             {c.issuer} · {c.region}
           </div>
         </div>
       </div>
-      <p className="mt-5 text-[14px] text-txt/90 leading-relaxed">{c.proSummary}</p>
+      <p className="mt-5 text-[18px] text-txt/90 leading-relaxed">{c.proSummary}</p>
       <div
         className="mt-6 grid grid-cols-2 gap-px"
         style={{ background: "rgba(255,255,255,0.07)", borderRadius: 3 }}
@@ -357,10 +357,10 @@ function ReviewCardVisual({ card: c }) {
           <ExchangeLogo domain={c.domain} name={c.name} size={26} />
         </div>
         <div className="absolute bottom-4 left-4 right-4">
-          <div className="font-mono text-[14px] tracking-widest">
+          <div className="font-mono text-[18px] tracking-widest">
             •••• •••• •••• {cardLast4(c.id)}
           </div>
-          <div className="mt-1 font-mono text-[10px] uppercase text-muted">{c.name}</div>
+          <div className="mt-1 font-mono text-[13px] uppercase text-muted">{c.name}</div>
         </div>
       </div>
     </div>

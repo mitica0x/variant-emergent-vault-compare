@@ -40,7 +40,7 @@ function AboutHero() {
       <h1 className="mt-5 text-[44px] sm:text-[72px] font-bold tracking-tight leading-[0.98] max-w-4xl">
         Built by operators. Not by reporters.
       </h1>
-      <p className="mt-20 text-[17px] text-muted leading-relaxed max-w-2xl">
+      <p className="mt-20 text-[21px] text-muted leading-relaxed max-w-2xl">
         CoinSiglieri is an EU/MiCAR-focused crypto exchange intelligence platform. Independent,
         score-driven, operator-built.
       </p>
@@ -59,8 +59,8 @@ function TrackRecord() {
         >
           {TRACK_STATS.map((s) => (
             <div key={s.l} className="bg-bg p-8">
-              <div className="font-mono text-[44px] text-txt leading-none">{s.v}</div>
-              <div className="mt-3 text-[14px] text-muted">{s.l}</div>
+              <div className="font-mono text-[55px] text-txt leading-none">{s.v}</div>
+              <div className="mt-3 text-[18px] text-muted">{s.l}</div>
             </div>
           ))}
         </div>
@@ -83,8 +83,8 @@ function SpeakingSection() {
             } hover:bg-white/[0.02] transition-colors`}
           >
             <Mic size={14} className="text-cyan mr-4" />
-            <span className="flex-1 text-[15px] font-semibold">{s.ev}</span>
-            <span className="font-mono text-[12px] text-muted">{s.yr}</span>
+            <span className="flex-1 text-[19px] font-semibold">{s.ev}</span>
+            <span className="font-mono text-[15px] text-muted">{s.yr}</span>
           </div>
         ))}
       </div>
@@ -112,7 +112,7 @@ function TeamCard({ member: p }) {
     <div className="hairline p-7" style={{ borderRadius: 3, background: "#0f1422" }}>
       <div className="flex items-start gap-5">
         <div
-          className="flex items-center justify-center font-mono text-[24px] text-emerald shrink-0"
+          className="flex items-center justify-center font-mono text-[30px] text-emerald shrink-0"
           style={{
             width: 80,
             height: 80,
@@ -125,8 +125,8 @@ function TeamCard({ member: p }) {
         </div>
         <div>
           <h3 className="text-[20px] font-semibold">{p.name}</h3>
-          <div className="mt-1 font-mono text-[11px] uppercase tracking-widest text-cyan">{p.role}</div>
-          <p className="mt-4 text-[14px] text-muted leading-relaxed">{p.bio}</p>
+          <div className="mt-1 font-mono text-[14px] uppercase tracking-widest text-cyan">{p.role}</div>
+          <p className="mt-4 text-[18px] text-muted leading-relaxed">{p.bio}</p>
         </div>
       </div>
     </div>
@@ -141,8 +141,8 @@ function MethodologySection() {
         Seven pillars. Public weights. Documented inputs.
       </h2>
       <div className="mt-8 hairline" style={{ borderRadius: 3 }}>
-        <table className="w-full text-[14px]">
-          <thead className="font-mono text-[10px] uppercase tracking-widest text-muted hairline-b">
+        <table className="w-full text-[18px]">
+          <thead className="font-mono text-[13px] uppercase tracking-widest text-muted hairline-b">
             <tr>
               <th className="text-left p-4 font-normal">Pillar</th>
               <th className="text-left p-4 font-normal">Weight</th>
@@ -173,7 +173,7 @@ function CitedBySection() {
           {CITED_BY.map((c) => (
             <span
               key={c}
-              className="font-mono text-[15px] text-muted hover:text-txt transition-colors"
+              className="font-mono text-[19px] text-muted hover:text-txt transition-colors"
             >
               {c}
             </span>
@@ -231,7 +231,7 @@ function FinalCTA() {
         <h2 className="mt-3 text-[40px] sm:text-[52px] font-bold tracking-tight leading-[1.02]">
           All Signal. <span className="text-cyan">0</span> Guess.
         </h2>
-        <p className="mt-4 text-[15px] text-muted max-w-xl mx-auto">
+        <p className="mt-4 text-[19px] text-muted max-w-xl mx-auto">
           Open the leaderboard or run the matcher — either way, you'll be in the data in under
           30 seconds.
         </p>

@@ -110,7 +110,7 @@ export function ProsCons({ pros = [], cons = [] }) {
         <h5 className="eyebrow text-emerald mb-3">Pros</h5>
         <ul className="space-y-2">
           {pros.map((p) => (
-            <li key={`pro-${p}`} className="flex items-start gap-2 text-[13px] text-txt/90">
+            <li key={`pro-${p}`} className="flex items-start gap-2 text-[16px] text-txt/90">
               <Check size={14} className="text-emerald shrink-0 mt-[2px]" />
               <span>{p}</span>
             </li>
@@ -121,7 +121,7 @@ export function ProsCons({ pros = [], cons = [] }) {
         <h5 className="eyebrow mb-3" style={{ color: "#ff4d6d" }}>Cons</h5>
         <ul className="space-y-2">
           {cons.map((c) => (
-            <li key={`con-${c}`} className="flex items-start gap-2 text-[13px] text-txt/90">
+            <li key={`con-${c}`} className="flex items-start gap-2 text-[16px] text-txt/90">
               <XIcon size={14} className="shrink-0 mt-[2px]" style={{ color: "#ff4d6d" }} />
               <span>{c}</span>
             </li>
@@ -138,7 +138,7 @@ export function ExchangeLogo({ domain, name, size = 24 }) {
     const initials = name?.slice(0, 2)?.toUpperCase() || "??";
     return (
       <div
-        className="flex items-center justify-center text-[10px] font-mono text-txt/80"
+        className="flex items-center justify-center text-[13px] font-mono text-txt/80"
         style={{
           width: size,
           height: size,

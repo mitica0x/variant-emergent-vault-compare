@@ -16,14 +16,14 @@ export default function Footer() {
       <div className="container-x py-14 grid grid-cols-1 md:grid-cols-4 gap-10">
         <div className="md:col-span-1">
           <Link to="/" className="flex items-center gap-2">
-            <span className="text-[15px] font-semibold tracking-tight">
+            <span className="text-[19px] font-semibold tracking-tight">
               <span style={{ color: "#ffffff" }}>Coin</span><span style={{ color: "#18b4d4" }}>Siglieri</span>
             </span>
           </Link>
-          <p className="mt-4 text-[13px] text-muted leading-relaxed">
+          <p className="mt-4 text-[16px] text-muted leading-relaxed">
             Independent EU/MiCAR crypto exchange intelligence.
           </p>
-          <p className="mt-3 font-mono text-[11px] uppercase tracking-widest">
+          <p className="mt-3 font-mono text-[14px] uppercase tracking-widest">
             <span style={{ color: "#fff" }}>All Signal. </span><span style={{ color: "#18b4d4" }}>0</span><span style={{ color: "#fff" }}> Guess.</span>
           </p>
           <div className="flex items-center gap-3 mt-6 text-muted">
@@ -63,10 +63,10 @@ export default function Footer() {
       </div>
       <div className="hairline-t">
         <div className="container-x py-6 flex flex-col md:flex-row gap-3 md:items-center justify-between">
-          <p className="text-[12px] text-muted">
+          <p className="text-[15px] text-muted">
             © {new Date().getFullYear()} CoinSiglieri. All rights reserved.
           </p>
-          <p className="text-[12px] text-muted max-w-3xl">
+          <p className="text-[15px] text-muted max-w-3xl">
             Affiliate disclosure: some links on this site are partner links. We may earn a commission at no cost to you. Editorial scoring is independent and never influenced by placement.
           </p>
         </div>
@@ -83,11 +83,11 @@ function FooterCol({ title, links }) {
         {links.map(([label, href, external]) => (
           <li key={label}>
             {external ? (
-              <a href={href} target="_blank" rel="noopener noreferrer" className="text-[14px] text-txt hover:text-cyan transition-colors">
+              <a href={href} target="_blank" rel="noopener noreferrer" className="text-[18px] text-txt hover:text-cyan transition-colors">
                 {label}
               </a>
             ) : (
-              <Link to={href} className="text-[14px] text-txt hover:text-cyan transition-colors">
+              <Link to={href} className="text-[18px] text-txt hover:text-cyan transition-colors">
                 {label}
               </Link>
             )}

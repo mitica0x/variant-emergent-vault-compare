@@ -58,20 +58,20 @@ function ArticleHeader({ article }) {
     <>
       <div className="flex items-center gap-3 flex-wrap">
         <Badge tone="emerald">{article.category}</Badge>
-        <span className="font-mono text-[11px] text-muted flex items-center gap-1">
+        <span className="font-mono text-[14px] text-muted flex items-center gap-1">
           <Calendar size={11} /> {article.date}
         </span>
-        <span className="font-mono text-[11px] text-muted flex items-center gap-1">
+        <span className="font-mono text-[14px] text-muted flex items-center gap-1">
           <Clock size={11} /> {article.readMin} min read
         </span>
-        <span className="font-mono text-[11px] text-muted flex items-center gap-1">
+        <span className="font-mono text-[14px] text-muted flex items-center gap-1">
           <User size={11} /> {article.author}
         </span>
       </div>
       <h1 className="mt-6 text-[40px] sm:text-[52px] font-bold tracking-tight leading-[1.05]">
         {article.title}
       </h1>
-      <p className="mt-6 text-[18px] text-muted leading-relaxed max-w-2xl">{article.excerpt}</p>
+      <p className="mt-6 text-[23px] text-muted leading-relaxed max-w-2xl">{article.excerpt}</p>
     </>
   );
 }
@@ -84,8 +84,8 @@ function HeroStrip() {
     >
       {HERO_STATS.map((s) => (
         <div key={s.label}>
-          <div className="font-mono text-[10px] uppercase tracking-widest text-muted">{s.label}</div>
-          <div className={`font-mono text-[24px] mt-1 ${s.tone}`}>{s.value}</div>
+          <div className="font-mono text-[13px] uppercase tracking-widest text-muted">{s.label}</div>
+          <div className={`font-mono text-[30px] mt-1 ${s.tone}`}>{s.value}</div>
         </div>
       ))}
     </div>
@@ -94,7 +94,7 @@ function HeroStrip() {
 
 function ArticleBody({ top5 }) {
   return (
-    <div className="mt-12 space-y-6 text-[15px] leading-[1.75] text-txt/90 max-w-2xl">
+    <div className="mt-12 space-y-6 text-[19px] leading-[1.75] text-txt/90 max-w-2xl">
       <h2 id="what-is-micar" className="text-[28px] font-bold tracking-tight scroll-mt-24 pt-4">
         What MiCAR actually is
       </h2>
@@ -169,24 +169,24 @@ function RankedArticleCard({ exchange: e, rank }) {
   return (
     <div className="hairline p-6 mt-4" style={{ borderRadius: 3 }}>
       <div className="flex items-center gap-4">
-        <span className="font-mono text-[18px] text-emerald">#{rank}</span>
+        <span className="font-mono text-[23px] text-emerald">#{rank}</span>
         <ExchangeLogo domain={e.domain} name={e.name} size={40} />
         <div className="flex-1">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-semibold text-[18px]">{e.name}</span>
+            <span className="font-semibold text-[23px]">{e.name}</span>
             <Badge tone="emerald">MiCAR</Badge>
             {e.featured && <Badge tone="rust">Featured</Badge>}
           </div>
-          <div className="text-[12px] text-muted mt-1">{e.bestFor}</div>
+          <div className="text-[15px] text-muted mt-1">{e.bestFor}</div>
         </div>
         <ScoreCircle value={e.score} size={48} />
       </div>
-      <p className="mt-4 text-[14px] text-muted leading-relaxed">{e.proSummary}</p>
+      <p className="mt-4 text-[18px] text-muted leading-relaxed">{e.proSummary}</p>
       <a
         href={e.affiliateUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="btn-cyan mt-4 !text-[12px] !py-2"
+        className="btn-cyan mt-4 !text-[15px] !py-2"
       >
         Visit {e.name} <ArrowUpRight size={12} />
       </a>
@@ -199,7 +199,7 @@ function InlineCTA() {
     <div className="mt-12 hairline p-7" style={{ borderRadius: 3, background: "#0f1422" }}>
       <Eyebrow color="text-emerald">Open the leaderboard</Eyebrow>
       <h3 className="mt-3 text-[22px] font-bold">See the full ranking live.</h3>
-      <p className="mt-2 text-[14px] text-muted">22 venues, scored on seven pillars, every 30 days.</p>
+      <p className="mt-2 text-[18px] text-muted">22 venues, scored on seven pillars, every 30 days.</p>
       <Link to="/compare" className="btn-primary mt-5">
         Go to /compare <ArrowRight size={14} />
       </Link>
@@ -218,7 +218,7 @@ function ArticleSidebar() {
               <a
                 key={t.id}
                 href={`#${t.id}`}
-                className="py-2 text-[13px] text-muted hover:text-txt transition-colors hairline-b"
+                className="py-2 text-[16px] text-muted hover:text-txt transition-colors hairline-b"
               >
                 {t.label}
               </a>
@@ -236,16 +236,16 @@ function SidebarNewsletter() {
     <div className="hairline p-5" style={{ borderRadius: 3 }}>
       <Eyebrow color="text-cyan">Newsletter</Eyebrow>
       <h4 className="mt-2 text-[15px] font-semibold">Weekly intelligence.</h4>
-      <p className="mt-1 text-[12px] text-muted">One email. Friday.</p>
+      <p className="mt-1 text-[15px] text-muted">One email. Friday.</p>
       <form onSubmit={(e) => e.preventDefault()} className="mt-4">
         <div className="flex items-center gap-2 input-base">
           <Mail size={14} className="text-muted" />
           <input
-            className="bg-transparent flex-1 outline-none text-[13px]"
+            className="bg-transparent flex-1 outline-none text-[16px]"
             placeholder="you@operator.com"
           />
         </div>
-        <button className="btn-primary mt-3 w-full justify-center !text-[12px]">Subscribe</button>
+        <button className="btn-primary mt-3 w-full justify-center !text-[15px]">Subscribe</button>
       </form>
     </div>
   );
@@ -269,7 +269,7 @@ function RelatedArticles({ related }) {
           >
             <Badge tone="cyan">{a.category}</Badge>
             <h3 className="mt-4 text-[16px] font-semibold tracking-tight leading-snug">{a.title}</h3>
-            <div className="mt-4 font-mono text-[11px] text-muted">
+            <div className="mt-4 font-mono text-[14px] text-muted">
               {a.date} · {a.readMin} min
             </div>
           </Link>

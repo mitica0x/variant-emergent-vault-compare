@@ -85,14 +85,14 @@ function AdvertiseHero() {
           <h1 className="mt-5 text-[44px] sm:text-[64px] font-bold tracking-tight leading-[1.02] text-balance">
             The leaderboard nobody paid to be on. The real estate around it is.
           </h1>
-          <p className="mt-20 text-[17px] text-muted leading-relaxed max-w-2xl">
+          <p className="mt-20 text-[21px] text-muted leading-relaxed max-w-2xl">
             Independent intelligence. Editorial scoring. Commercial placement available — always disclosed.
           </p>
           <div className="mt-20 flex flex-wrap gap-3">
             <a href="#contact" className="btn-primary">Reserve placement <ArrowRight size={14} /></a>
             <a href="#solutions" className="btn-outline">Explore solutions <ArrowUpRight size={14} /></a>
           </div>
-          <p className="mt-20 font-mono text-[11px] uppercase tracking-widest text-muted">
+          <p className="mt-20 font-mono text-[14px] uppercase tracking-widest text-muted">
             Faster:{" "}
             <a href="https://t.me/coinsiglieri" target="_blank" rel="noopener noreferrer" className="text-cyan hover:text-emerald">
               DM @coinsiglieri on Telegram
@@ -113,7 +113,7 @@ function HeroMetrics() {
     >
       {HERO_METRICS.map((s) => (
         <div key={s.l} className="bg-bg p-5">
-          <div className="font-mono text-[24px] text-txt">{s.v}</div>
+          <div className="font-mono text-[30px] text-txt">{s.v}</div>
           <div className="eyebrow text-muted mt-1">{s.l}</div>
         </div>
       ))}
@@ -128,8 +128,8 @@ function TrustBand() {
         {TRUST_ITEMS.map((s) => (
           <div key={s.t}>
             <Check size={14} className="text-emerald" />
-            <div className="mt-3 font-semibold text-[14px]">{s.t}</div>
-            <div className="mt-1 text-[13px] text-muted">{s.d}</div>
+            <div className="mt-3 font-semibold text-[18px]">{s.t}</div>
+            <div className="mt-1 text-[16px] text-muted">{s.d}</div>
           </div>
         ))}
       </div>
@@ -156,7 +156,7 @@ function WhySection() {
           >
             <Quote size={20} className="text-cyan" />
             <h3 className="mt-4 text-[18px] font-semibold">{c.t}</h3>
-            <p className="mt-2 text-[14px] text-muted leading-relaxed">{c.d}</p>
+            <p className="mt-2 text-[18px] text-muted leading-relaxed">{c.d}</p>
           </div>
         ))}
       </div>
@@ -200,19 +200,19 @@ function BundleCard({ bundle: b }) {
         <h3 className="text-[22px] font-semibold">{b.name}</h3>
         <Badge tone="emerald">Save {b.save}</Badge>
       </div>
-      <p className="mt-3 text-[13px] text-muted leading-relaxed">{b.desc}</p>
+      <p className="mt-3 text-[16px] text-muted leading-relaxed">{b.desc}</p>
       <div className="mt-5">
-        <div className="font-mono text-[10px] uppercase tracking-widest text-muted">Bundle includes</div>
+        <div className="font-mono text-[13px] uppercase tracking-widest text-muted">Bundle includes</div>
         <ul className="mt-2 space-y-1">
           {b.includes.map((x) => (
-            <li key={x} className="flex items-start gap-2 text-[13px] text-txt/90">
+            <li key={x} className="flex items-start gap-2 text-[16px] text-txt/90">
               <Check size={12} className="text-emerald mt-[3px] shrink-0" />
               {x}
             </li>
           ))}
         </ul>
       </div>
-      <a href="#contact" className="btn-cyan mt-6 !text-[12px]">
+      <a href="#contact" className="btn-cyan mt-6 !text-[15px]">
         Reserve {b.name} <ArrowRight size={12} />
       </a>
     </div>
@@ -232,7 +232,7 @@ function PlacementsGrid() {
           <PlacementCard key={s.t} placement={s} />
         ))}
       </div>
-      <p className="mt-6 font-mono text-[11px] uppercase tracking-widest text-muted">
+      <p className="mt-6 font-mono text-[14px] uppercase tracking-widest text-muted">
         Custom packages on request · No public pricing · All quotes via direct contact
       </p>
     </div>
@@ -243,17 +243,17 @@ function PlacementCard({ placement: s }) {
   return (
     <div className="bg-bg p-7 card-lift" style={{ border: "0.5px solid transparent" }}>
       <div className="flex items-center justify-between">
-        <span className="font-mono text-[11px] text-muted">{s.i}</span>
+        <span className="font-mono text-[14px] text-muted">{s.i}</span>
         <Badge tone="muted">{s.sub}</Badge>
       </div>
       <h4 className="mt-4 text-[18px] font-semibold">{s.t}</h4>
-      <p className="mt-2 text-[13px] text-muted leading-relaxed">{s.d}</p>
-      <div className="mt-5 font-mono text-[10px] uppercase tracking-widest text-muted">
+      <p className="mt-2 text-[16px] text-muted leading-relaxed">{s.d}</p>
+      <div className="mt-5 font-mono text-[13px] uppercase tracking-widest text-muted">
         Placement · {s.page}
       </div>
       <a
         href="#contact"
-        className="mt-5 inline-flex items-center gap-1 font-mono text-[11px] uppercase tracking-widest text-cyan hover:text-emerald transition-colors"
+        className="mt-5 inline-flex items-center gap-1 font-mono text-[14px] uppercase tracking-widest text-cyan hover:text-emerald transition-colors"
       >
         Reserve placement <ArrowRight size={12} />
       </a>
@@ -272,7 +272,7 @@ function EditorialStandards() {
               Editorial independence is the product.
             </h2>
           </div>
-          <div className="text-[15px] text-muted leading-relaxed space-y-4">
+          <div className="text-[19px] text-muted leading-relaxed space-y-4">
             <p>
               Scoring at CoinSiglieri is produced by an algorithmic five-pillar model with public
               weights and documented inputs. Commercial placement does not move scores. We will
@@ -283,7 +283,7 @@ function EditorialStandards() {
               advertising. We will refuse paid placement that would conflict with our published
               methodology, regardless of budget.
             </p>
-            <p className="font-mono text-[12px] uppercase tracking-widest text-emerald">
+            <p className="font-mono text-[15px] uppercase tracking-widest text-emerald">
               All Signal. 0 Guess.
             </p>
           </div>
@@ -310,7 +310,7 @@ function LogoStrip({ names }) {
   return (
     <div className="mt-6 flex flex-wrap gap-x-10 gap-y-3">
       {names.map((n) => (
-        <span key={n} className="font-mono text-[15px] text-muted hover:text-txt transition-colors">
+        <span key={n} className="font-mono text-[19px] text-muted hover:text-txt transition-colors">
           {n}
         </span>
       ))}
@@ -334,8 +334,8 @@ function ContactInfo() {
     <div>
       <Eyebrow color="text-emerald">Contact</Eyebrow>
       <h2 className="mt-3 text-[36px] font-bold tracking-tight">Reserve your placement.</h2>
-      <p className="mt-4 text-[14px] text-muted leading-relaxed">We respond within 24 hours.</p>
-      <ul className="mt-8 space-y-3 text-[14px]">
+      <p className="mt-4 text-[18px] text-muted leading-relaxed">We respond within 24 hours.</p>
+      <ul className="mt-8 space-y-3 text-[18px]">
         <li className="flex items-center gap-3"><Mail size={14} className="text-cyan" /> ads@coinsiglieri.com</li>
         <li className="flex items-center gap-3"><Send size={14} className="text-cyan" /> @coinsiglieri on Telegram</li>
       </ul>
@@ -374,7 +374,7 @@ function ContactForm() {
                 required
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="bg-transparent outline-none w-full text-[14px]"
+                className="bg-transparent outline-none w-full text-[18px]"
                 placeholder="Your name"
               />
             </Field>
@@ -383,7 +383,7 @@ function ContactForm() {
                 required
                 value={form.company}
                 onChange={(e) => setForm({ ...form, company: e.target.value })}
-                className="bg-transparent outline-none w-full text-[14px]"
+                className="bg-transparent outline-none w-full text-[18px]"
                 placeholder="Company"
               />
             </Field>
@@ -394,7 +394,7 @@ function ContactForm() {
               type="email"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className="bg-transparent outline-none w-full text-[14px]"
+              className="bg-transparent outline-none w-full text-[18px]"
               placeholder="you@company.com"
             />
           </Field>
@@ -405,14 +405,14 @@ function ContactForm() {
               rows={4}
               value={form.message}
               onChange={(e) => setForm({ ...form, message: e.target.value })}
-              className="bg-transparent outline-none w-full text-[14px] resize-none"
+              className="bg-transparent outline-none w-full text-[18px] resize-none"
               placeholder="Tell us what you're launching, and when."
             />
           </Field>
           <button className="btn-primary w-full justify-center">
             Reserve placement <ArrowRight size={14} />
           </button>
-          <p className="font-mono text-[10px] uppercase tracking-widest text-muted text-center">
+          <p className="font-mono text-[13px] uppercase tracking-widest text-muted text-center">
             We respond within 24 hours · Always disclosed · Editorial independence preserved
           </p>
         </form>
@@ -427,7 +427,7 @@ function ContactSuccess() {
       <Check size={24} className="text-emerald" />
       <div>
         <h3 className="text-[20px] font-semibold">Got it.</h3>
-        <p className="mt-2 text-[14px] text-muted">We'll respond within 24 hours.</p>
+        <p className="mt-2 text-[18px] text-muted">We'll respond within 24 hours.</p>
       </div>
     </div>
   );
@@ -436,7 +436,7 @@ function ContactSuccess() {
 function InterestPicker({ selected, onToggle }) {
   return (
     <div>
-      <div className="font-mono text-[10px] uppercase tracking-widest text-muted mb-2">
+      <div className="font-mono text-[13px] uppercase tracking-widest text-muted mb-2">
         Interested in
       </div>
       <div className="flex flex-wrap gap-2">
@@ -447,7 +447,7 @@ function InterestPicker({ selected, onToggle }) {
               type="button"
               key={s.t}
               onClick={() => onToggle(s.t)}
-              className={`px-3 py-[6px] font-mono text-[10px] uppercase tracking-widest transition-colors ${
+              className={`px-3 py-[6px] font-mono text-[13px] uppercase tracking-widest transition-colors ${
                 isSel ? "bg-emerald text-bg" : "text-muted hover:text-txt"
               }`}
               style={{ border: "0.5px solid rgba(255,255,255,0.1)", borderRadius: 3 }}
@@ -465,7 +465,7 @@ function InterestPicker({ selected, onToggle }) {
 function Field({ label, icon: Icon, children }) {
   return (
     <label className="block">
-      <div className="font-mono text-[10px] uppercase tracking-widest text-muted mb-2">{label}</div>
+      <div className="font-mono text-[13px] uppercase tracking-widest text-muted mb-2">{label}</div>
       <div className="input-base flex items-start gap-2">
         <Icon size={14} className="text-muted mt-[3px]" />
         <div className="flex-1">{children}</div>
