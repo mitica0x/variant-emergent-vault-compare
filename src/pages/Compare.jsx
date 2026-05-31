@@ -259,11 +259,11 @@ function FeaturedBars({ exchange, shown }) {
   const bd = exchange.scoreBreakdown || {};
   return (
     <div className="h-full flex flex-col -ml-3">
-      <div className="space-y-4">
+      <div className="space-y-2">
         {FEATURED_PILLARS.map((p, idx) => {
         const value = p.override ?? bd[p.key] ?? 80;
         return (
-          <div key={p.label} className="flex items-center gap-3">
+          <div key={p.label} className="flex items-center gap-3" style={{ height: 22 }}>
             <span className="font-mono text-[10px] uppercase tracking-widest w-28" style={{ color: "rgba(255,255,255,0.6)" }}>
               {p.label}
             </span>
