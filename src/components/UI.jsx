@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useId } from "react";
 import { useInView } from "framer-motion";
 import { Check, X as XIcon } from "lucide-react";
 import { scoreRingColor } from "../data/mock";
@@ -53,14 +53,46 @@ export function ScoreCircle({ value, size = 72, shown }) {
   const inView = shown !== undefined ? shown : selfInView;
   const color = scoreRingColor(value);
   const pct = Math.max(0, Math.min(100, value));
-  const deg = inView ? pct * 3.6 : 0;
+  const gradId = useId();
+
+  // Geometry: viewBox 120, r 52, strokeWidth 7 — high-res relative to display size for crisp edges.
+  const RADIUS = 52;
+  const CIRC = 2 * Math.PI * RADIUS;
+  const offset = CIRC * (1 - (inView ? pct : 0) / 100);
+
   return (
     <div
       ref={ref}
       className="relative flex items-center justify-center"
       style={{ width: size, height: size }}
     >
-      <div className="score-ring absolute inset-0" style={{ "--ring-deg": `${deg}deg` }} />
+      <svg
+        width={size}
+        height={size}
+        viewBox="0 0 120 120"
+        shapeRendering="geometricPrecision"
+        className="absolute inset-0 -rotate-90"
+      >
+        <defs>
+          <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#18b4d4" />
+            <stop offset="100%" stopColor="#0dbe82" />
+          </linearGradient>
+        </defs>
+        <circle cx="60" cy="60" r={RADIUS} fill="none" stroke="#1a2234" strokeWidth="7" />
+        <circle
+          cx="60"
+          cy="60"
+          r={RADIUS}
+          fill="none"
+          stroke={`url(#${gradId})`}
+          strokeWidth="7"
+          strokeLinecap="round"
+          strokeDasharray={CIRC}
+          strokeDashoffset={offset}
+          style={{ transition: "stroke-dashoffset 900ms cubic-bezier(0.34, 1.56, 0.64, 1)" }}
+        />
+      </svg>
       <span
         className="font-mono font-semibold absolute"
         style={{ color, fontSize: size * 0.32 }}
