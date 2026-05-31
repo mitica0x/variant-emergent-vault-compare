@@ -97,7 +97,7 @@ function QuizHero() {
       <h1 className="mt-4 text-[44px] sm:text-[56px] font-bold tracking-tight leading-[1.02]">
         8 questions. Your match.
       </h1>
-      <p className="mt-20 text-[20px] text-muted leading-relaxed max-w-2xl">
+      <p className="mt-20 text-[18px] text-muted leading-relaxed max-w-2xl">
         Answer 8 quick questions — we rerank our 22 venues live as you go. No email required.
       </p>
     </section>
@@ -108,7 +108,7 @@ function ProgressBar({ step, done, progress }) {
   const label = done ? "Complete" : `Question ${step + 1} of ${TOTAL}`;
   return (
     <div className="mt-20">
-      <div className="flex items-center justify-between font-mono text-[14px] uppercase tracking-widest text-muted">
+      <div className="flex items-center justify-between font-mono text-[13px] uppercase tracking-widest text-muted">
         <span>{label}</span>
         <span className="text-cyan">{progress}%</span>
       </div>
@@ -181,7 +181,7 @@ function MultiSelect({ q, answers, handlers }) {
           <button
             key={option}
             onClick={() => handlers.toggleMulti(q.id, option)}
-            className={`px-4 py-2 text-[16px] transition-colors ${
+            className={`px-4 py-2 text-[13px] transition-colors ${
               isSel ? "bg-emerald text-bg" : "text-txt hover:bg-white/[0.03]"
             }`}
             style={{ border: "0.5px solid rgba(255,255,255,0.1)", borderRadius: 3 }}
@@ -205,7 +205,7 @@ function SingleSelect({ q, answers, handlers }) {
           <button
             key={option}
             onClick={() => handlers.setVal(q.id, option)}
-            className={`p-4 text-left text-[18px] transition-colors ${
+            className={`p-4 text-left text-[14px] transition-colors ${
               isSel ? "border-emerald bg-emerald/15 text-emerald" : "text-txt hover:bg-white/[0.02]"
             }`}
             style={{
@@ -242,11 +242,11 @@ function CountrySelect({ value, onChange }) {
             <button
               key={c.code}
               onClick={() => onChange(c.code)}
-              className={`w-full px-4 py-2 flex items-center gap-3 text-left text-[16px] ${
+              className={`w-full px-4 py-2 flex items-center gap-3 text-left text-[13px] ${
                 isSel ? "bg-emerald/15 text-emerald" : "hover:bg-white/[0.02] text-txt"
               }`}
             >
-              <span className="text-[23px]">{c.flag}</span>
+              <span className="text-[21px]">{c.flag}</span>
               <span className="flex-1">{c.name}</span>
               {MICAR_COUNTRIES.has(c.code) && <Badge tone="emerald">MiCAR</Badge>}
               {isSel && <Check size={14} className="text-emerald" />}
@@ -282,7 +282,7 @@ function ResultsDisplay({ ranked, answers, onRestart }) {
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
       <Eyebrow color="text-emerald">Your match</Eyebrow>
       <h2 className="mt-3 text-[32px] font-bold tracking-tight">Here's your top 3.</h2>
-      <p className="mt-3 text-[18px] text-muted leading-relaxed max-w-xl">
+      <p className="mt-3 text-[16px] text-muted leading-relaxed max-w-xl">
         Based on your answers we re-ranked 22 venues. These three best fit your profile across
         compliance, product, and execution.
       </p>
@@ -308,19 +308,19 @@ function ResultCard({ exchange: e, rank, answers }) {
   return (
     <div className="p-5 hairline" style={{ borderRadius: 3 }}>
       <div className="flex items-center gap-4">
-        <span className="font-mono text-[25px] text-emerald w-6">#{rank}</span>
+        <span className="font-mono text-[23px] text-emerald w-6">#{rank}</span>
         <ExchangeLogo domain={e.domain} name={e.name} size={36} />
         <div className="flex-1">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-[19px]">{e.name}</span>
+            <span className="font-semibold text-[17px]">{e.name}</span>
             {e.micarLicensed && <Badge tone="emerald">MiCAR</Badge>}
             {e.hasCryptoCard && <Badge tone="cyan">Card</Badge>}
           </div>
-          <div className="text-[15px] text-muted mt-[2px]">{e.bestFor}</div>
+          <div className="text-[14px] text-muted mt-[2px]">{e.bestFor}</div>
         </div>
-        <span className="font-mono text-[25px] text-emerald">{e._score}</span>
+        <span className="font-mono text-[23px] text-emerald">{e._score}</span>
       </div>
-      <ul className="mt-3 ml-10 text-[16px] text-muted space-y-1">
+      <ul className="mt-3 ml-10 text-[15px] text-muted space-y-1">
         {reasons.map((r) => (
           <li key={r} className="flex gap-2">
             <span className="text-emerald">+</span>
@@ -332,7 +332,7 @@ function ResultCard({ exchange: e, rank, answers }) {
         href={e.affiliateUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="btn-primary mt-4 !text-[15px] !py-2"
+        className="btn-primary mt-4 !text-[14px] !py-2"
       >
         Visit {e.name} <ArrowUpRight size={12} />
       </a>
@@ -348,7 +348,7 @@ function LiveRankingPanel({ ranked, answers }) {
         <span className="w-[6px] h-[6px] rounded-full bg-cyan animate-pulse-dot" />
         <Eyebrow color="text-cyan">Live Ranking</Eyebrow>
       </div>
-      <div className="mt-3 text-[16px] text-muted">Updates as you answer.</div>
+      <div className="mt-3 text-[15px] text-muted">Updates as you answer.</div>
       <div className="mt-6 hairline" style={{ borderRadius: 3 }}>
         <AnimatePresence>
           {ranked.map((e, i) => (
@@ -382,18 +382,18 @@ function LiveRankRow({ exchange: e, position, isLast, isMicarCountry }) {
         isTopThree ? "bg-emerald/5" : ""
       }`}
     >
-      <span className="font-mono text-[14px] text-muted w-5">#{position + 1}</span>
+      <span className="font-mono text-[13px] text-muted w-5">#{position + 1}</span>
       <ExchangeLogo domain={e.domain} name={e.name} size={22} />
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <span className="text-[16px] font-semibold truncate">{e.name}</span>
+          <span className="text-[15px] font-semibold truncate">{e.name}</span>
           {e.micarLicensed && isMicarCountry && <Badge tone="emerald">MiCAR</Badge>}
         </div>
         <div className="mt-1">
           <MiniBar value={e._score} color="linear-gradient(90deg, #18b4d4 0%, #0dbe82 100%)" />
         </div>
       </div>
-      <span className="font-mono text-[16px] text-txt w-7 text-right">{e._score}</span>
+      <span className="font-mono text-[15px] text-txt w-7 text-right">{e._score}</span>
     </motion.div>
   );
 }
