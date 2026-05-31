@@ -1147,7 +1147,7 @@ function ReviewBlock({ exchange: e }) {
       className="bg-bg p-7 grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-8"
       variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}
     >
-      <div>
+      <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignSelf: "stretch" }}>
         <div className="flex items-center gap-4">
           <ExchangeLogo domain={e.domain} name={e.name} size={56} />
           <div>

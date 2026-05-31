@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 // Base design is authored at 260x520; named sizes scale the whole frame
-// uniformly so every tuned internal measurement stays proportional.
+// to the requested size (X/Y independently so the frame can be made wider/shorter).
 const SIZES = {
-  lg: { w: 275, h: 550 },
+  lg: { w: 300, h: 480 },
 };
 
 export const PhoneMockup = ({ screenshots, abbreviation, screenshot, fallback, size }) => {
@@ -24,7 +24,8 @@ export const PhoneMockup = ({ screenshots, abbreviation, screenshot, fallback, s
   const go = (delta) => setIndex((cur) => (cur + delta + effectiveLength) % effectiveLength);
 
   const dims = (size && SIZES[size]) || { w: 260, h: 520 };
-  const scale = dims.w / 260;
+  const scaleX = dims.w / 260;
+  const scaleY = dims.h / 520;
 
   const buttonBaseStyle = { position: "absolute", width: "4px", borderRadius: "2px", background: "linear-gradient(90deg, #1A1A1C 0%, #2C2C2E 50%, #3A3A3C 100%)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.10), inset 0 -1px 0 rgba(0,0,0,0.55), 0 0 0 0.5px rgba(0,0,0,0.45)" };
   const rightButtonStyle = { ...buttonBaseStyle, background: "linear-gradient(270deg, #1A1A1C 0%, #2C2C2E 50%, #3A3A3C 100%)" };
@@ -36,8 +37,8 @@ export const PhoneMockup = ({ screenshots, abbreviation, screenshot, fallback, s
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {/* SCALED BASE — authored at 260x520, scaled uniformly to the requested size */}
-      <div style={{ position: "absolute", top: 0, left: 0, width: "260px", height: "520px", transform: `scale(${scale})`, transformOrigin: "top left" }}>
+      {/* SCALED BASE — authored at 260x520, scaled to fill the requested size */}
+      <div style={{ position: "absolute", top: 0, left: 0, width: "260px", height: "520px", transform: `scale(${scaleX}, ${scaleY})`, transformOrigin: "top left" }}>
         {/* LEFT SIDE BUTTONS */}
         <div aria-hidden="true" style={{ ...buttonBaseStyle, left: "-2px", top: "92px", height: "26px" }} />
         <div aria-hidden="true" style={{ ...buttonBaseStyle, left: "-2px", top: "138px", height: "46px" }} />
