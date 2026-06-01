@@ -1,0 +1,62 @@
+/* Scoped design tokens + utility classes for the Match Exchange quiz.
+ * Extracted verbatim from the emergent build's index.css (@layer utilities).
+ * Kept local to this component tree so the quiz renders correctly without
+ * touching the project-wide tailwind.config.js / index.css. */
+
+/* Surface + text colors */
+.terminal-border        { border: 0.5px solid rgba(255, 255, 255, 0.08); }
+.terminal-border-t      { border-top: 0.5px solid rgba(255, 255, 255, 0.08); }
+.terminal-border-b      { border-bottom: 0.5px solid rgba(255, 255, 255, 0.08); }
+.terminal-border-l      { border-left: 0.5px solid rgba(255, 255, 255, 0.08); }
+.terminal-border-r      { border-right: 0.5px solid rgba(255, 255, 255, 0.08); }
+.terminal-border-strong { border: 0.5px solid rgba(255, 255, 255, 0.16); }
+.accent-border-l        { border-left: 2px solid #0dbe82; }
+
+.score-gradient { background: linear-gradient(90deg, #18b4d4 0%, #0dbe82 100%); }
+
+.text-data       { color: #18b4d4; }
+.text-emerald-mx { color: #0dbe82; }
+.text-lime-mx    { color: #70a848; }
+.text-primary-mx { color: #e8eaf0; }
+.text-muted-mx   { color: #6b7280; }
+.bg-page         { background-color: #080b16; }
+.bg-card-mx      { background-color: #0f1422; }
+.bg-card-elev    { background-color: #131829; }
+
+.tracking-terminal   { letter-spacing: 0.08em; }
+.tracking-tighter-mx { letter-spacing: -0.02em; }
+
+/* Cursor blink on the question prompt */
+.cursor-blink { animation: mx-blink 1.05s steps(1) infinite; }
+@keyframes mx-blink {
+  0%, 50%   { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* Score / pillar bar fill */
+.fill-bar { animation: mx-fillBar 0.65s cubic-bezier(0.22, 0.61, 0.36, 1) both; }
+@keyframes mx-fillBar {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+/* Slide-in for re-ranking rows */
+.rerank-enter { animation: mx-rerankEnter 0.32s cubic-bezier(0.22, 0.61, 0.36, 1) both; }
+@keyframes mx-rerankEnter {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Question screen fade */
+.q-enter { animation: mx-qEnter 0.4s cubic-bezier(0.22, 0.61, 0.36, 1) both; }
+@keyframes mx-qEnter {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Live pulse dot */
+.pulse-dot { animation: mx-pulseDot 1.6s ease-in-out infinite; }
+@keyframes mx-pulseDot {
+  0%, 100% { opacity: 1;   box-shadow: 0 0 0 0 rgba(13,190,130,0.6); }
+  50%      { opacity: 0.6; box-shadow: 0 0 0 4px rgba(13,190,130,0); }
+}
