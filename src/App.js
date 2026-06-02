@@ -8,7 +8,6 @@ import Home from "./pages/Home";
 import Compare from "./pages/Compare";
 import FindMyExchange from "./pages/FindMyExchange";
 import Cards from "./pages/Cards";
-import News from "./pages/News";
 import NewsFeed from "./pages/NewsFeed";
 import Article from "./pages/Article";
 import Advertise from "./pages/Advertise";
@@ -43,8 +42,7 @@ function App() {
           <Route path="/compare" element={<Compare />} />
           <Route path="/find-my-exchange" element={<FindMyExchange />} />
           <Route path="/cards" element={<Cards />} />
-          <Route path="/news" element={<News />} />
-          <Route path="/news-feed" element={<NewsFeed />} />
+          <Route path="/news" element={<NewsFeed />} />
           <Route path="/news/:slug" element={<Article />} />
           <Route path="/advertise" element={<Advertise />} />
           <Route path="/about" element={<About />} />
