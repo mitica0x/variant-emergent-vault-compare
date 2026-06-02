@@ -8,6 +8,7 @@ const LINKS = [
   { to: "/find-my-exchange", label: "Match Exchange" },
   { to: "/cards", label: "Cards" },
   { to: "/news", label: "News" },
+  { to: "/news-feed", label: "Feed" },
   { to: "/advertise", label: "Advertise" },
   { to: "/about", label: "About" },
 ];
@@ -18,6 +19,7 @@ const MOBILE_LINKS = [
   { to: "/find-my-exchange", label: "Exchange Match" },
   { to: "/cards", label: "Cards" },
   { to: "/news", label: "News" },
+  { to: "/news-feed", label: "Feed" },
   { to: "/advertise", label: "Advertise" },
 ];
 
