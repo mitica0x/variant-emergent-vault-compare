@@ -1,7 +1,17 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+// Live prices straight from CoinGecko's public API — no backend required.
+const PRICES_URL =
+  "https://api.coingecko.com/api/v3/simple/price" +
+  "?ids=bitcoin,ethereum,binancecoin&vs_currencies=usd&include_24hr_change=true";
+
+// CoinGecko id -> ticker symbol used throughout the feed.
+const COIN_IDS = {
+  bitcoin: "BTC",
+  ethereum: "ETH",
+  binancecoin: "BNB",
+};
 
 const PricesCtx = createContext({ bySymbol: {}, dir: {}, tick: 0, loaded: false });
 
@@ -16,8 +26,16 @@ export const PricesProvider = ({ children }) => {
 
   const fetchPrices = async () => {
     try {
-      const { data } = await axios.get(`${API}/prices`);
-      const list = data.prices || [];
+      const { data } = await axios.get(PRICES_URL);
+      // Normalize CoinGecko's shape into the { symbol, price, change24h } the
+      // ticker and price chips already consume.
+      const list = Object.entries(COIN_IDS)
+        .filter(([id]) => data[id] && data[id].usd != null)
+        .map(([id, symbol]) => ({
+          symbol,
+          price: data[id].usd,
+          change24h: data[id].usd_24h_change,
+        }));
       if (!list.length) return;
 
       const next = {};

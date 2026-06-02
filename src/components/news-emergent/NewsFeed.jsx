@@ -3,7 +3,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { NEWS } from "./data/mockNews";
 import { PricesProvider } from "./lib/PricesContext";
-import { TopNav } from "./components/news/TopNav";
 import { FilterPills } from "./components/news/FilterPills";
 import { SignalScanner } from "./components/news/SignalScanner";
 import { HeroCard } from "./components/news/HeroCard";
@@ -58,7 +57,6 @@ export default function NewsFeed() {
     <PricesProvider>
       <div className="cs-app">
         <div className="cs-container">
-          <TopNav view={view} setView={setView} />
           <FilterPills active={category} setActive={setCategory} />
           <SignalScanner items={categoryItems} />
 
