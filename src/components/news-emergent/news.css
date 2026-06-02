@@ -1,0 +1,553 @@
+/* Scoped styles for the Match Exchange news feed.
+ * Extracted verbatim from the emergent build's App.css and scoped under
+ * .news-page so it cannot leak into the rest of the site. @keyframes are
+ * namespaced (news-*) for the same reason. Imported by NewsFeed.jsx. */
+
+.news-page {
+    --bg: #080b16;
+    --card-bg: #0f1422;
+    --line: rgba(255, 255, 255, 0.08);
+    --line-bright: rgba(255, 255, 255, 0.2);
+    --text: #e8eaf0;
+    --muted: #6b7280;
+    --cyan: #18b4d4;
+    --emerald: #0dbe82;
+    --lime: #70a848;
+    --rust: #e8703a;
+    --red: #ff4d6d;
+    --shadow: 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+.news-page, .news-page * {
+    box-sizing: border-box;
+}
+.news-page .cs-app {
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+}
+.news-page .mono {
+    font-family: "Geist Mono", ui-monospace, SFMono-Regular, monospace;
+}
+.news-page .cs-container {
+    max-width: 1480px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+.news-page .cs-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    border-bottom: 0.5px solid var(--line);
+}
+.news-page .cs-wordmark {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+.news-page .cs-nav-center {
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    color: var(--muted);
+    text-transform: uppercase;
+}
+.news-page .cs-view-toggle {
+    display: flex;
+    gap: 6px;
+}
+.news-page .cs-icon-btn {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 30px;
+    border: 0.5px solid var(--line);
+    border-radius: 3px;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: color 0.18s ease, border-color 0.18s ease,
+        background-color 0.18s ease;
+}
+.news-page .cs-icon-btn:hover {
+    color: var(--text);
+    border-color: var(--line-bright);
+}
+.news-page .cs-icon-btn.is-active {
+    color: var(--cyan);
+    border-color: rgba(24, 180, 212, 0.5);
+    background: rgba(24, 180, 212, 0.08);
+}
+.news-page .cs-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 14px 0;
+    border-bottom: 0.5px solid var(--line);
+}
+.news-page .cs-pill {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    padding: 5px 12px;
+    border: 0.5px solid var(--line);
+    border-radius: 3px;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: color 0.18s ease, border-color 0.18s ease;
+}
+.news-page .cs-pill:hover {
+    color: var(--text);
+    border-color: var(--line-bright);
+}
+.news-page .cs-pill.is-active {
+    color: var(--text);
+}
+.news-page .cs-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding: 28px 0 72px;
+}
+@media (min-width: 1024px) {
+  .news-page .cs-layout {
+        grid-template-columns: 7fr 3fr;
+        gap: 32px;
+    }
+}
+.news-page .cs-card {
+    border: 0.5px solid var(--line);
+    border-radius: 3px;
+    box-shadow: var(--shadow);
+    transition: transform 0.18s ease, border-color 0.18s ease;
+}
+.news-page .cs-hero {
+    display: block;
+    padding: 26px 28px;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+}
+.news-page .cs-hero:hover {
+    transform: translateY(-2px);
+    border-color: var(--line-bright);
+    border-left-color: var(--emerald);
+}
+.news-page .cs-hero-title {
+    font-size: 27px;
+    line-height: 1.18;
+    font-weight: 600;
+    margin: 14px 0 10px;
+    letter-spacing: -0.02em;
+    max-width: 30ch;
+}
+.news-page .cs-hero-sub {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.55;
+    margin: 0 0 18px;
+    max-width: 64ch;
+}
+@media (max-width: 640px) {
+  .news-page .cs-hero-title {
+        font-size: 21px;
+    }
+}
+.news-page .cs-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-top: 16px;
+}
+@media (min-width: 640px) {
+  .news-page .cs-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (min-width: 1100px) {
+  .news-page .cs-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+.news-page .cs-grid-card {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    cursor: pointer;
+    min-height: 158px;
+}
+.news-page .cs-grid-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--line-bright);
+}
+.news-page .cs-card-title {
+    font-size: 14.5px;
+    line-height: 1.36;
+    font-weight: 500;
+    margin: 12px 0 auto;
+    letter-spacing: -0.01em;
+    color: var(--text);
+}
+.news-page .cs-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 16px;
+}
+.news-page .cs-dot {
+    opacity: 0.5;
+}
+.news-page .cs-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    padding: 3px 8px;
+    border: 0.5px solid;
+    border-radius: 3px;
+    width: fit-content;
+}
+.news-page .cs-tag-sm {
+    font-size: 9px;
+    padding: 2px 6px;
+    letter-spacing: 0.1em;
+}
+.news-page .cs-list {
+    display: flex;
+    flex-direction: column;
+    border-top: 0.5px solid var(--line);
+}
+.news-page .cs-list-row {
+    display: grid;
+    grid-template-columns: 58px 12px 104px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 12px;
+    border-bottom: 0.5px solid var(--line);
+    border-left: 2px solid transparent;
+    cursor: pointer;
+    transition: background-color 0.16s ease, border-left-color 0.16s ease,
+        transform 0.16s ease;
+}
+.news-page .cs-list-row:hover {
+    background: rgba(255, 255, 255, 0.025);
+    border-left-color: var(--cat);
+    transform: translateX(2px);
+}
+.news-page .cs-list-time {
+    font-size: 11px;
+    color: var(--muted);
+}
+.news-page .cs-list-sep {
+    color: var(--muted);
+    opacity: 0.4;
+}
+.news-page .cs-list-head {
+    font-size: 13.5px;
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.news-page .cs-list-source {
+    font-size: 11px;
+    color: var(--muted);
+    justify-self: end;
+}
+@media (max-width: 720px) {
+  .news-page .cs-list-row {
+        grid-template-columns: 52px 88px 1fr;
+    }
+  .news-page .cs-list-sep, .news-page .cs-list-source {
+        display: none;
+    }
+}
+.news-page .cs-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+@media (min-width: 1024px) {
+  .news-page .cs-sidebar {
+        position: sticky;
+        top: 70px;
+        align-self: start;
+    }
+}
+.news-page .cs-side-block {
+    background: var(--card-bg);
+    border: 0.5px solid var(--line);
+    border-radius: 3px;
+    box-shadow: var(--shadow);
+    padding: 16px;
+}
+.news-page .cs-side-title {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin: 0 0 14px;
+}
+.news-page .cs-search-wrap {
+    position: relative;
+}
+.news-page .cs-search-icon {
+    position: absolute;
+    left: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    pointer-events: none;
+}
+.news-page .cs-search-input {
+    width: 100%;
+    height: 38px;
+    padding: 0 12px 0 32px;
+    background: #0b0f1a;
+    border: 0.5px solid var(--line);
+    border-radius: 3px;
+    color: var(--text);
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.16s ease;
+}
+.news-page .cs-search-input::placeholder {
+    color: var(--muted);
+}
+.news-page .cs-search-input:focus {
+    border-color: rgba(24, 180, 212, 0.55);
+}
+.news-page .cs-side-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 16px;
+}
+.news-page .cs-side-filter {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    background: none;
+    border: none;
+    color: var(--muted);
+    padding: 3px 0;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: color 0.16s ease, border-color 0.16s ease;
+}
+.news-page .cs-side-filter:hover {
+    color: var(--text);
+}
+.news-page .cs-side-filter.is-active {
+    color: var(--text);
+    border-bottom-color: var(--cyan);
+}
+.news-page .cs-ticker-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 11px;
+    border: 0.5px solid var(--line);
+    border-radius: 3px;
+    margin-bottom: 8px;
+}
+.news-page .cs-ticker-row:last-child {
+    margin-bottom: 0;
+}
+.news-page .cs-ticker-left {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.news-page .cs-ticker-sym {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+}
+.news-page .cs-ticker-name {
+    font-size: 10px;
+    color: var(--muted);
+}
+.news-page .cs-ticker-right {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    align-items: flex-end;
+}
+.news-page .cs-ticker-price {
+    font-size: 13px;
+    color: var(--text);
+}
+.news-page .cs-ticker-chg {
+    font-size: 11px;
+}
+.news-page .up {
+    color: var(--emerald);
+}
+.news-page .down {
+    color: var(--red);
+}
+.news-page .flash-up {
+    animation: news-flashUp 0.6s ease-out;
+}
+.news-page .flash-down {
+    animation: news-flashDown 0.6s ease-out;
+}
+@keyframes news-flashUp {
+    0% {
+        background: rgba(13, 190, 130, 0.4);
+        border-color: rgba(13, 190, 130, 0.55);
+    }
+    100% {
+        background: transparent;
+        border-color: var(--line);
+    }
+}
+@keyframes news-flashDown {
+    0% {
+        background: rgba(255, 77, 109, 0.4);
+        border-color: rgba(255, 77, 109, 0.55);
+    }
+    100% {
+        background: transparent;
+        border-color: var(--line);
+    }
+}
+.news-page .cs-trend-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.news-page .cs-trend-pill {
+    font-size: 11px;
+    padding: 5px 11px;
+    border: 0.5px solid var(--line);
+    border-radius: 3px;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    transition: border-color 0.16s ease, color 0.16s ease,
+        background-color 0.16s ease;
+}
+.news-page .cs-trend-pill:hover {
+    border-color: rgba(24, 180, 212, 0.5);
+    color: var(--cyan);
+    background: rgba(24, 180, 212, 0.06);
+}
+.news-page .cs-foot {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    padding-top: 2px;
+}
+.news-page .cs-empty {
+    padding: 56px 16px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    border: 0.5px solid var(--line);
+    border-radius: 3px;
+    background: var(--card-bg);
+}
+.news-page .cs-scanner {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 14px;
+    padding: 11px 14px;
+    background: #0f1422;
+    border: 0.5px solid var(--line);
+    border-left: 3px solid var(--cyan);
+    border-radius: 3px;
+}
+.news-page .cs-scanner-dot {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--cyan);
+    animation: news-pulseDot 1.8s ease-out infinite;
+}
+@keyframes news-pulseDot {
+    0% {
+        box-shadow: 0 0 0 0 rgba(24, 180, 212, 0.45);
+    }
+    70% {
+        box-shadow: 0 0 0 7px rgba(24, 180, 212, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(24, 180, 212, 0);
+    }
+}
+.news-page .cs-scanner-label {
+    flex: none;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    color: var(--cyan);
+    text-transform: uppercase;
+}
+.news-page .cs-scanner-text {
+    font-size: 12px;
+    color: var(--muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+@media (max-width: 640px) {
+  .news-page .cs-scanner-label {
+        display: none;
+    }
+}
+.news-page .cs-card-top, .news-page .cs-hero-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+}
+.news-page .cs-chips {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+.news-page .cs-price-chip {
+    font-size: 10px;
+    letter-spacing: 0.03em;
+    padding: 2px 6px;
+    border: 0.5px solid;
+    border-radius: 3px;
+    white-space: nowrap;
+}
+.news-page .cs-hl {
+    background: rgba(24, 180, 212, 0.25);
+    color: #18b4d4;
+    border-radius: 2px;
+    padding: 0 1px;
+}
+.news-page .cs-spark {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 40px;
+}
+.news-page .cs-spark-bar {
+    flex: 1;
+    border-radius: 2px;
+    transition: height 0.3s ease, background-color 0.3s ease;
+}
+.news-page .cs-spark-meta {
+    font-size: 11px;
+    color: var(--muted);
+    margin: 12px 0 0;
+}
+.news-page .cs-kbd-hint {
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    color: var(--muted);
+    opacity: 0.7;
+    padding-top: 2px;
+}
