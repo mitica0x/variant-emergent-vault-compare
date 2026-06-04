@@ -551,3 +551,118 @@
     opacity: 0.7;
     padding-top: 2px;
 }
+
+/* Newsletter signup — full-width block below the feed, above the bottom of the
+ * page. No shadow / no gradient by design; nothing rounded past 3px. */
+.news-page .cs-newsletter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    background: var(--card-bg); /* #0f1422 */
+    border: 0.5px solid var(--line); /* rgba(255,255,255,0.08) */
+    border-radius: 3px;
+    padding: 40px 48px;
+    margin-bottom: 72px;
+}
+.news-page .cs-nl-left {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+.news-page .cs-nl-label {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--cyan); /* #18b4d4 */
+}
+.news-page .cs-nl-headline {
+    margin: 12px 0 10px;
+    font-family: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: #fff;
+}
+.news-page .cs-nl-body {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--muted); /* #6b7280 */
+    max-width: 52ch;
+}
+.news-page .cs-nl-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: none;
+}
+.news-page .cs-nl-input-wrap {
+    position: relative;
+}
+.news-page .cs-nl-input-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    pointer-events: none;
+}
+.news-page .cs-nl-input {
+    height: 44px;
+    width: 260px;
+    padding: 0 14px 0 40px;
+    background: var(--bg); /* #080b16 */
+    border: 0.5px solid var(--line);
+    border-radius: 3px;
+    color: var(--text);
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.16s ease;
+}
+.news-page .cs-nl-input::placeholder {
+    color: var(--muted);
+}
+.news-page .cs-nl-input:focus {
+    border-color: rgba(24, 180, 212, 0.55);
+}
+.news-page .cs-nl-btn {
+    height: 44px;
+    padding: 0 22px;
+    background: var(--emerald); /* #0dbe82 */
+    border: none;
+    border-radius: 3px;
+    color: #04130d;
+    font-family: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.16s ease;
+}
+.news-page .cs-nl-btn:hover {
+    background: #0fd293;
+}
+@media (max-width: 860px) {
+  .news-page .cs-newsletter {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 28px;
+        padding: 32px 28px;
+    }
+  .news-page .cs-nl-right {
+        flex-direction: column;
+        align-items: stretch;
+    }
+  .news-page .cs-nl-input-wrap, .news-page .cs-nl-input {
+        width: 100%;
+    }
+  .news-page .cs-nl-btn {
+        width: 100%;
+    }
+}

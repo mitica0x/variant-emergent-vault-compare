@@ -116,6 +116,45 @@ export default function NewsFeed() {
               velocityItems={categoryItems}
             />
           </div>
+
+          <section className="cs-newsletter" data-testid="newsletter">
+            <div className="cs-nl-left">
+              <span className="cs-nl-label mono">NEWSLETTER</span>
+              <h2 className="cs-nl-headline">Weekly intelligence. Zero noise.</h2>
+              <p className="cs-nl-body">
+                Score deltas, license changes and the moves that matter. One
+                email, every Friday.
+              </p>
+            </div>
+            <form className="cs-nl-right" onSubmit={(e) => e.preventDefault()}>
+              <div className="cs-nl-input-wrap">
+                <svg
+                  className="cs-nl-input-icon"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect x="3" y="5" width="18" height="14" rx="1" />
+                  <path d="m3 7 9 6 9-6" />
+                </svg>
+                <input
+                  type="email"
+                  className="cs-nl-input"
+                  placeholder="you@operator.com"
+                  aria-label="Email address"
+                />
+              </div>
+              <button type="submit" className="cs-nl-btn">
+                Subscribe
+              </button>
+            </form>
+          </section>
         </div>
       </div>
     </PricesProvider>
