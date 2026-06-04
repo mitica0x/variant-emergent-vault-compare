@@ -218,7 +218,7 @@ export default function CountrySearch({ questionId, initialValue, onAnswer }) {
           aria-label="Search for your country"
           autoComplete="off"
           spellCheck={false}
-          className="country-input flex-1 bg-transparent outline-none text-[15px] text-primary-mx py-3.5"
+          className="country-input flex-1 bg-transparent border-0 ring-0 focus:ring-0 focus:outline-none outline-none text-[15px] text-primary-mx py-3.5"
           data-testid="country-search-input"
         />
       </div>

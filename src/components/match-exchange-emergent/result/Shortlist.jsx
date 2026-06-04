@@ -103,7 +103,7 @@ function ShortlistCard({ ex, rank, last }) {
         <div className="font-mono text-[10px] uppercase tracking-terminal text-muted-mx mb-2">7-pillar breakdown</div>
         <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
           {PILLAR_KEYS.map((k, idx) => (
-            <PillarLine key={k.key} label={k.label} value={ex.p[k.key]} accent={accent} index={idx} active={active} />
+            <PillarLine key={k.key} label={k.label} value={ex.p[k.key]} index={idx} active={active} />
           ))}
         </div>
       </div>
@@ -139,16 +139,15 @@ function ShortlistCard({ ex, rank, last }) {
   );
 }
 
-function PillarLine({ label, value, accent, index, active }) {
+function PillarLine({ label, value, index, active }) {
   return (
     <div className="flex items-center gap-2">
       <span className="font-mono text-[10.5px] text-muted-mx w-[88px] truncate uppercase tracking-terminal">{label}</span>
       <div className="flex-1 h-[3px]" style={{ background: 'rgba(255,255,255,0.06)' }}>
         <div
-          className="h-full"
+          className="h-full score-gradient fill-bar"
           style={{
             width: active ? `${value}%` : '0%',
-            background: accent,
             transition: `width 700ms cubic-bezier(0.25,1,0.5,1) ${index * 80}ms`,
           }}
         />

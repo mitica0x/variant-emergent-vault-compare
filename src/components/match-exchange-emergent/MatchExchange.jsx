@@ -48,8 +48,8 @@ export default function MatchExchange() {
       />
 
       {!isResult ? (
-        <main className="flex-1 grid grid-cols-1 lg:grid-cols-[1fr_320px] xl:grid-cols-[1fr_360px]">
-          <section className="min-h-[calc(100vh-49px)] flex">
+        <main className="flex-1 grid grid-cols-1 lg:grid-cols-[1fr_300px] xl:grid-cols-[1fr_340px]">
+          <section className="min-w-0 min-h-[calc(100vh-49px)] flex">
             <QuestionScreen
               key={step}
               question={QUESTIONS[step]}
@@ -60,7 +60,7 @@ export default function MatchExchange() {
               onBack={step > 0 ? onBack : null}
             />
           </section>
-          <aside className="terminal-border-l bg-page lg:sticky lg:top-[49px] lg:self-start lg:h-[calc(100vh-49px)]">
+          <aside className="terminal-border-l bg-page overflow-y-auto lg:sticky lg:top-[49px] lg:self-start lg:h-[calc(100vh-49px)]">
             <LiveTop3 ranked={ranked} applied={appliedCount} total={QUESTIONS.length} />
           </aside>
         </main>

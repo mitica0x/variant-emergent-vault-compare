@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import LogoBadge from '../result/LogoBadge';
 
 export default function LiveTop3({ ranked, applied, total }) {
@@ -42,8 +42,15 @@ function Row({ ex, rank, pct }) {
   const isTop3 = rank <= 3;
   const rankColor =
     rank === 1 ? '#0dbe82' : rank === 2 ? '#18b4d4' : rank === 3 ? '#70a848' : 'rgba(255,255,255,0.40)';
-  const barColor = isTop3 ? rankColor : 'rgba(255,255,255,0.12)';
   const badgeSize = isTop3 ? 28 : 22;
+
+  // Grow the gradient bar from 0 → final width on mount (rows remount on each
+  // re-rank via their keyed identity, so this replays with the rerank fade).
+  const [grown, setGrown] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setGrown(true), 50);
+    return () => clearTimeout(t);
+  }, []);
 
   return (
     <div
@@ -69,8 +76,8 @@ function Row({ ex, rank, pct }) {
       </div>
       <div className={[isTop3 ? 'mt-3' : 'mt-2', 'h-[3px] w-full'].join(' ')} style={{ background: 'rgba(255,255,255,0.05)' }}>
         <div
-          className="h-full fill-bar origin-left"
-          style={{ width: `${Math.max(8, pct)}%`, background: barColor }}
+          className="h-full score-gradient fill-bar origin-left"
+          style={{ width: grown ? `${Math.max(8, pct)}%` : 0 }}
         />
       </div>
     </div>

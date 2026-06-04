@@ -12,7 +12,7 @@ export default function Fingerprint({ p, height = 22, accent = '#18b4d4', muted 
           <div key={k.key} className="relative" style={{ width: 4, height }}>
             <div className="absolute bottom-0 left-0 w-full" style={{ height, background: muted }} />
             <div
-              className="absolute bottom-0 left-0 w-full fill-bar origin-bottom"
+              className="absolute bottom-0 left-0 w-full fp-grow origin-bottom"
               style={{ height: h, background: accent, transformOrigin: 'bottom' }}
               title={`${k.label}: ${v}`}
             />

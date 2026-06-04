@@ -9,9 +9,6 @@ export default function TopBar({ step, total, appliedCount, isResult, onRestart 
         {/* Brand */}
         <div className="flex items-center gap-2 px-4 terminal-border-r min-w-[200px]">
           <span className="w-1.5 h-1.5 rounded-full pulse-dot" style={{ background: '#0dbe82' }} />
-          <span className="font-mono text-[13px] tracking-tighter-mx text-primary-mx">
-            C<span style={{ color: '#0dbe82' }}>0</span>insiglieri
-          </span>
           <span className="font-mono text-[11px] text-muted-mx ml-1">/ Match Exchange</span>
         </div>
 

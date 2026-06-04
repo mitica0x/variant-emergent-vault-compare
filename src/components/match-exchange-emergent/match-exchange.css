@@ -33,8 +33,13 @@
   51%, 100% { opacity: 0; }
 }
 
-/* Score / pillar bar fill */
-.fill-bar { animation: mx-fillBar 0.65s cubic-bezier(0.22, 0.61, 0.36, 1) both; }
+/* Score / pillar bar fill — width-grow transition shared site-wide so the
+ * result-screen score bars animate identically to the /compare MiniBar.
+ * Consumers render width:0 on mount, then set the final % after a beat. */
+.fill-bar { transition: width 700ms cubic-bezier(0.25, 1, 0.5, 1); transform-origin: left; }
+
+/* Legacy scaleX pop — retained for the 7-bar Fingerprint entrance only. */
+.fp-grow { animation: mx-fillBar 0.65s cubic-bezier(0.22, 0.61, 0.36, 1) both; }
 @keyframes mx-fillBar {
   from { transform: scaleX(0); }
   to   { transform: scaleX(1); }

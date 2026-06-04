@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import LogoBadge from './LogoBadge';
 import Fingerprint from './Fingerprint';
 
@@ -7,6 +7,14 @@ export default function RankRow({ ex, rank, maxScore, index = 0 }) {
   const rankColor = rank === 1 ? '#0dbe82' : rank === 2 ? '#18b4d4' : rank === 3 ? '#70a848' : '#6b7280';
   const pct = (ex.score / maxScore) * 100;
   const accent = rank === 1 ? '#0dbe82' : rank <= 3 ? '#18b4d4' : '#70a848';
+
+  // Grow the gradient score bar from 0 → final width on mount, staggered by
+  // row index — same entrance pattern as the /compare MiniBar.
+  const [grown, setGrown] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setGrown(true), 50);
+    return () => clearTimeout(t);
+  }, []);
 
   return (
     <div
@@ -39,7 +47,10 @@ export default function RankRow({ ex, rank, maxScore, index = 0 }) {
         <div className="mt-1 h-[2px] w-full hidden md:block" style={{ background: 'rgba(255,255,255,0.06)' }}>
           <div
             className="h-full score-gradient fill-bar origin-left"
-            style={{ width: `${Math.max(6, pct)}%` }}
+            style={{
+              width: grown ? `${Math.max(6, pct)}%` : 0,
+              transitionDelay: `${Math.min(index * 16, 560)}ms`,
+            }}
           />
         </div>
       </div>
