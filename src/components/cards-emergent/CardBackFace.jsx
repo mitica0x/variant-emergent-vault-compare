@@ -8,7 +8,9 @@ const CardBackFace = ({ card, size = 'lg' }) => {
       ? { w: 140, h: 88, pad: 8, font: 7 }
       : size === 'md'
       ? { w: 240, h: 152, pad: 12, font: 9 }
-      : { w: 420, h: 264, pad: 22, font: 13 };
+      : size === 'lg'
+      ? { w: 420, h: 264, pad: 22, font: 13 }
+      : { w: 520, h: 328, pad: 28, font: 15 };
 
   // Back bg: slightly off-white for light cards, slightly lighter dark for dark cards
   const isLight = card.face.bg === '#FFFFFF' || card.face.bg === '#F5F0E8' || card.face.bg?.startsWith('#F');

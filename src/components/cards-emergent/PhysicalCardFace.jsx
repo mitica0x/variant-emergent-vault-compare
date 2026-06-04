@@ -58,7 +58,9 @@ const PhysicalCardFace = ({ card, size = "lg" }) => {
       ? { w: 140, h: 88, pad: 8, chipW: 22, font: 9 }
       : size === "md"
       ? { w: 240, h: 152, pad: 12, chipW: 30, font: 11 }
-      : { w: 420, h: 264, pad: 22, chipW: 44, font: 13 };
+      : size === "lg"
+      ? { w: 420, h: 264, pad: 22, chipW: 44, font: 13 }
+      : { w: 520, h: 328, pad: 28, chipW: 54, font: 15 };
 
   return (
     <div

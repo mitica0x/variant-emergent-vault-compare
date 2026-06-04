@@ -3,7 +3,7 @@ import React, { useMemo, useState } from "react";
 import { CARDS, COUNTRIES } from "../../data/cards";
 import MiniCard from "./MiniCard";
 import FlipCard from "./FlipCard";
-import DimensionBars from "./DimensionBars";
+import CardScoreBack from "./CardScoreBack";
 
 const Toggle = ({ label, value, onChange, testId }) => (
   <button
@@ -409,10 +409,10 @@ const Row = ({ card, expanded, onToggle, rank }) => {
             </button>
           </div>
 
-          {/* Right: 3D card */}
+          {/* Right: 3D card + scoring back */}
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 18, paddingTop: 12 }}>
             <FlipCard card={card} size="lg" />
-            <DimensionBars card={card} layout="horizontal" />
+            <CardScoreBack card={card} size="md" />
           </div>
         </div>
       )}
