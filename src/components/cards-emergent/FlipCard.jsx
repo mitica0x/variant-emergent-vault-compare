@@ -12,7 +12,7 @@ const SIZES = {
   xl: { w: 520, h: 328 },
 };
 
-const FlipCard = ({ card, size = "lg", interactive = true, idle = true, autoFlipOnReveal = false }) => {
+const FlipCard = ({ card, size = "lg", interactive = true, idle = true, autoFlipOnReveal = false, dramatic = false }) => {
   const wrapRef = useRef(null);
   const innerRef = useRef(null);
   const [flipped, setFlipped] = useState(false);
@@ -36,14 +36,23 @@ const FlipCard = ({ card, size = "lg", interactive = true, idle = true, autoFlip
       angle.current = (angle.current + dt * 30) % 360;
 
       if (innerRef.current) {
-        const ry = tilt.current.x * 18 + (flipped ? 180 : 0);
-        const rx = -tilt.current.y * 12;
+        // Dramatic mode anchors to a steep 3/4 angle with small hover deltas;
+        // flat mode keeps the original wide cursor parallax. Idle float and the
+        // 180° flip are layered on top of whichever base is active, and mouse
+        // leave eases tilt back to {0,0} → returning to the dramatic base.
+        const baseRX = dramatic ? 22 : 0;
+        const baseRY = dramatic ? -38 : 0;
+        const baseRZ = dramatic ? -8 : 0;
+        const tiltRangeY = dramatic ? 6 : 18;
+        const tiltRangeX = dramatic ? 4 : 12;
+        const ry = baseRY + tilt.current.x * tiltRangeY + (flipped ? 180 : 0);
+        const rx = baseRX + -tilt.current.y * tiltRangeX;
         // gentle idle float
         const t = now * 0.001;
         const floatY = idle && !hovered ? Math.sin(t * 0.8) * 4 : 0;
         const floatRX = idle && !hovered ? Math.sin(t * 0.6) * 1.2 : 0;
         const floatRY = idle && !hovered ? Math.cos(t * 0.7) * 1.5 : 0;
-        innerRef.current.style.transform = `translateY(${floatY}px) rotateX(${rx + floatRX}deg) rotateY(${ry + floatRY}deg)`;
+        innerRef.current.style.transform = `translateY(${floatY}px) rotateX(${rx + floatRX}deg) rotateY(${ry + floatRY}deg) rotateZ(${baseRZ}deg)`;
         // holographic vars
         const cx = (tilt.current.x + 1) * 50; // -1..1 -> 0..100
         const cy = (tilt.current.y + 1) * 50;
@@ -55,7 +64,7 @@ const FlipCard = ({ card, size = "lg", interactive = true, idle = true, autoFlip
     };
     rafRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(rafRef.current);
-  }, [flipped, hovered, idle]);
+  }, [flipped, hovered, idle, dramatic]);
 
   // Auto-flip on first mount when used at reveal
   useEffect(() => {

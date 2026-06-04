@@ -81,6 +81,43 @@ const PhysicalCardFace = ({ card, size = "lg" }) => {
       }}
       data-testid={`card-face-${card.id}`}
     >
+      {/* Wave pattern — flowing curved lines like the real physical card */}
+      <svg
+        aria-hidden
+        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}
+        viewBox="0 0 400 252"
+        preserveAspectRatio="none"
+      >
+        <g
+          stroke={isLightBg(face.bg) ? '#B8B8B8' : 'rgba(255,255,255,0.06)'}
+          strokeWidth={size === 'sm' ? 0.4 : size === 'md' ? 0.6 : 0.85}
+          fill="none"
+          opacity={isLightBg(face.bg) ? 0.65 : 1}
+        >
+          <path d="M-15 172 Q115 108 210 152 Q305 196 420 132" />
+          <path d="M-15 186 Q115 122 210 166 Q305 210 420 146" />
+          <path d="M-15 200 Q115 136 210 180 Q305 224 420 160" />
+          <path d="M-15 158 Q115 94 210 138 Q305 182 420 118" />
+          <path d="M-15 144 Q115 80 210 124 Q305 168 420 104" />
+          <path d="M-15 214 Q115 150 210 194 Q305 238 420 174" />
+          <path d="M-15 228 Q115 164 210 208 Q305 252 420 188" />
+          <path d="M-15 242 Q115 178 210 222 Q305 266 420 202" />
+          <path d="M-15 128 Q115 64 210 108 Q305 152 420 88" />
+        </g>
+        {/* Secondary diagonal waves — lighter */}
+        <g
+          stroke={isLightBg(face.bg) ? '#D0D0D0' : 'rgba(255,255,255,0.03)'}
+          strokeWidth={size === 'sm' ? 0.3 : 0.5}
+          fill="none"
+          opacity={isLightBg(face.bg) ? 0.4 : 1}
+        >
+          <path d="M55 -10 Q130 76 170 152 Q210 228 245 275" />
+          <path d="M95 -10 Q170 76 210 152 Q250 228 285 275" />
+          <path d="M135 -10 Q210 76 250 152 Q290 228 325 275" />
+          <path d="M175 -10 Q250 76 290 152 Q330 228 365 275" />
+        </g>
+      </svg>
+
       {/* Holographic horizontal stripe for crypto.com style */}
       {face.stripe === "holographic" && (
         <div
@@ -180,6 +217,18 @@ const PhysicalCardFace = ({ card, size = "lg" }) => {
           <NetworkLogo network={face.network} color={dark ? "#0f1422" : "#ffffff"} />
         </div>
       </div>
+
+      {/* Subtle top-left light reflection */}
+      <div
+        aria-hidden
+        style={{
+          position: 'absolute',
+          inset: 0,
+          borderRadius: 'inherit',
+          background: 'radial-gradient(circle at 28% 22%, rgba(255,255,255,0.18) 0%, transparent 55%)',
+          pointerEvents: 'none',
+        }}
+      />
     </div>
   );
 };

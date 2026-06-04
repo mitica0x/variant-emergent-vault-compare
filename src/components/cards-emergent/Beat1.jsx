@@ -209,9 +209,10 @@ const Beat1 = ({ onExploreClick, onMatchClick }) => {
                 position: "relative",
                 zIndex: 2,
                 transform: "scale(1.05)",
+                filter: 'drop-shadow(0 44px 64px rgba(0,0,0,0.5)) drop-shadow(0 10px 24px rgba(0,0,0,0.3))',
               }}
             >
-              <FlipCard card={bybit} size="xl" idle />
+              <FlipCard card={bybit} size="xl" idle dramatic />
             </div>
             <div
               className="font-mono"
