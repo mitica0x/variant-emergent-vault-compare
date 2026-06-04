@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import LogoBadge from './LogoBadge';
 import ScoreRing from './ScoreRing';
 import { PILLAR_KEYS } from '../data/exchanges';
@@ -36,17 +36,28 @@ function ShortlistCard({ ex, rank, last }) {
     ? ex.reasons.slice(0, 2)
     : [...(ex.reasons || []), 'Balanced 7-pillar profile', 'Strong overall composite score'].slice(0, 2);
 
+  // Single mount flag that drives the staggered pillar-bar grow (0% → value).
+  const [active, setActive] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setActive(true), 50);
+    return () => clearTimeout(t);
+  }, []);
+
+  // Card entrance: fade + rise, staggered by rank (80 / 200 / 320ms).
+  const cardDelay = rank === 1 ? 80 : rank === 2 ? 200 : 320;
+
   return (
     <article
       data-testid={`shortlist-card-${rank}`}
       className={[
-        'bg-card-mx p-5 md:p-6 flex flex-col gap-5',
+        'result-card-enter bg-card-mx p-5 md:p-6 flex flex-col gap-5',
         !last ? 'md:terminal-border-r' : '',
         isOne ? '' : '',
       ].join(' ')}
       style={{
         borderTop: isOne ? `2px solid ${accent}` : '0.5px solid transparent',
         position: 'relative',
+        animationDelay: `${cardDelay}ms`,
       }}
     >
       {/* Rank ribbon */}
@@ -91,8 +102,8 @@ function ShortlistCard({ ex, rank, last }) {
       <div>
         <div className="font-mono text-[10px] uppercase tracking-terminal text-muted-mx mb-2">7-pillar breakdown</div>
         <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
-          {PILLAR_KEYS.map((k) => (
-            <PillarLine key={k.key} label={k.label} value={ex.p[k.key]} accent={accent} />
+          {PILLAR_KEYS.map((k, idx) => (
+            <PillarLine key={k.key} label={k.label} value={ex.p[k.key]} accent={accent} index={idx} active={active} />
           ))}
         </div>
       </div>
@@ -128,12 +139,19 @@ function ShortlistCard({ ex, rank, last }) {
   );
 }
 
-function PillarLine({ label, value, accent }) {
+function PillarLine({ label, value, accent, index, active }) {
   return (
     <div className="flex items-center gap-2">
       <span className="font-mono text-[10.5px] text-muted-mx w-[88px] truncate uppercase tracking-terminal">{label}</span>
       <div className="flex-1 h-[3px]" style={{ background: 'rgba(255,255,255,0.06)' }}>
-        <div className="h-full fill-bar origin-left" style={{ width: `${value}%`, background: accent }} />
+        <div
+          className="h-full"
+          style={{
+            width: active ? `${value}%` : '0%',
+            background: accent,
+            transition: `width 700ms cubic-bezier(0.25,1,0.5,1) ${index * 80}ms`,
+          }}
+        />
       </div>
       <span className="font-mono text-[11px] text-primary-mx w-7 text-right">{value}</span>
     </div>

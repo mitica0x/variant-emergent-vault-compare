@@ -2,7 +2,7 @@ import React from 'react';
 import LogoBadge from './LogoBadge';
 import Fingerprint from './Fingerprint';
 
-export default function RankRow({ ex, rank, maxScore }) {
+export default function RankRow({ ex, rank, maxScore, index = 0 }) {
   const isTop3 = rank <= 3;
   const rankColor = rank === 1 ? '#0dbe82' : rank === 2 ? '#18b4d4' : rank === 3 ? '#70a848' : '#6b7280';
   const pct = (ex.score / maxScore) * 100;
@@ -15,7 +15,11 @@ export default function RankRow({ ex, rank, maxScore }) {
         'grid grid-cols-[40px_36px_1fr_auto_60px] md:grid-cols-[44px_40px_1fr_120px_72px] items-center gap-3 md:gap-4 px-3 md:px-4 py-3 terminal-border-b bg-card-mx',
         isTop3 ? 'accent-border-l' : '',
       ].join(' ')}
-      style={{ borderLeftColor: isTop3 ? rankColor : undefined }}
+      style={{
+        borderLeftColor: isTop3 ? rankColor : undefined,
+        opacity: 0,
+        animation: `rank-row-enter 180ms cubic-bezier(0.25,1,0.5,1) ${Math.min(index * 16, 560)}ms forwards`,
+      }}
     >
       <span className="font-mono text-[11px] uppercase tracking-terminal" style={{ color: rankColor }} data-testid={`rank-row-${rank}-rank`}>
         #{String(rank).padStart(2, '0')}

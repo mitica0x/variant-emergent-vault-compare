@@ -33,7 +33,7 @@ export default function RankList({ ranked }) {
       {/* Rows */}
       <div data-testid="ranklist-rows">
         {visible.map((ex, i) => (
-          <RankRow key={ex.name} ex={ex} rank={i + 1} maxScore={maxScore} />
+          <RankRow key={ex.name} ex={ex} rank={i + 1} maxScore={maxScore} index={i} />
         ))}
       </div>
 

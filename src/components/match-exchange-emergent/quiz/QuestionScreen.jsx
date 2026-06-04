@@ -1,5 +1,6 @@
 import React from 'react';
 import { ArrowLeft, ChevronRight } from 'lucide-react';
+import CountrySearch from './CountrySearch';
 
 export default function QuestionScreen({ question, index, total, selected, onAnswer, onBack }) {
   if (!question) return null;
@@ -33,7 +34,12 @@ export default function QuestionScreen({ question, index, total, selected, onAns
         {question.hint}
       </p>
 
-      {/* Options */}
+      {/* Q01 region uses a country typeahead instead of the radio grid; it maps
+          the chosen country to the same region code the scoring engine expects. */}
+      {question.id === 'region' ? (
+        <CountrySearch questionId={question.id} initialValue={selected} onAnswer={onAnswer} />
+      ) : (
+      /* Options */
       <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-2" data-testid="question-options">
         {question.options.map((opt) => {
           const isSel = selected === opt.value;
@@ -67,6 +73,7 @@ export default function QuestionScreen({ question, index, total, selected, onAns
           );
         })}
       </div>
+      )}
 
       {/* Footer hint line */}
       <div className="mt-10 flex items-center gap-3 font-mono text-[11px] uppercase tracking-terminal text-muted-mx">

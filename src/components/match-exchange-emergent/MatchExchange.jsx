@@ -48,7 +48,7 @@ export default function MatchExchange() {
       />
 
       {!isResult ? (
-        <main className="flex-1 grid grid-cols-1 lg:grid-cols-[1fr_360px] xl:grid-cols-[1fr_400px]">
+        <main className="flex-1 grid grid-cols-1 lg:grid-cols-[1fr_320px] xl:grid-cols-[1fr_360px]">
           <section className="min-h-[calc(100vh-49px)] flex">
             <QuestionScreen
               key={step}
