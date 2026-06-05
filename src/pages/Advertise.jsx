@@ -3,6 +3,7 @@ import {
   ArrowRight, ArrowUpRight, Send, Mail, Building2, User, MessageSquare, Check, Quote,
 } from "lucide-react";
 import { Eyebrow, Badge } from "../components/UI";
+import PageHero from "../components/PageHero";
 import { CITED_BY, PARTNERS } from "../data/mock";
 
 // ---- Static config ----
@@ -26,8 +27,8 @@ const HERO_METRICS = [
   { v: "180k+", l: "Monthly Operators" },
   { v: "320k+", l: "Monthly Page Views" },
   { v: "4.2k+", l: "Newsletter Ops" },
-  { v: "22", l: "Tracked Venues" },
-  { v: "5", l: "Score Pillars" },
+  { v: "37", l: "Tracked Venues" },
+  { v: "7", l: "Score Pillars" },
   { v: "30d", l: "Rescore Cadence" },
 ];
 
@@ -81,23 +82,22 @@ function AdvertiseHero() {
     <section className="hairline-b">
       <div className="container-x pt-12 md:pt-[153px] pb-20 grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-12 items-end">
         <div>
-          <Eyebrow color="text-emerald">Media Kit · CoinSiglieri</Eyebrow>
-          <h1 className="mt-5 text-[44px] sm:text-[64px] font-bold tracking-tight leading-[1.02] text-balance">
-            The leaderboard nobody paid to be on. The real estate around it is.
-          </h1>
-          <p className="mt-20 text-[19px] text-muted leading-relaxed max-w-2xl">
-            Independent intelligence. Editorial scoring. Commercial placement available — always disclosed.
-          </p>
-          <div className="mt-20 flex flex-wrap gap-3">
-            <a href="#contact" className="btn-primary">Reserve placement <ArrowRight size={14} /></a>
-            <a href="#solutions" className="btn-outline">Explore solutions <ArrowUpRight size={14} /></a>
-          </div>
-          <p className="mt-20 font-mono text-[12px] uppercase tracking-widest text-muted">
-            Faster:{" "}
-            <a href="https://t.me/coinsiglieri" target="_blank" rel="noopener noreferrer" className="text-cyan hover:text-emerald">
-              DM @coinsiglieri on Telegram
-            </a>
-          </p>
+          <PageHero
+            eyebrow="ADVERTISE · COINSIGLIERI"
+            title="The real estate around the leaderboard."
+            subtitle="Independent intelligence. Editorial scoring. Commercial placement available — always disclosed."
+          >
+            <div className="flex flex-wrap gap-3">
+              <a href="#contact" className="btn-primary">Reserve placement <ArrowRight size={14} /></a>
+              <a href="#solutions" className="btn-outline">Explore solutions <ArrowUpRight size={14} /></a>
+            </div>
+            <p className="mt-20 font-mono text-[12px] uppercase tracking-widest text-muted">
+              Faster:{" "}
+              <a href="https://t.me/coinsiglieri" target="_blank" rel="noopener noreferrer" className="text-cyan hover:text-emerald">
+                DM @coinsiglieri on Telegram
+              </a>
+            </p>
+          </PageHero>
         </div>
         <HeroMetrics />
       </div>

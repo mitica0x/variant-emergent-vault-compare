@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, ResponsiveContainer } from "recharts";
 import { Eyebrow, Badge, MiniBar, ScoreCircle, ProsCons, ExchangeLogo } from "../components/UI";
+import PageHero from "../components/PageHero";
 import PhoneMockup from "../components/PhoneMockup";
 import { EXCHANGES, SCORE_PILLARS, getTierBg, scoreColor } from "../data/mock";
 import { useScrollSpy } from "../hooks/use-in-view";
@@ -85,14 +86,12 @@ export default function Compare() {
 
 function ComparisonHero() {
   return (
-    <section id="overview" className="max-w-3xl scroll-mt-20">
-      <Eyebrow color="text-emerald">Compare</Eyebrow>
-      <h1 className="mt-4 text-[44px] sm:text-[56px] font-bold tracking-tight leading-[1.02]">
-        The leaderboard nobody paid to be on.
-      </h1>
-      <p className="mt-5 text-[18px] text-muted leading-relaxed max-w-2xl">
-        Scored by algorithm. Not by who pays us. {EXCHANGES.length} venues across spot, derivatives and on-chain — rescored every 30 days.
-      </p>
+    <section id="overview" className="scroll-mt-20">
+      <PageHero
+        eyebrow="COMPARE · LIVE · 2026"
+        title="The leaderboard nobody paid to be on."
+        subtitle="37 venues scored across spot, derivatives and on-chain. Rescored every 30 days."
+      />
     </section>
   );
 }

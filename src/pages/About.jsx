@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, ArrowUpRight, Mic, Mail, Send, Linkedin } from "lucide-react";
 import { Eyebrow } from "../components/UI";
+import PageHero from "../components/PageHero";
 import { TEAM, CITED_BY, SCORE_PILLARS } from "../data/mock";
 
 const SPEAKING = [
@@ -15,7 +16,7 @@ const SPEAKING = [
 const TRACK_STATS = [
   { v: "2016", l: "In crypto since cycle one" },
   { v: "15+", l: "Years in derivatives markets" },
-  { v: "EU-native", l: "MiCAR-first by design" },
+  { v: "7", l: "Scoring pillars" },
 ];
 
 export default function About() {
@@ -36,14 +37,11 @@ export default function About() {
 function AboutHero() {
   return (
     <section className="container-x pt-12 md:pt-[153px] pb-20">
-      <Eyebrow color="text-emerald">About</Eyebrow>
-      <h1 className="mt-5 text-[44px] sm:text-[72px] font-bold tracking-tight leading-[0.98] max-w-4xl">
-        Built by operators. Not by reporters.
-      </h1>
-      <p className="mt-20 text-[19px] text-muted leading-relaxed max-w-2xl">
-        CoinSiglieri is an EU/MiCAR-focused crypto exchange intelligence platform. Independent,
-        score-driven, operator-built.
-      </p>
+      <PageHero
+        eyebrow="ABOUT · COINSIGLIERI"
+        title="Operators since 2016."
+        subtitle="CoinSiglieri is EU/MiCAR-native crypto exchange intelligence. Score-driven, independently built, operator-tested."
+      />
     </section>
   );
 }

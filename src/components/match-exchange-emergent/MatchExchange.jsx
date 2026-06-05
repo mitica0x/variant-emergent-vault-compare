@@ -49,12 +49,7 @@ export default function MatchExchange() {
 
       {!isResult ? (
         <main className="flex-1 grid grid-cols-1 lg:grid-cols-[1fr_300px] xl:grid-cols-[1fr_340px]">
-          <section className="min-w-0 flex flex-col">
-            <div className="w-full max-w-[820px] mx-auto px-6 md:px-10 pt-10" style={{ paddingBottom: 32 }}>
-              <p className="text-xs uppercase tracking-widest text-cyan-400 mb-2">• MATCH EXCHANGE · LIVE · 2026</p>
-              <h1 className="text-4xl font-bold text-white">Find your card.</h1>
-              <p className="text-gray-400 mt-2 text-base">Answer 4 questions. Get your ranked match.</p>
-            </div>
+          <section className="min-w-0 min-h-[calc(100vh-49px)] flex">
             <QuestionScreen
               key={step}
               question={QUESTIONS[step]}
