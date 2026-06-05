@@ -308,39 +308,6 @@ const Row = ({ card, expanded, onToggle, rank }) => {
               ))}
             </div>
 
-            {/* Tiers */}
-            {card.tiers && card.tiers.length > 0 && (
-              <>
-                <div className="kicker" style={{ marginTop: 24, marginBottom: 10 }}>
-                  Tier levels
-                </div>
-                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                  {card.tiers.map((t) => (
-                    <div
-                      key={t.name}
-                      style={{
-                        padding: "10px 14px",
-                        border: "0.5px solid rgba(255,255,255,0.1)",
-                        borderRadius: 3,
-                        minWidth: 160,
-                      }}
-                    >
-                      <div className="font-mono" style={{ fontSize: 10, color: "#9ca3af", letterSpacing: "0.14em", textTransform: "uppercase" }}>
-                        {t.name}
-                      </div>
-                      <div className="font-mono" style={{ fontSize: 16, color: "#0dbe82", marginTop: 4 }}>
-                        {t.cashback}
-                      </div>
-                      <div className="font-mono" style={{ fontSize: 10, color: "#6b7280", marginTop: 2 }}>
-                        {t.fee}
-                        {t.note ? ` · ${t.note}` : ""}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
-
             {/* Availability */}
             <div className="kicker" style={{ marginTop: 24, marginBottom: 8 }}>
               Availability
@@ -450,6 +417,49 @@ const Row = ({ card, expanded, onToggle, rank }) => {
 
             {/* Compact dimension bars — single line, no weight labels */}
             <DimensionBars card={card} compact={true} />
+
+            {/* Tier levels — moved from left column; vertical compact cards */}
+            {card.tiers && card.tiers.length > 0 && (
+              <div>
+                <div className="kicker" style={{ marginBottom: 8 }}>Tier levels</div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  {card.tiers.map((t) => (
+                    <div
+                      key={t.name}
+                      style={{
+                        padding: "8px 10px",
+                        border: "0.5px solid rgba(255,255,255,0.1)",
+                        borderRadius: 3,
+                      }}
+                    >
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+                        <div
+                          className="font-mono"
+                          style={{
+                            fontSize: 10,
+                            color: "#9ca3af",
+                            letterSpacing: "0.12em",
+                            textTransform: "uppercase",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                          }}
+                        >
+                          {t.name}
+                        </div>
+                        <div className="font-mono" style={{ fontSize: 14, color: "#0dbe82", flexShrink: 0 }}>
+                          {t.cashback}
+                        </div>
+                      </div>
+                      <div className="font-mono" style={{ fontSize: 10, color: "#6b7280", marginTop: 2 }}>
+                        {t.fee}
+                        {t.note ? ` · ${t.note}` : ""}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
