@@ -2,7 +2,6 @@
 import React, { useMemo, useState } from "react";
 import { CARDS, COUNTRIES } from "../../data/cards";
 import FlipCard from "./FlipCard";
-import PhysicalCardFace from "./PhysicalCardFace";
 import ScoreRing from "./ScoreRing";
 import DimensionBars from "./DimensionBars";
 
@@ -238,14 +237,13 @@ const Row = ({ card, expanded, onToggle, rank }) => {
         <div
           style={{
             padding: "8px 24px 40px",
-            display: "grid",
-            gridTemplateColumns: "minmax(0, 1.1fr) minmax(0, 1fr)",
-            gap: 36,
+            display: "flex",
+            gap: 24,
             borderTop: "0.5px solid rgba(255,255,255,0.06)",
           }}
         >
           {/* Left: detail */}
-          <div>
+          <div style={{ flex: 1, minWidth: 0 }}>
             <p style={{ color: "#cbd5e1", fontSize: 14, lineHeight: 1.6, margin: "16px 0 24px", maxWidth: 600 }}>
               {card.description}
             </p>
@@ -409,61 +407,49 @@ const Row = ({ card, expanded, onToggle, rank }) => {
                 fontWeight: 600,
                 border: "none",
                 cursor: "pointer",
+                width: "100%",
               }}
             >
               Request {card.brand} card →
             </button>
           </div>
 
-          {/* Right: scoring panel — flat card → score ring → dimension bars → CTA.
-              Plain flex-col (overflow visible) so the ring never overlaps the bars. */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 16, paddingTop: 12, minWidth: 0 }}>
-            {/* Flat physical card thumbnail — no tilt, no float */}
-            <div style={{ alignSelf: "center", width: "100%", maxWidth: 280, display: "flex", justifyContent: "center" }}>
-              <PhysicalCardFace card={card} size="lg" />
-            </div>
-
-            {/* Score ring — its own centered row, score/label below the ring */}
+          {/* Right: compact sticky score panel — ring + caption + compact bars.
+              No card preview, no weight labels, no second CTA; sized to fit one viewport. */}
+          <div
+            className="hair"
+            style={{
+              width: 220,
+              flexShrink: 0,
+              alignSelf: "flex-start",
+              position: "sticky",
+              top: 80,
+              display: "flex",
+              flexDirection: "column",
+              gap: 12,
+              padding: 16,
+              background: "var(--surface)",
+              borderRadius: 3,
+            }}
+          >
+            {/* Score ring — number centered inside; score/label caption below */}
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
               <ScoreRing
                 score={card.score}
-                size={80}
+                size={88}
                 label=""
                 color={card.score >= 85 ? "#0dbe82" : card.score >= 70 ? "#18b4d4" : "#70a848"}
               />
               <div
                 className="font-mono"
-                style={{ fontSize: 11, color: "#6b7280", letterSpacing: "0.16em", textTransform: "uppercase" }}
+                style={{ fontSize: 11, color: "#6b7280", letterSpacing: "0.16em", textTransform: "uppercase", marginBottom: 12 }}
               >
                 {card.score} / 100 · Score
               </div>
             </div>
 
-            {/* Dimension bars — full width, full labels (no truncation) */}
-            <DimensionBars card={card} layout="vertical" />
-
-            {/* Request CTA */}
-            <button
-              onClick={(e) => e.stopPropagation()}
-              data-testid={`panel-request-${card.id}`}
-              style={{
-                marginTop: 4,
-                background: "#0dbe82",
-                color: "#08110a",
-                padding: "12px 18px",
-                fontFamily: "Geist Mono, monospace",
-                fontSize: 11,
-                letterSpacing: "0.18em",
-                textTransform: "uppercase",
-                borderRadius: 3,
-                fontWeight: 600,
-                border: "none",
-                cursor: "pointer",
-                width: "100%",
-              }}
-            >
-              Request {card.brand} card →
-            </button>
+            {/* Compact dimension bars — single line, no weight labels */}
+            <DimensionBars card={card} compact={true} />
           </div>
         </div>
       )}
