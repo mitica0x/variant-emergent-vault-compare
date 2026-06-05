@@ -1,41 +1,47 @@
-// Physical card face (front) — built entirely with CSS + real brand SVG logo
+// Physical card face (front) — built entirely with CSS + real brand SVG logo.
+// Per-card brand styling (bg, waves, chip, network badge, tag, text) lives in
+// CARD_OVERRIDES below and is merged over DEFAULT_FACE at render time, keyed by
+// card.id, so each of the 17 cards renders in its real brand colors.
 import React from "react";
 import { EmvChip, ContactlessIcon } from "./CardChip";
 import { NetworkLogo } from "./NetworkLogos";
 
-// Brand logo with graceful fallback to wordmark
-const BrandMark = ({ card }) => {
-  const dark = isLightBg(card.face.bg);
-  const wordColor = dark ? "#0f1422" : "#ffffff";
-  return (
-    <div className="flex items-center gap-2" style={{ minHeight: 28 }}>
-      <img
-        src={card.logo}
-        alt={card.brand}
-        onError={(e) => {
-          e.currentTarget.style.display = "none";
-        }}
-        style={{
-          width: 28,
-          height: 28,
-          objectFit: "contain",
-          filter: dark ? "none" : "brightness(1.1)",
-        }}
-      />
-      <div
-        style={{
-          fontFamily: "Geist, sans-serif",
-          fontWeight: 600,
-          fontSize: 14,
-          letterSpacing: "-0.01em",
-          color: wordColor,
-        }}
-      >
-        {card.brand}
-      </div>
-    </div>
-  );
+// Applied to any card not present in CARD_OVERRIDES.
+const DEFAULT_FACE = {
+  bgColor: "#1a1a2e",
+  bgGradient: null,
+  waveOpacity: 0.04,
+  waveColor: "#FFFFFF",
+  chipVariant: "silver",
+  networkBadge: "visa",
+  textColor: "#FFFFFF",
+  logoColor: null,
+  tagBg: "rgba(255,255,255,0.12)",
+  tagColor: "#FFFFFF",
 };
+
+// Pixel-perfect per-brand overrides, keyed by card.id.
+const CARD_OVERRIDES = {
+  bybit: { bgColor: "#FFFFFF", waveOpacity: 0.06, waveColor: "#AAAAAA", chipVariant: "gold", networkBadge: "mc", textColor: "#1a1a1a", tagBg: "#f5f5f5", tagColor: "#333" },
+  kraken: { bgColor: "#1A1A2E", waveOpacity: 0.08, waveColor: "#E30613", chipVariant: "silver", networkBadge: "mc", textColor: "#FFFFFF", tagBg: "#E30613", tagColor: "#fff" },
+  coca: { bgColor: "#0D0D0D", waveOpacity: 0.05, waveColor: "#FFFFFF", chipVariant: "silver", networkBadge: "visa", textColor: "#FFFFFF", tagBg: "#222", tagColor: "#fff" },
+  okx: { bgColor: "#111111", waveOpacity: 0.04, waveColor: "#FFFFFF", chipVariant: "silver", networkBadge: "mc", textColor: "#FFFFFF", tagBg: "#222", tagColor: "#fff" },
+  gnosis: { bgGradient: "linear-gradient(135deg, #00A86B 0%, #2ECC71 50%, #A8E063 100%)", waveOpacity: 0.10, waveColor: "#FFFFFF", chipVariant: "gold", networkBadge: "visa", textColor: "#FFFFFF", tagBg: "rgba(255,255,255,0.2)", tagColor: "#fff" },
+  cryptocom: { bgColor: "#0B1426", waveOpacity: 0.06, waveColor: "#1B4FBF", chipVariant: "gold", networkBadge: "visa", textColor: "#FFFFFF", tagBg: "#1B4FBF", tagColor: "#fff" },
+  bitget: { bgGradient: "linear-gradient(135deg, #111111 0%, #003D35 100%)", waveOpacity: 0.07, waveColor: "#00C2B4", chipVariant: "silver", networkBadge: "visa", textColor: "#FFFFFF", tagBg: "#00C2B4", tagColor: "#000" },
+  kucoin: { bgColor: "#0A0A0A", waveOpacity: 0.04, waveColor: "#1BA27A", chipVariant: "silver", networkBadge: "visa", textColor: "#FFFFFF", tagBg: "#1BA27A", tagColor: "#fff" },
+  metamask: { bgGradient: "linear-gradient(135deg, #F6851B 0%, #E2761B 100%)", waveOpacity: 0.10, waveColor: "#FFFFFF", chipVariant: "gold", networkBadge: "mc", textColor: "#FFFFFF", tagBg: "rgba(255,255,255,0.2)", tagColor: "#fff" },
+  nexo: { bgColor: "#1E2A3A", waveOpacity: 0.06, waveColor: "#7B8EC8", chipVariant: "silver", networkBadge: "mc", textColor: "#FFFFFF", tagBg: "#7B8EC8", tagColor: "#fff" },
+  coinbase: { bgColor: "#1652F0", waveOpacity: 0.08, waveColor: "#FFFFFF", chipVariant: "silver", networkBadge: "visa", textColor: "#FFFFFF", tagBg: "rgba(255,255,255,0.2)", tagColor: "#fff" },
+  wirex: { bgGradient: "linear-gradient(135deg, #00B4F0 0%, #0080C0 100%)", waveOpacity: 0.08, waveColor: "#FFFFFF", chipVariant: "silver", networkBadge: "visa", textColor: "#FFFFFF", tagBg: "rgba(255,255,255,0.2)", tagColor: "#fff" },
+  whitebit: { bgColor: "#0D1B4B", waveOpacity: 0.06, waveColor: "#4A6FD4", chipVariant: "silver", networkBadge: "visa", textColor: "#FFFFFF", tagBg: "#4A6FD4", tagColor: "#fff" },
+  brighty: { bgColor: "#0A0A0A", waveOpacity: 0.04, waveColor: "#FFFFFF", chipVariant: "silver", networkBadge: "mc", textColor: "#FFFFFF", tagBg: "#222", tagColor: "#fff" },
+  kast: { bgGradient: "linear-gradient(135deg, #1A1A2E 0%, #16213E 50%, #0F3460 100%)", waveOpacity: 0.12, waveColor: "#C0A060", chipVariant: "gold", networkBadge: "visa", textColor: "#FFFFFF", tagBg: "#C0A060", tagColor: "#000" },
+  plutus: { bgColor: "#4B2EFF", waveOpacity: 0.10, waveColor: "#FFFFFF", chipVariant: "gold", networkBadge: "visa", textColor: "#FFFFFF", tagBg: "rgba(255,255,255,0.2)", tagColor: "#fff" },
+  bitpanda: { bgColor: "#1A2B4A", waveOpacity: 0.06, waveColor: "#00B8A9", chipVariant: "silver", networkBadge: "visa", textColor: "#FFFFFF", tagBg: "#00B8A9", tagColor: "#fff" },
+};
+
+const resolveFace = (id) => ({ ...DEFAULT_FACE, ...(CARD_OVERRIDES[id] || {}) });
 
 function isLightBg(bg) {
   if (!bg || bg.startsWith("linear")) return false;
@@ -48,10 +54,46 @@ function isLightBg(bg) {
   return r * 0.299 + g * 0.587 + b * 0.114 > 160;
 }
 
+// Brand logo with graceful fallback to wordmark.
+const BrandMark = ({ card, wordColor, lightBg }) => (
+  <div className="flex items-center gap-2" style={{ minHeight: 28 }}>
+    <img
+      src={card.logo}
+      alt={card.brand}
+      onError={(e) => {
+        e.currentTarget.style.display = "none";
+      }}
+      style={{
+        width: 28,
+        height: 28,
+        objectFit: "contain",
+        filter: lightBg ? "none" : "brightness(1.1)",
+      }}
+    />
+    <div
+      style={{
+        fontFamily: "Geist, sans-serif",
+        fontWeight: 600,
+        fontSize: 14,
+        letterSpacing: "-0.01em",
+        color: wordColor,
+      }}
+    >
+      {card.brand}
+    </div>
+  </div>
+);
+
 const PhysicalCardFace = ({ card, size = "lg" }) => {
   const { face } = card;
-  const dark = isLightBg(face.bg);
-  const txt = dark ? "#0f1422" : face.textColor || "#e8eaf0";
+  const cfg = resolveFace(card.id);
+
+  // bgGradient takes priority over bgColor; lightBg only meaningful for solid bg.
+  const bg = cfg.bgGradient || cfg.bgColor;
+  const lightBg = !cfg.bgGradient && isLightBg(cfg.bgColor);
+  const txt = cfg.textColor;
+  const wordColor = cfg.logoColor || cfg.textColor;
+  const networkName = cfg.networkBadge === "mc" ? "mastercard" : "visa";
 
   const dims =
     size === "sm"
@@ -70,7 +112,7 @@ const PhysicalCardFace = ({ card, size = "lg" }) => {
       style={{
         width: dims.w,
         height: dims.h,
-        background: face.bg,
+        background: bg,
         color: txt,
         borderRadius: 14,
         position: "relative",
@@ -85,7 +127,7 @@ const PhysicalCardFace = ({ card, size = "lg" }) => {
       }}
       data-testid={`card-face-${card.id}`}
     >
-      {/* Wave pattern — flowing curved lines like the real physical card */}
+      {/* Wave pattern — flowing curved lines, per-card stroke color + opacity */}
       <svg
         aria-hidden
         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}
@@ -93,10 +135,10 @@ const PhysicalCardFace = ({ card, size = "lg" }) => {
         preserveAspectRatio="none"
       >
         <g
-          stroke={isLightBg(face.bg) ? '#B8B8B8' : 'rgba(255,255,255,0.06)'}
+          stroke={cfg.waveColor}
           strokeWidth={size === 'sm' ? 0.4 : size === 'md' ? 0.6 : 0.85}
           fill="none"
-          opacity={0.04}
+          opacity={cfg.waveOpacity}
         >
           <path d="M-15 172 Q115 108 210 152 Q305 196 420 132" />
           <path d="M-15 186 Q115 122 210 166 Q305 210 420 146" />
@@ -108,12 +150,12 @@ const PhysicalCardFace = ({ card, size = "lg" }) => {
           <path d="M-15 242 Q115 178 210 222 Q305 266 420 202" />
           <path d="M-15 128 Q115 64 210 108 Q305 152 420 88" />
         </g>
-        {/* Secondary diagonal waves — lighter */}
+        {/* Secondary diagonal waves — same color, same per-card opacity */}
         <g
-          stroke={isLightBg(face.bg) ? '#D0D0D0' : 'rgba(255,255,255,0.03)'}
+          stroke={cfg.waveColor}
           strokeWidth={size === 'sm' ? 0.3 : 0.5}
           fill="none"
-          opacity={0.04}
+          opacity={cfg.waveOpacity}
         >
           <path d="M55 -10 Q130 76 170 152 Q210 228 245 275" />
           <path d="M95 -10 Q170 76 210 152 Q250 228 285 275" />
@@ -157,7 +199,7 @@ const PhysicalCardFace = ({ card, size = "lg" }) => {
 
       {/* Top row: brand + tag */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
-        <BrandMark card={card} />
+        <BrandMark card={card} wordColor={wordColor} lightBg={lightBg} />
         {size !== "sm" && face.tag && (
           <div
             style={{
@@ -165,10 +207,10 @@ const PhysicalCardFace = ({ card, size = "lg" }) => {
               fontSize: 9,
               letterSpacing: "0.15em",
               padding: "3px 6px",
-              border: `0.5px solid ${dark ? "rgba(15,20,34,0.2)" : "rgba(255,255,255,0.18)"}`,
+              border: `0.5px solid ${lightBg ? "rgba(15,20,34,0.2)" : "rgba(255,255,255,0.18)"}`,
               borderRadius: 3,
-              color: face.accent || txt,
-              background: dark ? "rgba(15,20,34,0.04)" : "rgba(255,255,255,0.04)",
+              color: cfg.tagColor,
+              background: cfg.tagBg,
               whiteSpace: "nowrap",
             }}
           >
@@ -179,11 +221,11 @@ const PhysicalCardFace = ({ card, size = "lg" }) => {
 
       {/* Middle: chip + contactless */}
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: size === "sm" ? 2 : 6 }}>
-        <EmvChip color={face.chipColor || "silver"} width={dims.chipW} />
+        <EmvChip color={cfg.chipVariant} width={dims.chipW} />
         {size !== "sm" && (
           <ContactlessIcon
             size={dims.chipW * 0.5}
-            color={dark ? "rgba(15,20,34,0.6)" : "rgba(255,255,255,0.7)"}
+            color={lightBg ? "rgba(15,20,34,0.6)" : "rgba(255,255,255,0.7)"}
           />
         )}
       </div>
@@ -218,7 +260,7 @@ const PhysicalCardFace = ({ card, size = "lg" }) => {
           )}
         </div>
         <div style={{ marginLeft: 8, transform: size === "sm" ? "scale(0.55)" : "scale(0.85)", transformOrigin: "right bottom" }}>
-          <NetworkLogo network={face.network} color={dark ? "#0f1422" : "#ffffff"} />
+          <NetworkLogo network={networkName} color={txt} />
         </div>
       </div>
 

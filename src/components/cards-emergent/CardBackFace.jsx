@@ -1,6 +1,31 @@
 // CardBackFace — physical card back. Real card aesthetics.
 // Magnetic stripe, number, cardholder, color stripes, network badge.
+// Per-card brand stripes + network badge live in CARD_BACK, keyed by card.id,
+// so each back matches its front (PhysicalCardFace CARD_OVERRIDES).
 import React from 'react';
+
+// 3 accent stripe colors + network badge per card.
+const CARD_BACK = {
+  bybit: { stripes: ['#C8A04A', '#4A90D9', '#9E9E9E'], network: 'mc' },
+  kraken: { stripes: ['#E30613', '#2a0a0a', '#1A1A2E'], network: 'mc' },
+  coca: { stripes: ['#222222', '#111111', '#0D0D0D'], network: 'visa' },
+  okx: { stripes: ['#333333', '#222222', '#111111'], network: 'mc' },
+  gnosis: { stripes: ['#00A86B', '#2ECC71', '#A8E063'], network: 'visa' },
+  cryptocom: { stripes: ['#1B4FBF', '#0B1426', '#091020'], network: 'visa' },
+  bitget: { stripes: ['#00C2B4', '#003D35', '#111111'], network: 'visa' },
+  kucoin: { stripes: ['#1BA27A', '#111111', '#0A0A0A'], network: 'visa' },
+  metamask: { stripes: ['#F6851B', '#E2761B', '#C66A00'], network: 'mc' },
+  nexo: { stripes: ['#7B8EC8', '#1E2A3A', '#131C28'], network: 'mc' },
+  coinbase: { stripes: ['#1652F0', '#0A3DD1', '#0830B0'], network: 'visa' },
+  wirex: { stripes: ['#00B4F0', '#0080C0', '#005A8A'], network: 'visa' },
+  whitebit: { stripes: ['#4A6FD4', '#0D1B4B', '#091230'], network: 'visa' },
+  brighty: { stripes: ['#333333', '#1A1A1A', '#0A0A0A'], network: 'mc' },
+  kast: { stripes: ['#C0A060', '#16213E', '#0F3460'], network: 'visa' },
+  plutus: { stripes: ['#4B2EFF', '#3520CC', '#210FA0'], network: 'visa' },
+  bitpanda: { stripes: ['#00B8A9', '#1A2B4A', '#111E33'], network: 'visa' },
+};
+
+const DEFAULT_BACK = { stripes: ['#0dbe82', '#9AB0C8', '#B8B8B8'], network: 'visa' };
 
 const CardBackFace = ({ card, size = 'lg' }) => {
   const dims =
@@ -14,13 +39,15 @@ const CardBackFace = ({ card, size = 'lg' }) => {
       ? { w: 380, h: 240, pad: 18, font: 11 }
       : { w: 520, h: 328, pad: 28, font: 15 };
 
+  const back = CARD_BACK[card.id] || DEFAULT_BACK;
+  const stripes = back.stripes;
+
   // Back bg: slightly off-white for light cards, slightly lighter dark for dark cards
   const isLight = card.face.bg === '#FFFFFF' || card.face.bg === '#F5F0E8' || card.face.bg?.startsWith('#F');
   const backBg = isLight ? '#F2F2F0' : '#16192A';
   const textPrimary = isLight ? '#1A1A1A' : '#E8EAF0';
   const textMuted = isLight ? '#888888' : '#6B7280';
   const stripeColor = isLight ? '#4A4A4A' : '#2A2A2A';
-  const accent = card.face.accent || '#0dbe82';
 
   return (
     <div
@@ -104,7 +131,7 @@ const CardBackFace = ({ card, size = 'lg' }) => {
         </div>
       )}
 
-      {/* Color stripes — 3 thin horizontal bars bottom-left */}
+      {/* Color stripes — 3 thin horizontal bars bottom-left, per-card brand colors */}
       {size !== 'sm' && (
         <div style={{
           position: 'absolute',
@@ -114,9 +141,9 @@ const CardBackFace = ({ card, size = 'lg' }) => {
           flexDirection: 'column',
           gap: 4,
         }}>
-          <div style={{ width: size === 'md' ? 56 : 80, height: size === 'md' ? 4 : 5, borderRadius: 1, background: accent, opacity: 0.85 }} />
-          <div style={{ width: size === 'md' ? 56 : 80, height: size === 'md' ? 4 : 5, borderRadius: 1, background: '#9AB0C8', opacity: 0.75 }} />
-          <div style={{ width: size === 'md' ? 56 : 80, height: size === 'md' ? 4 : 5, borderRadius: 1, background: '#B8B8B8', opacity: 0.55 }} />
+          <div style={{ width: size === 'md' ? 56 : 80, height: size === 'md' ? 4 : 5, borderRadius: 1, background: stripes[0], opacity: 0.85 }} />
+          <div style={{ width: size === 'md' ? 56 : 80, height: size === 'md' ? 4 : 5, borderRadius: 1, background: stripes[1], opacity: 0.75 }} />
+          <div style={{ width: size === 'md' ? 56 : 80, height: size === 'md' ? 4 : 5, borderRadius: 1, background: stripes[2], opacity: 0.55 }} />
         </div>
       )}
 
@@ -147,13 +174,13 @@ const CardBackFace = ({ card, size = 'lg' }) => {
         </svg>
       )}
 
-      {/* Network badge bottom-right */}
+      {/* Network badge bottom-right — per-card (matches the front) */}
       <div style={{
         position: 'absolute',
         bottom: size === 'md' ? 14 : 22,
         right: dims.pad,
       }}>
-        {card.face.network === 'mastercard' ? (
+        {back.network === 'mc' ? (
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <div style={{
               width: size === 'md' ? 22 : 32,
