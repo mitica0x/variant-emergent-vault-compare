@@ -212,7 +212,7 @@ const Beat1 = ({ onExploreClick, onMatchClick }) => {
                 filter: 'drop-shadow(0 44px 64px rgba(0,0,0,0.5)) drop-shadow(0 10px 24px rgba(0,0,0,0.3))',
               }}
             >
-              <FlipCard card={bybit} size="xl" idle dramatic />
+              <FlipCard card={bybit} size="xl" idle />
             </div>
             <div
               className="font-mono"
@@ -228,7 +228,7 @@ const Beat1 = ({ onExploreClick, onMatchClick }) => {
                 zIndex: 3,
               }}
             >
-              Click card to flip · drag mouse to tilt
+              Drag to rotate · release to snap back
             </div>
           </div>
         </div>
