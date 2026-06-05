@@ -420,7 +420,7 @@ const Row = ({ card, expanded, onToggle, rank }) => {
           <div style={{ display: "flex", flexDirection: "column", gap: 16, paddingTop: 12, minWidth: 0 }}>
             {/* Flat physical card thumbnail — no tilt, no float */}
             <div style={{ alignSelf: "center", width: "100%", maxWidth: 280, display: "flex", justifyContent: "center" }}>
-              <PhysicalCardFace card={card} size="md" />
+              <PhysicalCardFace card={card} size="lg" />
             </div>
 
             {/* Score ring — its own centered row, score/label below the ring */}
