@@ -11,7 +11,7 @@ const CardBackFace = ({ card, size = 'lg' }) => {
       : size === 'lg'
       ? { w: 420, h: 264, pad: 22, font: 13 }
       : size === 'hero'
-      ? { w: 340, h: 214, pad: 18, font: 11 }
+      ? { w: 380, h: 240, pad: 18, font: 11 }
       : { w: 520, h: 328, pad: 28, font: 15 };
 
   // Back bg: slightly off-white for light cards, slightly lighter dark for dark cards
@@ -35,23 +35,6 @@ const CardBackFace = ({ card, size = 'lg' }) => {
       }}
       data-testid={`card-back-${card.id}`}
     >
-      {/* Wave pattern — same as front, mirrored */}
-      <svg
-        aria-hidden
-        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}
-        viewBox="0 0 400 252"
-        preserveAspectRatio="none"
-      >
-        <g stroke={isLight ? '#C0C0C0' : 'rgba(255,255,255,0.055)'} strokeWidth="0.75" fill="none" opacity={isLight ? 0.6 : 1}>
-          <path d="M-15 172 Q115 108 210 152 Q305 196 420 132" />
-          <path d="M-15 186 Q115 122 210 166 Q305 210 420 146" />
-          <path d="M-15 200 Q115 136 210 180 Q305 224 420 160" />
-          <path d="M-15 158 Q115 94 210 138 Q305 182 420 118" />
-          <path d="M-15 214 Q115 150 210 194 Q305 238 420 174" />
-          <path d="M-15 228 Q115 164 210 208 Q305 252 420 188" />
-        </g>
-      </svg>
-
       {/* Support email top — only lg */}
       {size === 'lg' && (
         <div style={{
