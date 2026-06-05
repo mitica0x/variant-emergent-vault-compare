@@ -2,8 +2,9 @@
 import React, { useMemo, useState } from "react";
 import { CARDS, COUNTRIES } from "../../data/cards";
 import MiniCard from "./MiniCard";
-import FlipCard from "./FlipCard";
-import CardScoreBack from "./CardScoreBack";
+import PhysicalCardFace from "./PhysicalCardFace";
+import ScoreRing from "./ScoreRing";
+import DimensionBars from "./DimensionBars";
 
 const Toggle = ({ label, value, onChange, testId }) => (
   <button
@@ -409,10 +410,55 @@ const Row = ({ card, expanded, onToggle, rank }) => {
             </button>
           </div>
 
-          {/* Right: 3D card + scoring back */}
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 18, paddingTop: 12 }}>
-            <FlipCard card={card} size="lg" />
-            <CardScoreBack card={card} size="md" />
+          {/* Right: scoring panel — flat card → score ring → dimension bars → CTA.
+              Plain flex-col (overflow visible) so the ring never overlaps the bars. */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 16, paddingTop: 12, minWidth: 0 }}>
+            {/* Flat physical card thumbnail — no tilt, no float */}
+            <div style={{ alignSelf: "center", width: "100%", maxWidth: 280, display: "flex", justifyContent: "center" }}>
+              <PhysicalCardFace card={card} size="md" />
+            </div>
+
+            {/* Score ring — its own centered row, score/label below the ring */}
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+              <ScoreRing
+                score={card.score}
+                size={80}
+                label=""
+                color={card.score >= 85 ? "#0dbe82" : card.score >= 70 ? "#18b4d4" : "#70a848"}
+              />
+              <div
+                className="font-mono"
+                style={{ fontSize: 11, color: "#6b7280", letterSpacing: "0.16em", textTransform: "uppercase" }}
+              >
+                {card.score} / 100 · Score
+              </div>
+            </div>
+
+            {/* Dimension bars — full width, full labels (no truncation) */}
+            <DimensionBars card={card} layout="vertical" />
+
+            {/* Request CTA */}
+            <button
+              onClick={(e) => e.stopPropagation()}
+              data-testid={`panel-request-${card.id}`}
+              style={{
+                marginTop: 4,
+                background: "#0dbe82",
+                color: "#08110a",
+                padding: "12px 18px",
+                fontFamily: "Geist Mono, monospace",
+                fontSize: 11,
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                borderRadius: 3,
+                fontWeight: 600,
+                border: "none",
+                cursor: "pointer",
+                width: "100%",
+              }}
+            >
+              Request {card.brand} card →
+            </button>
           </div>
         </div>
       )}
