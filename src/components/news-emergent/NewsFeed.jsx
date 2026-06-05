@@ -57,6 +57,12 @@ export default function NewsFeed() {
     <PricesProvider>
       <div className="cs-app">
         <div className="cs-container">
+          <div style={{ paddingBottom: 32 }}>
+            <p className="text-xs uppercase tracking-widest text-cyan-400 mb-2">• NEWS · LIVE · 2026</p>
+            <h1 className="text-4xl font-bold text-white">News</h1>
+            <p className="text-white font-medium mt-1">What we're watching.</p>
+            <p className="text-gray-400 mt-2 text-sm max-w-xl">Weekly signal on EU crypto licensing, exchange moves and the data that actually changes a leaderboard.</p>
+          </div>
           <FilterPills active={category} setActive={setCategory} />
           <SignalScanner items={categoryItems} />
 

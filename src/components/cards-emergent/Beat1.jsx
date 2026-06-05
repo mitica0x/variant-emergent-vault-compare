@@ -44,7 +44,7 @@ const Beat1 = ({ onExploreClick, onMatchClick }) => {
     <section
       style={{
         position: "relative",
-        padding: "96px 28px 80px",
+        padding: "96px 28px 40px",
         minHeight: "calc(100vh - 60px)",
         overflow: "hidden",
       }}

@@ -514,7 +514,7 @@ const Beat2 = ({ explorRef }) => {
     <section
       ref={explorRef}
       id="explore"
-      style={{ padding: "100px 28px 80px", background: "var(--bg)" }}
+      style={{ padding: "50px 28px 80px", background: "var(--bg)" }}
       data-testid="beat-2-intelligence"
     >
       <div style={{ maxWidth: 1440, margin: "0 auto" }}>
