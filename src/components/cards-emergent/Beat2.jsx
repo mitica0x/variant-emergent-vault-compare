@@ -1,7 +1,7 @@
 // Beat 2 — The Intelligence. Filter sidebar + 17 ranked rows w/ expandable detail
 import React, { useMemo, useState } from "react";
 import { CARDS, COUNTRIES } from "../../data/cards";
-import MiniCard from "./MiniCard";
+import FlipCard from "./FlipCard";
 import PhysicalCardFace from "./PhysicalCardFace";
 import ScoreRing from "./ScoreRing";
 import DimensionBars from "./DimensionBars";
@@ -138,7 +138,7 @@ const Row = ({ card, expanded, onToggle, rank }) => {
         style={{
           padding: "20px 24px",
           display: "grid",
-          gridTemplateColumns: "44px 168px 1fr 220px 230px 36px",
+          gridTemplateColumns: "44px 256px 1fr 220px 230px 36px",
           alignItems: "center",
           gap: 20,
           cursor: "pointer",
@@ -152,9 +152,14 @@ const Row = ({ card, expanded, onToggle, rank }) => {
         >
           {String(rank).padStart(2, "0")}
         </div>
-        {/* mini card */}
-        <div style={{ width: 140 }}>
-          <MiniCard card={card} size="sm" />
+        {/* mini card — interactive FlipCard: flip on click, tilt on hover.
+            onClickCapture stops a thumbnail click from toggling the row accordion
+            (capture-phase stopPropagation prevents the row's bubble onClick). */}
+        <div
+          style={{ width: 240 }}
+          onClickCapture={(e) => e.stopPropagation()}
+        >
+          <FlipCard card={card} size="md" idle={false} dramatic={false} interactive={true} />
         </div>
         {/* name + badges */}
         <div style={{ minWidth: 0 }}>
@@ -681,7 +686,7 @@ const Beat2 = ({ explorRef }) => {
               style={{
                 padding: "14px 24px",
                 display: "grid",
-                gridTemplateColumns: "44px 168px 1fr 220px 230px 36px",
+                gridTemplateColumns: "44px 256px 1fr 220px 230px 36px",
                 gap: 20,
                 background: "rgba(255,255,255,0.015)",
               }}

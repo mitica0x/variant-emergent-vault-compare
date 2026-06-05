@@ -96,7 +96,7 @@ const PhysicalCardFace = ({ card, size = "lg" }) => {
           stroke={isLightBg(face.bg) ? '#B8B8B8' : 'rgba(255,255,255,0.06)'}
           strokeWidth={size === 'sm' ? 0.4 : size === 'md' ? 0.6 : 0.85}
           fill="none"
-          opacity={isLightBg(face.bg) ? 0.65 : 1}
+          opacity={0.04}
         >
           <path d="M-15 172 Q115 108 210 152 Q305 196 420 132" />
           <path d="M-15 186 Q115 122 210 166 Q305 210 420 146" />
@@ -113,7 +113,7 @@ const PhysicalCardFace = ({ card, size = "lg" }) => {
           stroke={isLightBg(face.bg) ? '#D0D0D0' : 'rgba(255,255,255,0.03)'}
           strokeWidth={size === 'sm' ? 0.3 : 0.5}
           fill="none"
-          opacity={isLightBg(face.bg) ? 0.4 : 1}
+          opacity={0.04}
         >
           <path d="M55 -10 Q130 76 170 152 Q210 228 245 275" />
           <path d="M95 -10 Q170 76 210 152 Q250 228 285 275" />
