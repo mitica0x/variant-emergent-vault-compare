@@ -1,8 +1,9 @@
 // FlipCard — the centerpiece interaction.
-// CSS-built physical card. Drag to rotate freely (front ↔ back), release to
-// spring back to neutral, gentle sine/cosine idle float when untouched.
-// All motion is driven by a single requestAnimationFrame loop (no CSS keyframes,
-// no animation library). Used at hero, featured, result reveal.
+// CSS-built physical card. Rests at a dramatic 3/4 angle with a gentle breathing
+// float. Drag to rotate freely (full 360°, front ↔ back) — on release the card
+// stays exactly where you left it. A tap (no drag) flips it 180° around its
+// current tilt. All motion runs in one requestAnimationFrame loop; the transform
+// is written straight to the DOM node (no React state, no re-renders, no library).
 import React, { useRef, useEffect } from "react";
 import PhysicalCardFace from "./PhysicalCardFace";
 import CardBackFace from "./CardBackFace";
@@ -16,22 +17,33 @@ const SIZES = {
 
 const SENSITIVITY = 0.4; // degrees of rotation per pixel dragged
 const DRAG_LERP = 0.15; // smoothing toward the drag target
-const SPRING_STIFFNESS = 120; // spring constant k (toward neutral)
-const SPRING_DAMPING = 14; // damping c (underdamped → slight overshoot)
+const CLICK_THRESHOLD = 5; // px of travel below which a press counts as a click
+const FLIP_MS = 400; // flip duration
+const TWO_PI = Math.PI * 2;
 
-const FlipCard = ({ card, size = "lg", interactive = true, idle = true }) => {
+const easeInOut = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
+
+const FlipCard = ({ card, size = "lg", interactive = true, idle = true, dramatic = false }) => {
   const wrapRef = useRef(null);
   const innerRef = useRef(null);
 
-  // Motion lives entirely in refs so the rAF loop never triggers React renders.
-  const rot = useRef({ x: 0, y: 0 }); // applied rotation (deg)
-  const vel = useRef({ x: 0, y: 0 }); // angular velocity (deg/s) for the spring
-  const ty = useRef(0); // applied translateY (px) — idle float only
-  const dragTarget = useRef({ x: 0, y: 0 }); // rotation target while dragging
-  const dragging = useRef(false);
-  const springing = useRef(false); // snap-back active after release
-  const dragStart = useRef({ x: 0, y: 0, rx: 0, ry: 0 });
-  const pulse = useRef({ active: false, start: 0 }); // one-shot hover-enter tilt
+  // All motion lives in refs so the rAF loop never triggers a React render.
+  const base = useRef({ x: 0, y: 0, z: 0 }); // anchor the float oscillates around
+  const current = useRef({ x: 0, y: 0, z: 0 }); // actual rendered rotation
+  const ty = useRef(0); // rendered translateY (px)
+  const floatPhase = useRef(0); // time accumulator for the idle breathing
+  const initialized = useRef(false);
+
+  const isDragging = useRef(false);
+  const isFlipped = useRef(false);
+  const dragStart = useRef({ x: 0, y: 0 }); // pointer position at press
+  const dragBase = useRef({ x: 0, y: 0 }); // base rotation at press
+  const dragTarget = useRef({ x: 0, y: 0 }); // rotation the base lerps toward
+  const dragTotalDist = useRef(0);
+
+  const flip = useRef({ active: false, t: 0, from: 0, to: 0 }); // flipProgress = flip.t
+  const hover = useRef({ active: false, start: 0 }); // hoverPulsePhase via timestamp
+
   const holoAngle = useRef(0);
   const rafRef = useRef(null);
 
@@ -39,45 +51,65 @@ const FlipCard = ({ card, size = "lg", interactive = true, idle = true }) => {
     const wrap = wrapRef.current;
     if (!wrap) return undefined;
 
+    // Dramatic resting base — set once so prop-driven effect re-runs don't yank
+    // the card back out of wherever the user has dragged it.
+    if (!initialized.current) {
+      base.current = {
+        x: dramatic ? 22 : 0,
+        y: dramatic ? -38 : 0,
+        z: dramatic ? -8 : 0,
+      };
+      current.current = { ...base.current };
+      initialized.current = true;
+    }
+
     const pointFromEvent = (e) => {
       const t = e.touches && e.touches[0];
       return t ? { x: t.clientX, y: t.clientY } : { x: e.clientX, y: e.clientY };
     };
 
-    // ── Drag move (mouse + touch). Full 360° freedom, no clamp. ──
+    // ── Drag move (mouse + touch). Adds to the rotation at press, no clamp. ──
     const onMove = (e) => {
-      if (!dragging.current) return;
+      if (!isDragging.current) return;
       if (e.type === "touchmove" && e.cancelable) e.preventDefault(); // no page scroll
       const p = pointFromEvent(e);
       const dx = p.x - dragStart.current.x;
       const dy = p.y - dragStart.current.y;
-      dragTarget.current.y = dragStart.current.ry + dx * SENSITIVITY; // deltaX → rotateY
-      dragTarget.current.x = dragStart.current.rx - dy * SENSITIVITY; // deltaY → rotateX
+      const dist = Math.hypot(dx, dy);
+      if (dist > dragTotalDist.current) dragTotalDist.current = dist;
+      dragTarget.current.y = dragBase.current.y + dx * SENSITIVITY; // deltaX → rotateY
+      dragTarget.current.x = dragBase.current.x - dy * SENSITIVITY; // deltaY → rotateX
     };
 
-    // ── Release → hand off to the spring snap-back. ──
+    // ── Release: the card STAYS where it is. A near-stationary press = a click. ──
     const endDrag = () => {
-      if (!dragging.current) return;
-      dragging.current = false;
-      springing.current = true;
+      if (!isDragging.current) return;
+      isDragging.current = false;
       wrap.style.cursor = interactive ? "grab" : "default";
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseup", endDrag);
       window.removeEventListener("touchmove", onMove);
       window.removeEventListener("touchend", endDrag);
+
+      if (dragTotalDist.current < CLICK_THRESHOLD) {
+        // Tap → flip 180° around the current tilt (rotateX/rotateZ preserved).
+        isFlipped.current = !isFlipped.current;
+        flip.current = { active: true, t: 0, from: base.current.y, to: base.current.y + 180 };
+      }
+      // else: real drag — base already sits at the released rotation, nothing to do.
     };
 
-    // ── Press → begin dragging from the current rotation. ──
+    // ── Press: begin a potential drag from the current base rotation. ──
     const onDown = (e) => {
       if (!interactive) return;
-      dragging.current = true;
-      springing.current = false;
-      pulse.current.active = false;
-      vel.current.x = 0;
-      vel.current.y = 0;
+      isDragging.current = true;
+      flip.current.active = false; // cancel any in-flight flip
+      hover.current.active = false;
+      dragTotalDist.current = 0;
       const p = pointFromEvent(e);
-      dragStart.current = { x: p.x, y: p.y, rx: rot.current.x, ry: rot.current.y };
-      dragTarget.current = { x: rot.current.x, y: rot.current.y };
+      dragStart.current = { x: p.x, y: p.y };
+      dragBase.current = { x: base.current.x, y: base.current.y };
+      dragTarget.current = { x: base.current.x, y: base.current.y };
       wrap.style.cursor = "grabbing";
       window.addEventListener("mousemove", onMove);
       window.addEventListener("mouseup", endDrag);
@@ -85,92 +117,81 @@ const FlipCard = ({ card, size = "lg", interactive = true, idle = true }) => {
       window.addEventListener("touchend", endDrag);
     };
 
-    // ── Hover enter → a single subtle "tilt toward the user" pulse. ──
+    // ── Hover enter: one-shot tilt toward the user, then ease back. ──
     const onEnter = () => {
-      if (!interactive || dragging.current) return;
-      pulse.current = { active: true, start: performance.now() };
-    };
-
-    // ── Leaving the card releases an active drag / cancels a pulse. ──
-    const onLeave = () => {
-      if (dragging.current) {
-        endDrag();
-        return;
-      }
-      if (pulse.current.active) {
-        pulse.current.active = false;
-        springing.current = true;
-      }
+      if (!interactive || isDragging.current) return;
+      hover.current = { active: true, start: performance.now() };
     };
 
     wrap.addEventListener("mousedown", onDown);
     wrap.addEventListener("touchstart", onDown, { passive: true });
     wrap.addEventListener("mouseenter", onEnter);
-    wrap.addEventListener("mouseleave", onLeave);
     wrap.style.cursor = interactive ? "grab" : "default";
 
     let last = performance.now();
     const loop = (now) => {
       const dt = Math.min((now - last) / 1000, 0.032);
       last = now;
-      const t = now * 0.001;
+      floatPhase.current += dt;
       holoAngle.current = (holoAngle.current + dt * 30) % 360;
+      const ph = floatPhase.current;
 
-      if (dragging.current) {
-        // Follow the pointer smoothly; idle float is paused.
-        rot.current.x += (dragTarget.current.x - rot.current.x) * DRAG_LERP;
-        rot.current.y += (dragTarget.current.y - rot.current.y) * DRAG_LERP;
-        ty.current += (0 - ty.current) * 0.2;
-      } else if (pulse.current.active) {
-        // 0–300ms tilt to (6, -10); 300–500ms settle back to neutral.
-        const p = (now - pulse.current.start) / 1000;
-        let tx = 0;
-        let tyr = 0;
-        if (p < 0.3) {
-          tx = 6;
-          tyr = -10;
-        } else if (p >= 0.5) {
-          pulse.current.active = false;
+      // Flip drives the base rotateY over FLIP_MS (runs even alongside float).
+      if (flip.current.active) {
+        flip.current.t += (dt * 1000) / FLIP_MS;
+        const e = easeInOut(Math.min(flip.current.t, 1));
+        base.current.y = flip.current.from + (flip.current.to - flip.current.from) * e;
+        if (flip.current.t >= 1) {
+          base.current.y = flip.current.to;
+          flip.current.active = false;
         }
-        rot.current.x += (tx - rot.current.x) * 0.25;
-        rot.current.y += (tyr - rot.current.y) * 0.25;
-        ty.current += (0 - ty.current) * 0.2;
-      } else if (springing.current) {
-        // Damped spring toward neutral: a = -k·x - c·v (mass = 1).
-        const ax = -SPRING_STIFFNESS * rot.current.x - SPRING_DAMPING * vel.current.x;
-        const ay = -SPRING_STIFFNESS * rot.current.y - SPRING_DAMPING * vel.current.y;
-        vel.current.x = Math.max(-6000, Math.min(6000, vel.current.x + ax * dt));
-        vel.current.y = Math.max(-6000, Math.min(6000, vel.current.y + ay * dt));
-        rot.current.x += vel.current.x * dt;
-        rot.current.y += vel.current.y * dt;
-        ty.current += (0 - ty.current) * 0.2;
-        const settled =
-          Math.abs(rot.current.x) < 0.5 &&
-          Math.abs(rot.current.y) < 0.5 &&
-          Math.hypot(vel.current.x, vel.current.y) < 8;
-        if (settled) {
-          rot.current.x = 0;
-          rot.current.y = 0;
-          vel.current.x = 0;
-          vel.current.y = 0;
-          springing.current = false;
-        }
-      } else if (idle) {
-        // Continuous idle float — neutral-centered sine/cosine, no keyframes.
-        rot.current.x = Math.sin(t * ((2 * Math.PI) / 6)) * 3; // ~6s period, ±3°
-        rot.current.y = Math.sin(t * ((2 * Math.PI) / 5)) * 5; // ~5s period, ±5°
-        ty.current = Math.sin(t * ((2 * Math.PI) / 4)) * 8; // ~4s period, ±8px
+      }
+
+      if (isDragging.current) {
+        // Drag the base toward the pointer target; float is paused, ty frozen.
+        base.current.x += (dragTarget.current.x - base.current.x) * DRAG_LERP;
+        base.current.y += (dragTarget.current.y - base.current.y) * DRAG_LERP;
+        current.current.x = base.current.x;
+        current.current.y = base.current.y;
+        current.current.z = base.current.z;
       } else {
-        // idle disabled → ease to a flat rest.
-        rot.current.x += (0 - rot.current.x) * 0.1;
-        rot.current.y += (0 - rot.current.y) * 0.1;
-        ty.current += (0 - ty.current) * 0.1;
+        // Breathing float on top of the base (the base may be anywhere the user
+        // left it — float resumes from there, not from the dramatic angle).
+        const fx = idle ? Math.sin(ph * (TWO_PI / 6)) * 2 : 0; // ±2°, ~6s
+        const fy = idle ? Math.sin(ph * (TWO_PI / 5)) * 3 : 0; // ±3°, ~5s
+        const ft = idle ? Math.sin(ph * (TWO_PI / 4)) * 6 : 0; // ±6px, ~4s
+
+        // One-shot hover pulse: 0–200ms to (+4, -8), 200–500ms ease back to 0.
+        let hx = 0;
+        let hy = 0;
+        if (hover.current.active) {
+          const p = (now - hover.current.start) / 1000;
+          if (p < 0.2) {
+            const k = p / 0.2;
+            hx = 4 * k;
+            hy = -8 * k;
+          } else if (p < 0.5) {
+            const k = 1 - (p - 0.2) / 0.3;
+            hx = 4 * k;
+            hy = -8 * k;
+          } else {
+            hover.current.active = false;
+          }
+        }
+
+        current.current.x = base.current.x + fx + hx;
+        current.current.y = base.current.y + fy + hy;
+        current.current.z = base.current.z;
+        ty.current = ft;
       }
 
       if (innerRef.current) {
-        innerRef.current.style.transform = `translateY(${ty.current.toFixed(2)}px) rotateX(${rot.current.x.toFixed(2)}deg) rotateY(${rot.current.y.toFixed(2)}deg)`;
-        innerRef.current.style.setProperty("--x", `${50 + Math.max(-50, Math.min(50, rot.current.y))}%`);
-        innerRef.current.style.setProperty("--y", `${50 - Math.max(-50, Math.min(50, rot.current.x))}%`);
+        const rx = current.current.x;
+        const ry = current.current.y;
+        const rz = current.current.z;
+        innerRef.current.style.transform = `perspective(1200px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) rotateZ(${rz.toFixed(2)}deg) translateY(${ty.current.toFixed(2)}px)`;
+        innerRef.current.style.setProperty("--x", `${50 + Math.max(-50, Math.min(50, ry % 360))}%`);
+        innerRef.current.style.setProperty("--y", `${50 - Math.max(-50, Math.min(50, rx))}%`);
         innerRef.current.style.setProperty("--angle", `${holoAngle.current}deg`);
       }
       rafRef.current = requestAnimationFrame(loop);
@@ -182,13 +203,12 @@ const FlipCard = ({ card, size = "lg", interactive = true, idle = true }) => {
       wrap.removeEventListener("mousedown", onDown);
       wrap.removeEventListener("touchstart", onDown);
       wrap.removeEventListener("mouseenter", onEnter);
-      wrap.removeEventListener("mouseleave", onLeave);
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseup", endDrag);
       window.removeEventListener("touchmove", onMove);
       window.removeEventListener("touchend", endDrag);
     };
-  }, [interactive, idle]);
+  }, [interactive, idle, dramatic]);
 
   const dims = SIZES[size] || SIZES.lg;
 
@@ -203,7 +223,7 @@ const FlipCard = ({ card, size = "lg", interactive = true, idle = true }) => {
         touchAction: "none",
       }}
       data-testid={`flip-card-${card.id}`}
-      aria-label={`${card.brand} card — drag to rotate`}
+      aria-label={`${card.brand} card — drag to rotate, click to flip`}
     >
       <div
         ref={innerRef}
