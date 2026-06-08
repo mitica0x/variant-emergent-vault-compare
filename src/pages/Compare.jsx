@@ -61,7 +61,7 @@ export default function Compare() {
   const rest = useMemo(() => list.filter((e) => !e.featured), [list]);
 
   return (
-    <div className="container-x pt-12 md:pt-[153px] pb-24">
+    <div className="container-x pb-24">
       <ComparisonHero />
       <TrustBand />
       <div className="mt-[120px] grid grid-cols-1 xl:grid-cols-[120px_1fr] gap-12">
@@ -84,14 +84,148 @@ export default function Compare() {
 
 // ---- Sections ----
 
+// Two-letter badge from an exchange name: initials of the first two words,
+// or the first two characters for single-word names.
+function exchangeInitials(name) {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+  return name.slice(0, 2).toUpperCase();
+}
+
+// Right-side hero visual: a live top-3 slice of the real leaderboard, sourced
+// from the same EXCHANGES dataset the page ranks below.
+function LeaderboardPreview() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setMounted(true), 30);
+    return () => clearTimeout(t);
+  }, []);
+
+  const top3 = useMemo(
+    () => [...EXCHANGES].sort((a, b) => b.score - a.score).slice(0, 3),
+    []
+  );
+
+  return (
+    <div
+      style={{
+        background: "rgba(255,255,255,0.03)",
+        border: "0.5px solid rgba(255,255,255,0.08)",
+        borderRadius: 3,
+        padding: 24,
+      }}
+    >
+      <div
+        style={{
+          fontSize: 10,
+          color: "#18b4d4",
+          textTransform: "uppercase",
+          letterSpacing: "0.12em",
+          marginBottom: 16,
+        }}
+      >
+        LIVE LEADERBOARD · TOP 3
+      </div>
+
+      {top3.map((e, i) => (
+        <div
+          key={e.id}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            padding: "10px 0",
+            borderBottom:
+              i === top3.length - 1 ? "none" : "0.5px solid rgba(255,255,255,0.06)",
+            opacity: mounted ? 1 : 0,
+            transform: mounted ? "translateY(0)" : "translateY(12px)",
+            transition: `opacity 400ms ease-out ${i * 80}ms, transform 400ms ease-out ${i * 80}ms`,
+          }}
+        >
+          <span style={{ fontSize: 11, color: "#18b4d4", width: 24 }}>#{i + 1}</span>
+          <span
+            style={{
+              width: 28,
+              height: 28,
+              background: "#0f1422",
+              border: "0.5px solid rgba(255,255,255,0.12)",
+              borderRadius: 3,
+              fontSize: 11,
+              fontWeight: 600,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#ffffff",
+              flexShrink: 0,
+            }}
+          >
+            {exchangeInitials(e.name)}
+          </span>
+          <span style={{ fontSize: 13, color: "#ffffff", fontWeight: 500, flex: 1 }}>
+            {e.name}
+          </span>
+          <div style={{ width: 80 }}>
+            <div
+              style={{
+                background: "rgba(255,255,255,0.06)",
+                height: 3,
+                borderRadius: 2,
+                overflow: "hidden",
+              }}
+            >
+              <div
+                style={{
+                  height: "100%",
+                  background: "linear-gradient(90deg, #0dbe82, #18b4d4)",
+                  width: mounted ? `${(e.score / 100) * 100}%` : "0%",
+                  transition: `width 800ms ease-out ${i * 120}ms`,
+                }}
+              />
+            </div>
+          </div>
+          <span
+            style={{
+              fontSize: 12,
+              color: "rgba(255,255,255,0.6)",
+              width: 28,
+              textAlign: "right",
+            }}
+          >
+            {e.score}
+          </span>
+        </div>
+      ))}
+
+      <div
+        style={{
+          fontSize: 10,
+          color: "rgba(255,255,255,0.25)",
+          marginTop: 16,
+          paddingTop: 12,
+          borderTop: "0.5px solid rgba(255,255,255,0.08)",
+        }}
+      >
+        UPDATED EVERY 30 DAYS · {EXCHANGES.length} VENUES TOTAL
+      </div>
+    </div>
+  );
+}
+
 function ComparisonHero() {
   return (
     <section id="overview" className="scroll-mt-20">
-      <PageHero
-        eyebrow="COMPARE · LIVE · 2026"
-        title="The leaderboard nobody paid to be on."
-        subtitle="37 venues scored across spot, derivatives and on-chain. Rescored every 30 days."
-      />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center pt-14 pb-12">
+        <div>
+          <PageHero
+            eyebrow="COMPARE · LIVE · 2026"
+            title="The leaderboard nobody paid to be on."
+            subtitle="37 venues scored across spot, derivatives and on-chain. Rescored every 30 days."
+          />
+        </div>
+        <div className="hidden md:block">
+          <LeaderboardPreview />
+        </div>
+      </div>
     </section>
   );
 }

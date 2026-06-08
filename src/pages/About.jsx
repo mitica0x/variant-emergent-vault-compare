@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, ArrowUpRight, Mic, Mail, Send, Linkedin } from "lucide-react";
 import { Eyebrow } from "../components/UI";
@@ -34,14 +34,106 @@ export default function About() {
   );
 }
 
+const MILESTONES = [
+  { year: "2016", event: "Entered crypto markets — derivatives focus" },
+  { year: "2017", event: "Co-founded CoinSiglieri" },
+  { year: "2021", event: "Built Sphynx Network DeFi protocol on BSC" },
+  { year: "2024", event: "Repositioned to AI Financial Infrastructure" },
+  { year: "2026", event: "Exchange Intelligence · Cards · Ax0n Protocol" },
+];
+
+// Right-side hero visual: the operator track record as a vertical timeline.
+function OperatorTimeline() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setMounted(true), 30);
+    return () => clearTimeout(t);
+  }, []);
+
+  return (
+    <div style={{ position: "relative", paddingLeft: 24 }}>
+      <div
+        style={{
+          position: "absolute",
+          left: 0,
+          top: 0,
+          bottom: 0,
+          width: 1,
+          background:
+            "linear-gradient(180deg, #18b4d4 0%, rgba(24,180,212,0.1) 100%)",
+        }}
+      />
+      {MILESTONES.map((m, i) => {
+        const last = i === MILESTONES.length - 1;
+        return (
+          <div
+            key={m.year}
+            style={{
+              position: "relative",
+              padding: "10px 0",
+              display: "flex",
+              gap: 16,
+              alignItems: "flex-start",
+              opacity: mounted ? 1 : 0,
+              transform: mounted ? "translateY(0)" : "translateY(12px)",
+              transition: `opacity 400ms ease-out ${i * 100}ms, transform 400ms ease-out ${i * 100}ms`,
+            }}
+          >
+            <span
+              style={{
+                position: "absolute",
+                left: -28,
+                top: 14,
+                width: 6,
+                height: 6,
+                borderRadius: "50%",
+                background: last ? "#18b4d4" : "rgba(255,255,255,0.2)",
+              }}
+            />
+            <span
+              style={{
+                fontSize: 11,
+                color: "#18b4d4",
+                fontFamily: "monospace",
+                width: 36,
+                flexShrink: 0,
+                paddingTop: 1,
+              }}
+            >
+              {m.year}
+            </span>
+            <span
+              style={{
+                fontSize: 13,
+                color: last ? "#ffffff" : "rgba(255,255,255,0.75)",
+                fontWeight: last ? 500 : 400,
+                lineHeight: 1.5,
+              }}
+            >
+              {m.event}
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function AboutHero() {
   return (
-    <section className="container-x pt-12 md:pt-[153px] pb-20">
-      <PageHero
-        eyebrow="ABOUT · COINSIGLIERI"
-        title="Operators since 2016."
-        subtitle="CoinSiglieri is EU/MiCAR-native crypto exchange intelligence. Score-driven, independently built, operator-tested."
-      />
+    <section className="container-x">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center pt-14 pb-12">
+        <div>
+          <PageHero
+            eyebrow="ABOUT · COINSIGLIERI"
+            title="Operators since 2016."
+            subtitle="EU/MiCAR-native crypto exchange intelligence. Score-driven, independently built, skin in the game since cycle one."
+          />
+        </div>
+        <div className="hidden md:block">
+          <OperatorTimeline />
+        </div>
+      </div>
     </section>
   );
 }

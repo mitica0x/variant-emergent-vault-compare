@@ -410,3 +410,15 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
+
+/* Signal scanner pulse dot (News hero ticker) */
+@keyframes signal-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+.signal-pulse-dot {
+  animation: signal-pulse 1.5s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .signal-pulse-dot { animation: none; }
+}

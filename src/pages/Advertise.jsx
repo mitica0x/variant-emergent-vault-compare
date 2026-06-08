@@ -41,7 +41,7 @@ const TRUST_ITEMS = [
 
 const WHY_CARDS = [
   { t: "EU/MiCAR Specialist", d: "Editorial weight on the licensing track that matters for EU access \u2014 not generic crypto coverage." },
-  { t: "Algorithmic Scoring", d: "Five-pillar weighted model. Public weights. Documented inputs. Rescored every 30 days." },
+  { t: "Algorithmic Scoring", d: "Seven-pillar weighted model. Public weights. Documented inputs. Rescored every 30 days." },
   { t: "High-Intent Audience", d: "CMOs, BD leads, founders, market makers \u2014 not retail. The audience that closes deals." },
 ];
 
@@ -80,7 +80,7 @@ export default function Advertise() {
 function AdvertiseHero() {
   return (
     <section className="hairline-b">
-      <div className="container-x pt-12 md:pt-[153px] pb-20 grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-12 items-end">
+      <div className="container-x grid grid-cols-1 md:grid-cols-2 gap-16 items-center pt-14 pb-12">
         <div>
           <PageHero
             eyebrow="ADVERTISE · COINSIGLIERI"
@@ -99,7 +99,9 @@ function AdvertiseHero() {
             </p>
           </PageHero>
         </div>
-        <HeroMetrics />
+        <div className="hidden md:block">
+          <HeroMetrics />
+        </div>
       </div>
     </section>
   );
@@ -274,7 +276,7 @@ function EditorialStandards() {
           </div>
           <div className="text-[17px] text-muted leading-relaxed space-y-4">
             <p>
-              Scoring at CoinSiglieri is produced by an algorithmic five-pillar model with public
+              Scoring at CoinSiglieri is produced by an algorithmic seven-pillar model with public
               weights and documented inputs. Commercial placement does not move scores. We will
               publish a methodology change before adjusting either.
             </p>
