@@ -1382,7 +1382,7 @@ function IndependenceNote() {
       <Shield size={20} className="text-emerald" />
       <h3 className="mt-4 text-[18px] font-semibold">Editorial independence is the product.</h3>
       <p className="mt-3 text-[15px] text-muted leading-relaxed">
-        Bybit currently ranks #1 (94/100) on our EU/MiCAR leaderboard. Bybit also runs a featured
+        OKX currently ranks #3 (86/100) on our EU/MiCAR leaderboard. OKX also runs a featured
         placement on this page, which is disclosed as commercial. The score and the placement are
         produced by separate processes. We will publish a methodology change before adjusting either.
       </p>
